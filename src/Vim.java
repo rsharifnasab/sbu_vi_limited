@@ -1,9 +1,5 @@
 import java.util.Scanner; // my only and lovely input getter
-import java.util.Arrays;
 import java.io.*;
-
-
-
 
 class ArgumentParser{
 	private String[] args;
@@ -30,11 +26,11 @@ class ArgumentParser{
 
 
 enum FileStatus{
-	WRITABLE,
+	WRITABLE, // the file is ok and ready to write
 	NOT_OK, // can not open file for writing
 	NOT_EXISTS, // the file doesnt exists
 	IS_DIR, // requested file is directory
-	NULL_YET
+	NULL_YET // requested address is null
 }
 
 class FilesUtil{
@@ -45,7 +41,7 @@ class FilesUtil{
 			if(f.exists())
 				return false;
 			f.createNewFile();
-			f.delete();
+			f.delete(); // check if we can create it or not
 			return true;
 		} catch(Exception e) {
 			return false;
@@ -75,25 +71,25 @@ class FilesUtil{
 
 public class Vim{
 
-	public static String DEFAULT_FILE_NAME = "tmp.txt";
-	public static String BAD_INPUT_HINT = "bad arguments\n" +
+	public static final String BAD_INPUT_HINT = "bad arguments\n" +
 		"usage : \'java Vim a.txt\' OR \'java Vim\'";
 
 
 	private static String getFileNameFromArgs(String[] args){
 
 		ArgumentParser argParse = new ArgumentParser(args);
-		if (!argParse.check()){
+		if (!argParse.check()){ // bad input
 			System.out.println(BAD_INPUT_HINT);
 			System.out.flush();
 			System.exit(1);
 		}
 
-		String fileName = argParse.getFileName(); // null if : "vim"
+		String fileName = argParse.getFileName(); // null if : usage : "vim"
 		FileStatus status = FilesUtil.getFileState( argParse.getFileName());
 		switch (status){
 			case WRITABLE:
 			case NOT_EXISTS:
+			case NULL_YET:
 				return fileName;
 
 			case IS_DIR:
@@ -105,9 +101,6 @@ public class Vim{
 				System.out.println("error: cant open input file: "+fileName );
 				System.out.flush();
 				System.exit(1);
-
-			case NULL_YET:
-				return null;
 
 			default:
 				throw new RuntimeException("should not reach here!"); // should not reach here
