@@ -16,3 +16,8 @@ clean:
 	@echo "deleted class files"
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
+
+g:
+	git status
+	git add -A
+	git commit
