@@ -1,0 +1,8 @@
+*.class
+*.exe
+*.out
+test.txt
+*/idea/
+*/.code/
+./classic_vim
+classic_vim
