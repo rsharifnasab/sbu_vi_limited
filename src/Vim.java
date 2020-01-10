@@ -1,11 +1,8 @@
-import java.util.Scanner; // my only and lovely input getter
 import java.io.*;
 
 class ArgumentParser{
-	public static final String BAD_INPUT_HINT = "bad arguments\n" +
-		"usage : \'java Vim a.txt\' OR \'java Vim\'";
-
 	private String[] args;
+
 	public ArgumentParser(String[] args){
 		this.args = args;
 	}
@@ -27,7 +24,6 @@ class ArgumentParser{
 	}
 }
 
-
 enum FileStatus{
 	WRITABLE, // the file is ok and ready to write
 	NOT_OK, // can not open file for writing
@@ -39,6 +35,8 @@ enum FileStatus{
 class FilesUtil{
 
 	public static Boolean canCreateFile(String fileName){
+		if(fileName == null)
+			return false;
 		try {
 			File f = new File(fileName);
 			if(f.exists())
@@ -46,7 +44,7 @@ class FilesUtil{
 			f.createNewFile();
 			f.delete(); // check if we can create it or not
 			return true;
-		} catch(Exception e) {
+		} catch(IOException e) {
 			return false;
 		}
 	}
@@ -111,6 +109,7 @@ class PrintUtil{
     	System.out.flush();
 	}
 
+	@Deprecated // we handle that in makefile
 	public static void makeTerminalHandy(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty -icanon min 1 </dev/tty"}).waitFor();
@@ -122,7 +121,7 @@ class PrintUtil{
 		}
 	}
 
-
+	@Deprecated // we handle that in makefile
 	public static void makeTerminalNormal(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty icanon </dev/tty"});
@@ -142,7 +141,8 @@ public class Vim{
 
 		ArgumentParser argParse = new ArgumentParser(args);
 		if (!argParse.check()){ // bad input
-			PrintUtil.PError(ArgumentParser.BAD_INPUT_HINT);
+			PrintUtil.PError("bad arguments");
+			PrintUtil.PError("usage : \'java Vim a.txt\' OR \'java Vim\'");
 			System.exit(1);
 		}
 
@@ -170,22 +170,16 @@ public class Vim{
 
 
 	public String ourFile;
-	private Scanner ourScanner;
-	public Vim(String ourFile, Scanner scanner){
+	public Vim(String ourFile){
 		this.ourFile = ourFile;
-		this.ourScanner = scanner;
 
 		PrintUtil.clearScreen();
-
-		PrintUtil.print("initializing vim!", Color.GREEN);
-		PrintUtil.makeTerminalHandy();
+		PrintUtil.print("initializing vim!", Color.YELLOW);
 		PrintUtil.print("input file is : " + ourFile, Color.BLUE);
-		PrintUtil.print("our scanner is: " + ourScanner.getClass().getName(), Color.BLUE);
-
 	}
 
-	public Vim(String[] args, Scanner scanner){
-		this( getFileNameFromArgs(args) , scanner);
+	public Vim(String[] args){
+		this( getFileNameFromArgs(args) );
 	}
 
 	private Boolean appShouldExit(String input){
@@ -199,16 +193,24 @@ public class Vim{
 		return false;
 	}
 
+	private int getChar(){
+		try{
+			return System.in.read();
+		} catch(IOException e){
+			PrintUtil.PError("error in getting char from user with system.in\nexiting");
+			System.exit(1);
+		}
+		return -1; // should not reach here
+	}
 
-	public void run() throws IOException{
+	public void run(){
 		PrintUtil.print("the app started succesfully", Color.GREEN);
 
 		int input;
-        while ((input = System.in.read()) != -1){
-			// work with input
-			System.out.println( " " +  input );
-		}
-
+		do {
+			input = getChar();
+			System.out.println( " " + input );
+		} while (input != -1);
 
 	//	System.out.println("save cursor pos : \u001b[s \n ");
 	//	System.out.println("request cursor pos : \u001b[6n \n" );
@@ -219,26 +221,12 @@ public class Vim{
 		"\u001b[6n"            // request cursor position
 		"\u001b[u"
 */
-
-		PrintUtil.makeTerminalNormal();
-
 	}
 
 
 
 	public static void main(String[] args){
-
-		Scanner scanner = new Scanner(System.in);
-
-		Vim app = new Vim(args,scanner);
-
-		try{
-			app.run();
-		}catch(IOException e){
-			PrintUtil.PError("error in getting character");
-		}
-
-
-		scanner.close();
+		Vim app = new Vim(args);
+		app.run();
 	}
 }

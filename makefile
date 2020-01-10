@@ -4,17 +4,17 @@ all : reset compile run
 reset:
 	@reset
 
-run: internalRun
+run: okTerminal internalRun resetTerminal
 
 internalRun:
 	@java -cp "src/" Vim
 
 
 okTerminal:
-	/bin/sh -c stty -icanon min 1 </dev/tty
+	/bin/sh -c "stty -icanon min 1 </dev/tty"
 	
 resetTerminal:
-	/bin/sh -c stty icanon </dev/tty	
+	/bin/sh -c "stty icanon </dev/tty"	
 
 
 compile:
