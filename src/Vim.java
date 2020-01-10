@@ -206,7 +206,7 @@ public class Vim{
 		int input;
         while ((input = System.in.read()) != -1){
 			// work with input
-			System.out.println( (char) input );
+			System.out.println( " " +  input );
 		}
 
 
