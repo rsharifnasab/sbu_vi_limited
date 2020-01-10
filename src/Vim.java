@@ -72,17 +72,50 @@ class FilesUtil{
 
 }
 
+class PrintUtil{
+	public static final String ESCAPE = ""+(char) 27 ;
+	public static final String Red = ESCAPE + "[31m";
+	public static final String Blue = ESCAPE +  "[94m";
+	public static final String Green = ESCAPE +  "[32m";
+	public static final String Yellow = ESCAPE +  "[93m";
+	public static final String White = ESCAPE +  "[97m";
 
 
+	public static void print(String toPrint, Color color){
+		String colorer = White;
+		switch (color){
+			case RED:
+				colorer = Red; break;
+			case BLUE:
+				colorer = Blue; break;
+			case GREEN:
+				colorer = Green; break;
+			case YELLOW:
+				colorer = Yellow; break;
+			default:
+				colorer = White;
+		}
+		System.out.println( colorer + toPrint + White );
+		System.out.flush();
+	}
+	public static void PError(String errorText){
+		print(errorText, Color.RED);
+	}
+
+	public static void clearScreen() {
+    	System.out.print("\033[H\033[2J");
+    	System.out.flush();
+	}
+}
+
+enum Color{	RED, GREEN, BLUE, YELLOW, WHITE }
 
 public class Vim{
-
 	private static String getFileNameFromArgs(String[] args){
 
 		ArgumentParser argParse = new ArgumentParser(args);
 		if (!argParse.check()){ // bad input
-			System.out.println(ArgumentParser.BAD_INPUT_HINT);
-			System.out.flush();
+			PrintUtil.PError(ArgumentParser.BAD_INPUT_HINT);
 			System.exit(1);
 		}
 
@@ -95,13 +128,11 @@ public class Vim{
 				return fileName;
 
 			case IS_DIR:
-				System.out.println("error: target is directory: "+fileName );
-				System.out.flush();
+				PrintUtil.PError("error: target is directory: "+fileName);
 				System.exit(1);
 
 			case NOT_OK:
-				System.out.println("error: cant open input file: "+fileName );
-				System.out.flush();
+				PrintUtil.PError("error: cant open input file: "+fileName);
 				System.exit(1);
 
 			default:
@@ -109,27 +140,59 @@ public class Vim{
 		}
 	}
 
+
+
 	public String ourFile;
 	private Scanner ourScanner;
-
 	public Vim(String ourFile, Scanner scanner){
-		System.err.println("initializing vim!");
 		this.ourFile = ourFile;
 		this.ourScanner = scanner;
 
-		System.err.println("input file is " + ourFile);
-		System.err.println("our scanner is: " + ourScanner.getClass().getName());
+		PrintUtil.clearScreen();
 
+		PrintUtil.print("initializing vim!", Color.GREEN);
+		PrintUtil.print("input file is : " + ourFile, Color.BLUE);
+		PrintUtil.print("our scanner is: " + ourScanner.getClass().getName(), Color.BLUE);
 	}
-
-	public void start(){
-		System.err.println("the app started");
-	}
-
 
 	public Vim(String[] args, Scanner scanner){
 		this( getFileNameFromArgs(args) , scanner);
 	}
+
+	private Boolean appShouldExit(String input){
+		if (
+		"exit".equalsIgnoreCase(input) ||
+		"quit".equalsIgnoreCase(input) ||
+		":q!".equalsIgnoreCase(input)
+		)
+			return true;
+
+		return false;
+	}
+
+	public void start(){
+		PrintUtil.print("the app started", Color.GREEN);
+
+/*
+		"\u001b[s"             // save cursor position
+		"\u001b[5000;5000H"    // move to col 5000 row 5000
+		"\u001b[6n"            // request cursor position
+		"\u001b[u"
+*/
+		String input;
+		do{
+			input = ourScanner.nextLine();
+			System.out.println("input is : " + input);
+			char[] arr = input.toCharArray();
+			for(int i =0; i < arr.length; i++){
+				System.out.println(arr[i] + " : " + Character.codePointAt(arr, i));
+			}
+			System.out.println();
+
+		} while ( !appShouldExit(input) );
+	}
+
+
 
 	public static void main(String[] args){
 
