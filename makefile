@@ -4,8 +4,18 @@ all : reset compile run
 reset:
 	@reset
 
-run:
+run: internalRun
+
+internalRun:
 	@java -cp "src/" Vim
+
+
+okTerminal:
+	/bin/sh -c stty -icanon min 1 </dev/tty
+	
+resetTerminal:
+	/bin/sh -c stty icanon </dev/tty	
+
 
 compile:
 	@echo "compiling project.."

@@ -74,12 +74,15 @@ class FilesUtil{
 
 class PrintUtil{
 	public static final String ESCAPE = ""+(char) 27 ;
+	public static final String Reset = ESCAPE + "[0m";
+
 	public static final String Red = ESCAPE + "[31m";
 	public static final String Blue = ESCAPE +  "[94m";
 	public static final String Green = ESCAPE +  "[32m";
 	public static final String Yellow = ESCAPE +  "[93m";
 	public static final String White = ESCAPE +  "[97m";
 
+	public static final String CLEARER = "\033[H\033[2J";
 
 	public static void print(String toPrint, Color color){
 		String colorer = White;
@@ -95,17 +98,41 @@ class PrintUtil{
 			default:
 				colorer = White;
 		}
-		System.out.println( colorer + toPrint + White );
+		System.out.println( colorer + toPrint + Reset );
 		System.out.flush();
 	}
+
 	public static void PError(String errorText){
 		print(errorText, Color.RED);
 	}
 
 	public static void clearScreen() {
-    	System.out.print("\033[H\033[2J");
+    	System.out.print(CLEARER);
     	System.out.flush();
 	}
+
+	public static void makeTerminalHandy(){
+		try{
+			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty -icanon min 1 </dev/tty"}).waitFor();
+			//PrintUtil.print("making terminal handy!" ,Color.YELLOW);
+		}
+		catch (Exception e){
+			PrintUtil.PError("couldnt make terminal handy!");
+			System.exit(1);
+		}
+	}
+
+
+	public static void makeTerminalNormal(){
+		try{
+			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty icanon </dev/tty"});
+		}
+		catch (Exception e){
+			PrintUtil.PError("couldnt make terminal normal!");
+			System.exit(1);
+		}
+	}
+
 }
 
 enum Color{	RED, GREEN, BLUE, YELLOW, WHITE }
@@ -136,7 +163,7 @@ public class Vim{
 				System.exit(1);
 
 			default:
-				throw new RuntimeException("should not reach here!"); // should not reach here
+				throw new RuntimeException("should not reach here!, probalby bad FILESTATUS enum");
 		}
 	}
 
@@ -151,8 +178,10 @@ public class Vim{
 		PrintUtil.clearScreen();
 
 		PrintUtil.print("initializing vim!", Color.GREEN);
+		PrintUtil.makeTerminalHandy();
 		PrintUtil.print("input file is : " + ourFile, Color.BLUE);
 		PrintUtil.print("our scanner is: " + ourScanner.getClass().getName(), Color.BLUE);
+
 	}
 
 	public Vim(String[] args, Scanner scanner){
@@ -170,26 +199,29 @@ public class Vim{
 		return false;
 	}
 
-	public void start(){
-		PrintUtil.print("the app started", Color.GREEN);
 
+	public void run() throws IOException{
+		PrintUtil.print("the app started succesfully", Color.GREEN);
+
+		int input;
+        while ((input = System.in.read()) != -1){
+			// work with input
+			System.out.println( (char) input );
+		}
+
+
+	//	System.out.println("save cursor pos : \u001b[s \n ");
+	//	System.out.println("request cursor pos : \u001b[6n \n" );
+	//	System.out.println("change pos : \u001b[u \n" );
 /*
 		"\u001b[s"             // save cursor position
 		"\u001b[5000;5000H"    // move to col 5000 row 5000
 		"\u001b[6n"            // request cursor position
 		"\u001b[u"
 */
-		String input;
-		do{
-			input = ourScanner.nextLine();
-			System.out.println("input is : " + input);
-			char[] arr = input.toCharArray();
-			for(int i =0; i < arr.length; i++){
-				System.out.println(arr[i] + " : " + Character.codePointAt(arr, i));
-			}
-			System.out.println();
 
-		} while ( !appShouldExit(input) );
+		PrintUtil.makeTerminalNormal();
+
 	}
 
 
@@ -200,7 +232,12 @@ public class Vim{
 
 		Vim app = new Vim(args,scanner);
 
-		app.start();
+		try{
+			app.run();
+		}catch(IOException e){
+			PrintUtil.PError("error in getting character");
+		}
+
 
 		scanner.close();
 	}
