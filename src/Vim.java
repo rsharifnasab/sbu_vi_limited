@@ -2,6 +2,9 @@ import java.util.Scanner; // my only and lovely input getter
 import java.io.*;
 
 class ArgumentParser{
+	public static final String BAD_INPUT_HINT = "bad arguments\n" +
+		"usage : \'java Vim a.txt\' OR \'java Vim\'";
+
 	private String[] args;
 	public ArgumentParser(String[] args){
 		this.args = args;
@@ -69,17 +72,16 @@ class FilesUtil{
 
 }
 
+
+
+
 public class Vim{
-
-	public static final String BAD_INPUT_HINT = "bad arguments\n" +
-		"usage : \'java Vim a.txt\' OR \'java Vim\'";
-
 
 	private static String getFileNameFromArgs(String[] args){
 
 		ArgumentParser argParse = new ArgumentParser(args);
 		if (!argParse.check()){ // bad input
-			System.out.println(BAD_INPUT_HINT);
+			System.out.println(ArgumentParser.BAD_INPUT_HINT);
 			System.out.flush();
 			System.exit(1);
 		}
@@ -107,16 +109,36 @@ public class Vim{
 		}
 	}
 
-	public static String ourFile;
+	public String ourFile;
+	private Scanner ourScanner;
+
+	public Vim(String ourFile, Scanner scanner){
+		System.err.println("initializing vim!");
+		this.ourFile = ourFile;
+		this.ourScanner = scanner;
+
+		System.err.println("input file is " + ourFile);
+		System.err.println("our scanner is: " + ourScanner.getClass().getName());
+
+	}
+
+	public void start(){
+		System.err.println("the app started");
+	}
+
+
+	public Vim(String[] args, Scanner scanner){
+		this( getFileNameFromArgs(args) , scanner);
+	}
 
 	public static void main(String[] args){
-		ourFile = getFileNameFromArgs(args);
 
-		Scanner sc = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in);
 
-		System.out.println("input file is " + ourFile);
+		Vim app = new Vim(args,scanner);
 
-		sc.close();
+		app.start();
 
+		scanner.close();
 	}
 }

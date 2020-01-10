@@ -1,13 +1,17 @@
 
+all : reset compile run
+
+reset:
+	@reset
+
 run:
-	@echo "running application.."
 	@java -cp "src/" Vim
-	@echo "program finished"
 
 compile:
 	@echo "compiling project.."
 	@javac src/Vim.java
 	@echo "compile done!"
+	@echo "-------------------------------------"
 
 
 clean:
