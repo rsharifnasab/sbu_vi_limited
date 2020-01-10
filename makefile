@@ -7,7 +7,7 @@ reset:
 run: okTerminal internalRun resetTerminal
 
 internalRun:
-	@java -cp "src/" Vim
+	@java -cp "out/" Vim
 
 
 okTerminal:
@@ -17,9 +17,10 @@ resetTerminal:
 	/bin/sh -c "stty icanon </dev/tty"	
 
 
-compile:
+compile: clean
 	@echo "compiling project.."
-	@javac src/Vim.java
+	@mkdir out && echo "created output folder" || echo "out folder exists"
+	@javac src/Vim.java -g -d out/ -Werror -Xlint -Xmaxerrs 3
 	@echo "compile done!"
 	@echo "-------------------------------------"
 
@@ -30,6 +31,7 @@ clean:
 	@echo "deleted class files"
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
+	@find . -name 'out' -delete
 
 g:
 	git status

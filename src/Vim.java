@@ -34,6 +34,16 @@ enum FileStatus{
 
 class FilesUtil{
 
+	@Deprecated // untested
+	public static String toAbsoloutePath(String fileName){
+		if(fileName == null)
+			return null;
+		File f = new File(fileName);
+		if(f.canRead() && f.isFile() && f.exists())
+			return f.getAbsolutePath();
+		return null;
+	}
+
 	public static Boolean canCreateFile(String fileName){
 		if(fileName == null)
 			return false;
@@ -66,6 +76,10 @@ class FilesUtil{
 
 	public static Boolean isWritableFile(String fileName){
 		return getFileState(fileName) == FileStatus.WRITABLE;
+	}
+
+	public static void saveToFile(String fileName){
+		//TODO
 	}
 
 }
@@ -157,14 +171,15 @@ public class Vim{
 			case IS_DIR:
 				PrintUtil.PError("error: target is directory: "+fileName);
 				System.exit(1);
+				break;
 
 			case NOT_OK:
 				PrintUtil.PError("error: cant open input file: "+fileName);
 				System.exit(1);
-
-			default:
-				throw new RuntimeException("should not reach here!, probalby bad FILESTATUS enum");
+				break;
 		}
+		throw new RuntimeException("should not reach here!, probalby bad FileStatus enum");
+
 	}
 
 
