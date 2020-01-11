@@ -122,7 +122,7 @@ class TUtil{
 		System.exit(1);
 	}
 
-	public static void clearScreen() {
+	public static void clearConsule() {
     	System.out.print(CLEARER);
     	System.out.flush();
 	}
@@ -157,11 +157,19 @@ class TUtil{
 		return -1; // should not reach here
 	}
 
+	@Deprecated
 	public static void printTerminalSize(){
 		System.out.print("\u001b[s");  // save cursor position
 		System.out.print("\u001b[5000;5000H"); // move to col 5000 row 5000
 		System.out.println("\u001b[6n");  // request cursor position
 		System.out.print("\u001b[u"); // restore cursor position
+	}
+
+	public static void deleteThisLine(Cursor c){ //sensetive code
+		int bpkX = c.x;
+		c.setCursor(1, c.y);
+		System.out.print("\u001b[K"); // delete line
+		c.setCursor(bpkX, c.y);
 	}
 
 }
@@ -174,21 +182,72 @@ class ETCUtil{
     		Thread.currentThread().interrupt();
 		}
 	}
+}
+
+class Screen{
+	char [][] innerArr;
+	public final int height;
+	public final int width;
+	public Screen(int width,int height,char c){
+		this.width = width;
+		this.height = height;
+		innerArr = new char[this.height][this.width];
+		fillScreen(c);
+	}
+	public Screen(int height,int width){
+		this(height,width,' ');
+	}
+
+	public void fillScreen(char c){
+		for (int i =0;i< height; i++ ) {
+			for(int j =0; j < width; j++){
+				innerArr[i][j] = c;
+			}
+		}
+	} // end func
+
+	public void clearAndPrintAll(){
+		TUtil.clearConsule();
+		for (int i =0;i<height; i++ ) {
+			for(int j =0; j < width; j++){
+				System.out.print(innerArr[i][j]);
+			}
+			System.out.println();
+		}
+	}
+
+	public char[] getLine(int n){
+		return innerArr[n];
+	}
+
+	public void printLine(Cursor c){ // sensetive code
+		int lineNo = c.y;
+		int bpkX = c.x;
+		c.setCursor(1, c.y); // go to first char of line
+		TUtil.deleteThisLine(c);
+
+		for(int j =0; j < width; j++){
+			System.out.print(innerArr[lineNo-1][j]); // trick
+		}
+		c.setCursor(bpkX, lineNo);;
+	}
 
 }
 
 class Cursor{
-	public static final int width = 60; // 80
-	public static final int height = 20; // 24
-	private int x;
-	private int y;
-	Cursor(){
-		this.x = 0;
-		this.y = 0;
+	public final int width;
+	public final int height;
+	int x;
+	int y;
+	public Cursor(int width, int height){
+		this.width = width;
+		this.height = height;
 		setCursor(this.x, this.y);
 	}
 
-	private void setCursor(int x,int y){
+	void setCursor(int x,int y){ // package access
+		this.x = x;
+		this.y = y;
 		System.out.print("\u001b[" + y + ";" + x + "H");
 	}
 
@@ -196,50 +255,32 @@ class Cursor{
 		setCursor(this.x, this.y);
 	}
 
-	public void up(){
-		y = (y>0)? y-1 : 0;
-		//System.out.print("\u001b[" + 1 + "A");
-		rePut();
+	public void reset(){
+		setCursor(1, 1);
 	}
 
+	/*
+		up : System.out.print("\u001b[" + 1 + "A");
+		dwn: System.out.print("\u001b[" + 1 + "B");
+		right: System.out.print("\u001b[" + 1 + "C");
+		left: System.out.print("\u001b[" + 1 + "D");
+	*/
+
+	public void up(){
+		y = (y>1)? y-1 : 1;
+		rePut();
+	}
 	public void down(){
 		y = (y<height)? y+1 : height;
-		//System.out.print("\u001b[" + 1 + "B");
 		rePut();
 	}
-
 	public void left(){
-		x = (x>0)? x-1 : 0;
-		//System.out.print("\u001b[" + 1 + "D");
+		x = (x>1)? x-1 : 1;
 		rePut();
 	}
-
 	public void right(){
 		x = (x<width)? x+1 : width;
-		//System.out.print("\u001b[" + 1 + "C");
 		rePut();
-	}
-
-	public void handleInput(int input){
-		final int up = (int) 'w';
-		final int down = (int) 's';
-		final int right = (int) 'd';
-		final int left = (int) 'a';
-
-		switch (input) {
-			case up:
-				up();
-				break;
-			case down:
-				down();
-				break;
-			case right:
-				right();
-				break;
-			case left:
-				left();
-				break;
-		}
 	}
 
 }
@@ -276,17 +317,23 @@ public class Vim{
 
 	}
 
-	public File ourFile;
-	public Cursor ourCursor;
+	public final int height = 24;
+	public final int width = 80;
 
+	public File ourFile;
+	public final Cursor cursor;
+	public final Screen screen;
 	public Vim(String ourFile){
 		this.ourFile = (ourFile==null) ? null : new File(ourFile);
 
 		TUtil.makeTerminalHandy();
-		//greetUser();
-		ourCursor = new Cursor();
-		TUtil.clearScreen();
+		cursor = new Cursor(width,height);
+		screen = new Screen(width,height,'~');
 
+		//greetUser();
+		//TUtil.clearConsule();
+		screen.clearAndPrintAll();
+		cursor.reset();
 	}
 
 	public Vim(String[] args){
@@ -294,7 +341,7 @@ public class Vim{
 	}
 
 	private void greetUser(){
-		TUtil.clearScreen();
+		TUtil.clearConsule();
 		TUtil.print("initializing vim!", Color.YELLOW);
 		TUtil.print("input file is : " + ourFile, Color.BLUE);
 		TUtil.print("the app is starting ", Color.GREEN);
@@ -313,24 +360,40 @@ public class Vim{
 	}
 
 
+	private void handleInput(int input){
+		final int up = (int) 'w';
+		final int down = (int) 's';
+		final int right = (int) 'd';
+		final int left = (int) 'a';
+		final int deleteLine = (int) 'l';
+		switch (input) {
+			case up: cursor.up(); break;
+			case down: cursor.down(); break;
+			case right: cursor.right(); break;
+			case left: cursor.left(); break;
+			case deleteLine : TUtil.deleteThisLine(cursor);
+		}
+	}
+
 
 	public void run(){
 
 		int input;
 		do {
 			input = TUtil.getChar();
-			TUtil.clearScreen();
-			System.out.println( " " + input );
-			ourCursor.handleInput(input);
-			//TUtil.printTerminalSize();
-			//break;
+
+			screen.printLine(cursor);
+			//cursor.rePut();
+
+			handleInput(input);
+
 		} while (input != (int)'x' );
 
 		cleanUpForExit();
 	}
 
 	private void cleanUpForExit(){
-		TUtil.clearScreen();
+		TUtil.clearConsule();
 		TUtil.makeTerminalNormal();
 	}
 
