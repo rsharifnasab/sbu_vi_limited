@@ -157,6 +157,13 @@ class TUtil{
 		return -1; // should not reach here
 	}
 
+	public static void printTerminalSize(){
+		System.out.print("\u001b[s");  // save cursor position
+		System.out.print("\u001b[5000;5000H"); // move to col 5000 row 5000
+		System.out.println("\u001b[6n");  // request cursor position
+		System.out.print("\u001b[u"); // restore cursor position
+	}
+
 }
 
 class ETCUtil{
@@ -171,6 +178,8 @@ class ETCUtil{
 }
 
 class Cursor{
+	public static final int width = 60; // 80
+	public static final int height = 20; // 24
 	private int x;
 	private int y;
 	Cursor(){
@@ -180,13 +189,58 @@ class Cursor{
 	}
 
 	private void setCursor(int x,int y){
-		System.out.print("\u001b[" + x + ";" + y + "H");
+		System.out.print("\u001b[" + y + ";" + x + "H");
 	}
 
 	public void rePut(){
 		setCursor(this.x, this.y);
 	}
 
+	public void up(){
+		y = (y>0)? y-1 : 0;
+		//System.out.print("\u001b[" + 1 + "A");
+		rePut();
+	}
+
+	public void down(){
+		y = (y<height)? y+1 : height;
+		//System.out.print("\u001b[" + 1 + "B");
+		rePut();
+	}
+
+	public void left(){
+		x = (x>0)? x-1 : 0;
+		//System.out.print("\u001b[" + 1 + "D");
+		rePut();
+	}
+
+	public void right(){
+		x = (x<width)? x+1 : width;
+		//System.out.print("\u001b[" + 1 + "C");
+		rePut();
+	}
+
+	public void handleInput(int input){
+		final int up = (int) 'w';
+		final int down = (int) 's';
+		final int right = (int) 'd';
+		final int left = (int) 'a';
+
+		switch (input) {
+			case up:
+				up();
+				break;
+			case down:
+				down();
+				break;
+			case right:
+				right();
+				break;
+			case left:
+				left();
+				break;
+		}
+	}
 
 }
 
@@ -229,9 +283,7 @@ public class Vim{
 		this.ourFile = (ourFile==null) ? null : new File(ourFile);
 
 		TUtil.makeTerminalHandy();
-
 		//greetUser();
-
 		ourCursor = new Cursor();
 		TUtil.clearScreen();
 
@@ -267,8 +319,11 @@ public class Vim{
 		int input;
 		do {
 			input = TUtil.getChar();
+			TUtil.clearScreen();
 			System.out.println( " " + input );
-			ourCursor.rePut();
+			ourCursor.handleInput(input);
+			//TUtil.printTerminalSize();
+			//break;
 		} while (input != (int)'x' );
 
 		cleanUpForExit();
