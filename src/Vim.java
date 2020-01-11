@@ -84,6 +84,7 @@ class FilesUtil{
 
 }
 
+// TUtile as wr have in Terminal utilities
 class TUtil{
 	public static final String ESCAPE = ""+(char) 27 ;
 	public static final String Reset = ESCAPE + "[0m";
@@ -96,6 +97,7 @@ class TUtil{
 
 	public static final String CLEARER = "\033[H\033[2J";
 
+	// print the toPrint string with the specified color
 	public static void print(String toPrint, Color color){
 		String colorer = White;
 		switch (color){
@@ -114,6 +116,7 @@ class TUtil{
 		System.out.flush();
 	}
 
+	// print an error in red and exit whole program
 	public static void PError(String errorText){
 		print(errorText, Color.RED);
 		System.exit(1);
@@ -128,7 +131,7 @@ class TUtil{
 	public static void makeTerminalHandy(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty -icanon min 1 </dev/tty"}).waitFor();
-			//TUtil.print("making terminal handy!" ,Color.YELLOW);
+			//TUtil.print("making terminal buffer to one!" ,Color.YELLOW);
 		}
 		catch (Exception e){
 			TUtil.PError("couldnt make terminal buffer to one!");
@@ -153,6 +156,37 @@ class TUtil{
 		}
 		return -1; // should not reach here
 	}
+
+}
+
+class ETCUtil{
+	public static void delay(int second){
+		try{
+    		Thread.sleep(1000*second);
+		}catch(InterruptedException ex){
+    		Thread.currentThread().interrupt();
+		}
+	}
+
+}
+
+class Cursor{
+	private int x;
+	private int y;
+	Cursor(){
+		this.x = 0;
+		this.y = 0;
+		setCursor(this.x, this.y);
+	}
+
+	private void setCursor(int x,int y){
+		System.out.print("\u001b[" + x + ";" + y + "H");
+	}
+
+	public void rePut(){
+		setCursor(this.x, this.y);
+	}
+
 
 }
 
@@ -189,19 +223,30 @@ public class Vim{
 	}
 
 	public File ourFile;
+	public Cursor ourCursor;
 
 	public Vim(String ourFile){
 		this.ourFile = (ourFile==null) ? null : new File(ourFile);
 
 		TUtil.makeTerminalHandy();
 
+		//greetUser();
+
+		ourCursor = new Cursor();
 		TUtil.clearScreen();
-		TUtil.print("initializing vim!", Color.YELLOW);
-		TUtil.print("input file is : " + ourFile, Color.BLUE);
+
 	}
 
 	public Vim(String[] args){
 		this( getFileNameFromArgs(args) );
+	}
+
+	private void greetUser(){
+		TUtil.clearScreen();
+		TUtil.print("initializing vim!", Color.YELLOW);
+		TUtil.print("input file is : " + ourFile, Color.BLUE);
+		TUtil.print("the app is starting ", Color.GREEN);
+		ETCUtil.delay(2);
 	}
 
 	private Boolean appShouldExit(String input){
@@ -215,35 +260,38 @@ public class Vim{
 		return false;
 	}
 
-	private void cleanUpForExit(){
-		TUtil.makeTerminalNormal();
-	}
+
 
 	public void run(){
-		TUtil.print("the app started succesfully", Color.GREEN);
 
 		int input;
 		do {
 			input = TUtil.getChar();
 			System.out.println( " " + input );
-		} while (input != -1);
+			ourCursor.rePut();
+		} while (input != (int)'x' );
 
 		cleanUpForExit();
-
-	//	System.out.println("save cursor pos : \u001b[s \n ");
-	//	System.out.println("request cursor pos : \u001b[6n \n" );
-	//	System.out.println("change pos : \u001b[u \n" );
-/*
-		"\u001b[s"             // save cursor position
-		"\u001b[5000;5000H"    // move to col 5000 row 5000
-		"\u001b[6n"            // request cursor position
-		"\u001b[u"
-*/
 	}
 
+	private void cleanUpForExit(){
+		TUtil.clearScreen();
+		TUtil.makeTerminalNormal();
+	}
 
 	public static void main(String[] args){
 		Vim app = new Vim(args);
 		app.run();
 	}
 }
+
+
+//	System.out.println("save cursor pos : \u001b[s \n ");
+//	System.out.println("request cursor pos : \u001b[6n \n" );
+//	System.out.println("change pos : \u001b[u \n" );
+/*
+	"\u001b[s"             // save cursor position
+	"\u001b[5000;5000H"    // move to col 5000 row 5000
+	"\u001b[6n"            // request cursor position
+	"\u001b[u"
+*/

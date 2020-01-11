@@ -1,5 +1,5 @@
 
-all : reset compile run
+all : reset compile internalRun
 
 reset:
 	@reset
