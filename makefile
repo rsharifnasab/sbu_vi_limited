@@ -18,6 +18,7 @@ resetTerminal:
 
 
 compile: clean
+	@echo "------------------------------------"
 	@echo "compiling project.."
 	@mkdir out && echo "created output folder" || echo "out folder exists"
 	@javac src/Vim.java -g -d out/ -Werror -Xlint -Xmaxerrs 3

@@ -84,7 +84,7 @@ class FilesUtil{
 
 }
 
-class PrintUtil{
+class TUtil{
 	public static final String ESCAPE = ""+(char) 27 ;
 	public static final String Reset = ESCAPE + "[0m";
 
@@ -116,6 +116,7 @@ class PrintUtil{
 
 	public static void PError(String errorText){
 		print(errorText, Color.RED);
+		System.exit(1);
 	}
 
 	public static void clearScreen() {
@@ -123,27 +124,34 @@ class PrintUtil{
     	System.out.flush();
 	}
 
-	@Deprecated // we handle that in makefile
+	// we can handle that in makefile
 	public static void makeTerminalHandy(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty -icanon min 1 </dev/tty"}).waitFor();
-			//PrintUtil.print("making terminal handy!" ,Color.YELLOW);
+			//TUtil.print("making terminal handy!" ,Color.YELLOW);
 		}
 		catch (Exception e){
-			PrintUtil.PError("couldnt make terminal handy!");
-			System.exit(1);
+			TUtil.PError("couldnt make terminal buffer to one!");
 		}
 	}
 
-	@Deprecated // we handle that in makefile
+	// we can handle that in makefile
 	public static void makeTerminalNormal(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty icanon </dev/tty"});
 		}
 		catch (Exception e){
-			PrintUtil.PError("couldnt make terminal normal!");
-			System.exit(1);
+			TUtil.PError("couldnt make terminal normal!");
 		}
+	}
+
+	public static int getChar(){
+		try{
+			return System.in.read();
+		} catch(IOException e){
+			TUtil.PError("error in getting char from user with system.in\nexiting");
+		}
+		return -1; // should not reach here
 	}
 
 }
@@ -151,13 +159,13 @@ class PrintUtil{
 enum Color{	RED, GREEN, BLUE, YELLOW, WHITE }
 
 public class Vim{
+
 	private static String getFileNameFromArgs(String[] args){
 
 		ArgumentParser argParse = new ArgumentParser(args);
 		if (!argParse.check()){ // bad input
-			PrintUtil.PError("bad arguments");
-			PrintUtil.PError("usage : \'java Vim a.txt\' OR \'java Vim\'");
-			System.exit(1);
+			TUtil.PError("bad arguments" +
+			 "usage : \'java Vim a.txt\' OR \'java Vim\'");
 		}
 
 		String fileName = argParse.getFileName(); // null if : usage : "vim"
@@ -169,28 +177,27 @@ public class Vim{
 				return fileName;
 
 			case IS_DIR:
-				PrintUtil.PError("error: target is directory: "+fileName);
-				System.exit(1);
+				TUtil.PError("error: target is directory: "+fileName);
 				break;
 
 			case NOT_OK:
-				PrintUtil.PError("error: cant open input file: "+fileName);
-				System.exit(1);
+				TUtil.PError("error: cant open input file: "+fileName);
 				break;
 		}
 		throw new RuntimeException("should not reach here!, probalby bad FileStatus enum");
 
 	}
 
+	public File ourFile;
 
-
-	public String ourFile;
 	public Vim(String ourFile){
-		this.ourFile = ourFile;
+		this.ourFile = (ourFile==null) ? null : new File(ourFile);
 
-		PrintUtil.clearScreen();
-		PrintUtil.print("initializing vim!", Color.YELLOW);
-		PrintUtil.print("input file is : " + ourFile, Color.BLUE);
+		TUtil.makeTerminalHandy();
+
+		TUtil.clearScreen();
+		TUtil.print("initializing vim!", Color.YELLOW);
+		TUtil.print("input file is : " + ourFile, Color.BLUE);
 	}
 
 	public Vim(String[] args){
@@ -208,24 +215,20 @@ public class Vim{
 		return false;
 	}
 
-	private int getChar(){
-		try{
-			return System.in.read();
-		} catch(IOException e){
-			PrintUtil.PError("error in getting char from user with system.in\nexiting");
-			System.exit(1);
-		}
-		return -1; // should not reach here
+	private void cleanUpForExit(){
+		TUtil.makeTerminalNormal();
 	}
 
 	public void run(){
-		PrintUtil.print("the app started succesfully", Color.GREEN);
+		TUtil.print("the app started succesfully", Color.GREEN);
 
 		int input;
 		do {
-			input = getChar();
+			input = TUtil.getChar();
 			System.out.println( " " + input );
 		} while (input != -1);
+
+		cleanUpForExit();
 
 	//	System.out.println("save cursor pos : \u001b[s \n ");
 	//	System.out.println("request cursor pos : \u001b[6n \n" );
@@ -237,7 +240,6 @@ public class Vim{
 		"\u001b[u"
 */
 	}
-
 
 
 	public static void main(String[] args){
