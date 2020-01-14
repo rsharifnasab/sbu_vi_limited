@@ -231,18 +231,34 @@ public class Vim{
 				ETCUtil.minDelay(); // wait a little
 				escHandle.interrupt();
 				Key ans = escHandle.get();
-				Logger.log("ans is : " + ans);
 		}
 		else
 		  	Logger.log("another thing");
 	}
 
+	public void test(){
+		try{
+			byte[] data  = new byte[3];
+			int bytesRead = System.in.read(data);
 
+			while(bytesRead != -1) {
+				Logger.log("tedad byte haye read shode : " + bytesRead);
+  			Logger.log( "data : " + data[0] + " " + data[1] + " "+ data[2] );
+  			bytesRead = System.in.read(data);
+			}
+			//System.out.println(System.in.read());
+
+		}catch( Exception e){
+			TUtil.clearConsule();
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
 	public void run(){
 		String input;
 		do {
-
-			getInput();
+			test();
+		//	getInput();
 
 			//input = getInput();
 
@@ -419,7 +435,7 @@ class Logger{
 		command[2] = "echo " + "\"" + toWrite + "\"" + " >> " + LOG_FILE;
 		try{
 			Runtime.getRuntime().exec(command);
-			//.waitFor();
+			//.waitFor(); // TODO
 		} catch(
 		//InterruptedException |
 		IOException e ){
