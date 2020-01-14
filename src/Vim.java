@@ -197,7 +197,7 @@ class ETCUtil{
 
 class Logger{
 	private static String[] command = new String[3];
-	private static final String LOG_FILE = "./logs/log.txt";
+	private static final String LOG_FILE = "./log1.txt";
 	static{
 		command[0] = "/bin/sh";
 		command[1] = "-c";
@@ -247,8 +247,8 @@ class Screen{
 
 	public void clearAndPrintAll(Cursor c){
 		//TUtil.clearConsule(c);
-		Logger.log("cursor x : " + c.getX() );
-		for (int i=1; i<=height+1; i++ ) {
+		c.reset();
+		for (int i=1; i<=height; i++ ) {
 				printLine(c);
 				c.down();
 		}
@@ -370,8 +370,8 @@ public class Vim{
 
 	}
 
-	public final int height = 5;
-	public final int width = 4;
+	public final int height = 24;
+	public final int width = 80;
 
 	public File ourFile;
 	public final Cursor cursor;

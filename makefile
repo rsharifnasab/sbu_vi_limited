@@ -36,11 +36,9 @@ clean:
 	@echo "deleted exe files"
 	@find . -name 'out' -delete
 	@echo "deleted out folder"
-	@find . -name '*log*' -delete
-	@echo "deleted log files"
-	@find . -wholename './logs' -delete
-	@echo "deleted logs folder"
-		
+	@find . -name 'log*.txt' -delete
+	@echo "deleted log file"
+	
 
 g:
 	git status
