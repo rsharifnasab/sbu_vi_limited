@@ -1,11 +1,7 @@
-import java.io.*;
+package vi_limited;
+import vi_limited.EditorMode;
 
-/**
-	TODO
-**/
-enum EditorMode{
-	STATISTICS, INSERT, COMMAND
-}
+import java.io.*;
 
 
 /**
@@ -47,15 +43,15 @@ class TUtil{
 		String colorer = White;
 		switch (color){
 			case RED:
-			colorer = Red; break;
+				colorer = Red; break;
 			case BLUE:
-			colorer = Blue; break;
+				colorer = Blue; break;
 			case GREEN:
-			colorer = Green; break;
+				colorer = Green; break;
 			case YELLOW:
-			colorer = Yellow; break;
+				colorer = Yellow; break;
 			default:
-			colorer = White;
+				colorer = White;
 		}
 		System.out.println( colorer + toPrint + Reset );
 		System.out.flush();

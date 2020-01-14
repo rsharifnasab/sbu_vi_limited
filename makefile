@@ -9,7 +9,7 @@ run: justRun
 runFull: okTerminal justRun resetTerminal
 
 justRun:
-	@java -cp "out/" Vim
+	@java -cp "out/" vi_limited.Vim
 
 
 okTerminal:
@@ -23,7 +23,7 @@ compile: clean
 	@echo "------------------------------------"
 	@echo "compiling project.."
 	@mkdir out && echo "created output folder" || echo "out folder exists"
-	@javac src/Vim.java -g -d out/ -Werror -Xlint -Xmaxerrs 3
+	@javac src/vi_limited/Vim.java -cp "./src/" -g -d out/ -Werror -Xlint -Xmaxerrs 3
 	@echo "compile done!"
 	@echo "-------------------------------------"
 
@@ -34,6 +34,10 @@ clean:
 	@echo "deleted class files"
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
+	
+	@find . -wholename './out/vi_limited' -delete
+	@echo "deleted vi_limited folder"
+	
 	@find . -name 'out' -delete
 	@echo "deleted out folder"
 
