@@ -103,18 +103,18 @@ class TUtil{
 		}
 	}
 
-	public static String getChar(){ // tricky sensetive code
+	public static char getChar(){ // tricky sensetive code
 		try{
 			byte[] data  = new byte[3];
 			int bytesRead = System.in.read(data);
 			if (bytesRead == 3)// arrow key found
-				return ETCUtil.charCodeToString(data);  // 3 char for arrow keys
+				return ETCUtil.arrowKeyToChar(data);  // 3 char for arrow keys
 			else  // otherwise : one character
-				return ETCUtil.charCodeToString(data[0]);
+				return (char) (data[0]);
 		} catch(IOException e){
 			TUtil.PError("error in getting char from user with system.in\nexiting");
 		}
-		return null; // should not reach here
+		return ' '; // should not reach here
 	}
 
 	@Deprecated
@@ -136,17 +136,17 @@ class TUtil{
 
 class InputHandler{
 
-	public final static  String up = TUtil.ESCAPE + "]A";
-	public final static  String down = TUtil.ESCAPE + "]B";
-	public final static  String right = TUtil.ESCAPE + "]C";
-	public final static  String left = TUtil.ESCAPE + "]D";
+	public final static  char up = (char)193;
+	public final static  char down = (char)194;
+	public final static  char right = (char)195;
+	public final static  char left = (char)196;
 
 	final Cursor cursor;
 	public InputHandler(Cursor c){
 		this.cursor = c;
 	}
 
-	public void handle(String input){
+	public void handle(char input){
 			switch (input) {
 				case up: cursor.up(); break;
 				case down: cursor.down(); break;
@@ -158,8 +158,8 @@ class InputHandler{
 
 public class Vim{
 
-	public final int height = 24;
-	public final int width = 80;
+	public final int height = 24 - 12; // TODO test mode
+	public final int width = 80 - 40;
 
 	public File ourFile;
 	public final Cursor cursor;
@@ -173,12 +173,18 @@ public class Vim{
 
 		TUtil.makeTerminalHandy();
 
-		//TUtil.clearConsuleC(cursor);
 		greetUser();
+
 
 		screen = new Screen(width,height,'~');
 		cursor = new Cursor(width,height);
 		handler = new InputHandler(cursor);
+
+
+
+	//TUtil.clearConsuleC(cursor);
+	TUtil.clearConsule();
+
 
 		screen.clearAndPrintAll(cursor);
 
@@ -239,17 +245,17 @@ public class Vim{
 */
 
 	public void run(){
-		String input;
+		String command = "";
+
 		do {
 
-			input = TUtil.getChar();
+			char input = TUtil.getChar();
 			Logger.log("input is : " + input);
 			screen.printLine(cursor);
-			//cursor.sync();
 
 			handler.handle(input);
 
-		} while ( ! appShouldExit(null) );
+		} while ( ! appShouldExit(command) );
 
 		cleanUpForExit();
 	}
@@ -437,17 +443,33 @@ class ETCUtil{
 		}
 	}
 
-	public static String charCodeToString(byte[] charCodes){
-		if(charCodes.length == 3)
-			return "" + ((char) charCodes[0]) + ((char) charCodes[1]) + ((char) charCodes[2]) ;
-		TUtil.PError("not 3 byte array in charCodeToString");
-		return null; // wont reach here
+	public static int sumByte(byte[] bytes){
+		return bytes[0] + bytes[1] + bytes[2];
 	}
 
-	public static String charCodeToString(byte charCode){
-		return "" + (char) charCode;
-	}
+	public static char arrowKeyToChar(byte[] charCodes){
+		if(charCodes.length == 3){
+				int sum = sumByte(charCodes);
+				switch(sum){
+					case 183 : // up
+						return (char)193; // gharar dad baraye bala
 
+					case 184 : // down
+						return (char)194; // gharar dad baraye payeen
+
+					case 185 : // right
+							return (char)195; // gharar dad baraye rast
+
+					case 186 : // left
+							return (char)196; // gharar dad baraye chap
+
+					default:
+						return ' ' ; // should not reach here
+				}
+		}
+		else TUtil.PError("not 3 byte array in arrowKeyToChar");
+		return ' '; // wont reach here
+	}
 
 	public static String getFileNameFromArgs(String[] args){
 
