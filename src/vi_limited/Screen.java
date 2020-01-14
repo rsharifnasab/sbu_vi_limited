@@ -5,7 +5,7 @@ package vi_limited;
 	thing are currently on terminal
 
 **/
-class Screen{
+public class Screen{
 
 	/**
 		note that inner array is one row and one culomn bigger

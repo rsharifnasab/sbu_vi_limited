@@ -3,7 +3,7 @@ package vi_limited;
 /**
 	some utilities that dont have a suitable place
 **/
-class ETCUtil{
+public class ETCUtil{
 
 	/**
 		delay program in seconds

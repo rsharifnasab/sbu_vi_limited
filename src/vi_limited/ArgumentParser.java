@@ -1,7 +1,7 @@
 package vi_limited;
 
 
-class ArgumentParser{
+public class ArgumentParser{
 	private String[] args;
 
 	public ArgumentParser(String[] args){

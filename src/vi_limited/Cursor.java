@@ -9,7 +9,7 @@ package vi_limited;
 	 use goToX and gotoline with caution
 
 **/
-class Cursor{
+public class Cursor{
 
 	public final int width;
 	public final int height;

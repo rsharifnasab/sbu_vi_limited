@@ -5,7 +5,7 @@ import java.io.File;
 /**
 	some utilities for working with files
 **/
-class FilesUtil{
+public class FilesUtil{
 
 	@Deprecated // untested
 	public static String toAbsoloutePath(String fileName){

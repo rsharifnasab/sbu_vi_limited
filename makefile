@@ -45,8 +45,11 @@ clean_log:
 	@find . -name 'log*.txt' -delete
 	@echo "deleted log file"
 
-
-g:
-	git status
-	git add -A
-	git commit
+clean_doc: 
+	@rm -r ./doc/* || echo "doc directory is clean"
+	@find . -name 'doc' -delete
+	@echo "deleted doc folder"
+			
+doc:
+	javadoc src/vi_limited/*.java  -Xdoclint:none  -d ./doc
+	

@@ -3,6 +3,6 @@ package vi_limited;
 /**
 	TODO
 **/
-enum EditorMode{
+public enum EditorMode{
 	STATISTICS, INSERT, COMMAND
 }

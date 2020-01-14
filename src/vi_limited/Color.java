@@ -1,3 +1,3 @@
 package vi_limited;
 
-enum Color{	RED, GREEN, BLUE, YELLOW, WHITE }
+public enum Color{ RED, GREEN, BLUE, YELLOW, WHITE }

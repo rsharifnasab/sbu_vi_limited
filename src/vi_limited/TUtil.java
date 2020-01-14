@@ -3,7 +3,7 @@ package vi_limited;
 /**
  TUtil as wr have in Terminal utilities
 **/
-class TUtil{
+public class TUtil{
 
 	/**
 	 a String contains just escape
@@ -137,8 +137,8 @@ class TUtil{
 		for handling problem of esc = 27 and arrow_up = 27 - 93 - 65
 		we read a 3-byte array
 		if the length of input is 1? it return 1 as bytesRead and return garbage value and data[1] and data[2]
-		so if the bytesRead == 1 -> we get one character in data[0] such as esc or other chacters
-		of the bytesRead == 3 -> we get arrow key with escape character as data[0] and other characters in data[1] and data[2]
+		so if the bytesRead == 1 : we get one character in data[0] such as esc or other chacters
+		of the bytesRead == 3 : we get arrow key with escape character as data[0] and other characters in data[1] and data[2]
 
 		read also ETCUtil.arrowKeyToChar
 	**/

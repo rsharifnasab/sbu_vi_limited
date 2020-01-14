@@ -2,7 +2,7 @@ package vi_limited;
 /**
 	our logger class to write on an external file
 **/
-class Logger{
+public class Logger{
 	private static String[] command = new String[3];
 	private static final String LOG_FILE = "./log1.txt";
 	static{
