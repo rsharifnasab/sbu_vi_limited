@@ -5,24 +5,24 @@ enum EditorMode{
 }
 
 enum Key{
-		UP, DOWN, LEFT, RIGHT, ESC, UNK
+	UP, DOWN, LEFT, RIGHT, ESC, UNK
 }
 
 /*
 
-	public Key get() {
-			if (ans==null) return Key.ESC;
-			Logger.log("in get, ans = " + ans);
-			switch(ans){
+public Key get() {
+if (ans==null) return Key.ESC;
+Logger.log("in get, ans = " + ans);
+switch(ans){
 
-				case "[A": return Key.UP;
-				case "[B": return Key.DOWN;
-				case "[C": return Key.RIGHT;
-				case "[D": return Key.LEFT;
+case "[A": return Key.UP;
+case "[B": return Key.DOWN;
+case "[C": return Key.RIGHT;
+case "[D": return Key.LEFT;
 
-				default:
-					return Key.UNK;
-			}
+default:
+return Key.UNK;
+}
 */
 
 // TUtil as wr have in Terminal utilities
@@ -46,15 +46,15 @@ class TUtil{
 		String colorer = White;
 		switch (color){
 			case RED:
-				colorer = Red; break;
+			colorer = Red; break;
 			case BLUE:
-				colorer = Blue; break;
+			colorer = Blue; break;
 			case GREEN:
-				colorer = Green; break;
+			colorer = Green; break;
 			case YELLOW:
-				colorer = Yellow; break;
+			colorer = Yellow; break;
 			default:
-				colorer = White;
+			colorer = White;
 		}
 		System.out.println( colorer + toPrint + Reset );
 		System.out.flush();
@@ -68,8 +68,8 @@ class TUtil{
 	}
 
 	public static void clearConsule() {
-    	System.out.print(CLEARER);
-    	System.out.flush();
+		System.out.print(CLEARER);
+		System.out.flush();
 	}
 
 	public static void clearConsuleC(Cursor c){
@@ -108,9 +108,9 @@ class TUtil{
 			byte[] data  = new byte[3];
 			int bytesRead = System.in.read(data);
 			if (bytesRead == 3)// arrow key found
-				return ETCUtil.arrowKeyToChar(data);  // 3 char for arrow keys
+			return ETCUtil.arrowKeyToChar(data);  // 3 char for arrow keys
 			else  // otherwise : one character
-				return (char) (data[0]);
+			return (char) (data[0]);
 		} catch(IOException e){
 			TUtil.PError("error in getting char from user with system.in\nexiting");
 		}
@@ -134,29 +134,15 @@ class TUtil{
 
 }
 
-class InputHandler{
 
-	public final static  char up = (char)193;
-	public final static  char down = (char)194;
-	public final static  char right = (char)195;
-	public final static  char left = (char)196;
-
-	final Cursor cursor;
-	public InputHandler(Cursor c){
-		this.cursor = c;
-	}
-
-	public void handle(char input){
-			switch (input) {
-				case up: cursor.up(); break;
-				case down: cursor.down(); break;
-				case right: cursor.right(); break;
-				case left: cursor.left(); break;
-			}
-	}
-}
 
 public class Vim{
+
+	public static final char up = (char)193;
+	public static final char down = (char)194;
+	public static final char right = (char)195;
+	public static final char left = (char)196;
+
 
 	public final int height = 24 - 12; // TODO test mode
 	public final int width = 80 - 40;
@@ -164,9 +150,10 @@ public class Vim{
 	public File ourFile;
 	public final Cursor cursor;
 	public final Screen screen;
-	public final InputHandler handler;
 
-	public EditorMode mode;
+
+	public EditorMode mode = EditorMode.COMMAND;
+	public String command = "";
 	public Vim(String ourFile){
 		Logger.log("starting vim app");
 		this.ourFile = (ourFile==null) ? null : new File(ourFile);
@@ -178,17 +165,11 @@ public class Vim{
 
 		screen = new Screen(width,height,'~');
 		cursor = new Cursor(width,height);
-		handler = new InputHandler(cursor);
 
-
-
-	//TUtil.clearConsuleC(cursor);
-	TUtil.clearConsule();
-
+		//TUtil.clearConsuleC(cursor);
+		TUtil.clearConsule();
 
 		screen.clearAndPrintAll(cursor);
-
-		mode = EditorMode.COMMAND;
 	}
 
 	public Vim(String[] args){
@@ -203,57 +184,79 @@ public class Vim{
 		ETCUtil.delay(1);
 	}
 
+	private void resetCommand(){
+		command = "";
+	}
+
+	private void applyAndResetCommand(){
+		apply();
+		resetCommand();
+	}
+
+	private void apply(){
+		Logger.log("command is : " + command);
+		switch(command){
+			case ":wq":
+				TUtil.PError("bye");
+				break;
+
+		}
+	}
+
 	private Boolean appShouldExit(String input){
 		if (
 		"exit".equalsIgnoreCase(input) ||
 		"quit".equalsIgnoreCase(input) ||
 		":q!".equalsIgnoreCase(input)
 		)
-			return true;
+		return true;
 
 		return false;
 	}
 
-	/*
+	public void handleMove(char input){
 
-		command mode :
-			:wq
-			:w
-			:q
-			:q!
-			h j k l
+		switch (input) {
+			case up:
+				cursor.up();
+				resetCommand();
+				break;
+			case down:
+				cursor.down();
+				resetCommand();
+				break;
+			case right:
+			 	cursor.right();
+				resetCommand();
+				break;
+			case left:
+			 	cursor.left();
+				resetCommand();
+				break;
 
-		editor mode :
-		esacpe + [A  [B [C [D
-		up,down, right, left
-
-
-	*/
-
-
-
-	/*
-	public void test(){
-		try{
-
-		}catch( Exception e){
-			TUtil.clearConsule();
-			e.printStackTrace();
-			System.exit(0);
 		}
 	}
-*/
+
+	private void handleCommand(char inputC){
+		int input = (int) inputC;
+		if( input > 127  || input == 27) // arrow keys or esc
+			return;
+		if(input == 10) // enter
+			applyAndResetCommand();
+		else
+			command += inputC;
+	}
 
 	public void run(){
-		String command = "";
+
 
 		do {
 
 			char input = TUtil.getChar();
 			Logger.log("input is : " + input);
 			screen.printLine(cursor);
-
-			handler.handle(input);
+			handleMove(input);
+			handleCommand(input);
 
 		} while ( ! appShouldExit(command) );
 
@@ -272,9 +275,35 @@ public class Vim{
 }
 
 
+/*
+
+command mode :
+:wq
+:w
+:q
+:q!
+h j k l
+
+editor mode :
+esacpe + [A  [B [C [D
+up,down, right, left
+
+
+*/
 
 
 
+/*
+public void test(){
+try{
+
+}catch( Exception e){
+TUtil.clearConsule();
+e.printStackTrace();
+System.exit(0);
+}
+}
+*/
 
 
 
@@ -387,8 +416,8 @@ class Screen{
 		//TUtil.clearConsule(c);
 		c.reset();
 		for (int i=1; i<=height; i++ ) {
-				printLine(c);
-				c.down();
+			printLine(c);
+			c.down();
 		}
 		c.reset();
 	}
@@ -437,9 +466,9 @@ class ETCUtil{
 
 	public static void delay(int second){
 		try{
-    		Thread.sleep(1000*second);
+			Thread.sleep(1000*second);
 		}catch(InterruptedException ex){
-				TUtil.PError("error : interrupt happened in delay!");
+			TUtil.PError("error : interrupt happened in delay!");
 		}
 	}
 
@@ -449,23 +478,23 @@ class ETCUtil{
 
 	public static char arrowKeyToChar(byte[] charCodes){
 		if(charCodes.length == 3){
-				int sum = sumByte(charCodes);
-				switch(sum){
-					case 183 : // up
-						return (char)193; // gharar dad baraye bala
+			int sum = sumByte(charCodes);
+			switch(sum){
+				case 183 : // up
+				return (char)193; // gharar dad baraye bala
 
-					case 184 : // down
-						return (char)194; // gharar dad baraye payeen
+				case 184 : // down
+				return (char)194; // gharar dad baraye payeen
 
-					case 185 : // right
-							return (char)195; // gharar dad baraye rast
+				case 185 : // right
+				return (char)195; // gharar dad baraye rast
 
-					case 186 : // left
-							return (char)196; // gharar dad baraye chap
+				case 186 : // left
+				return (char)196; // gharar dad baraye chap
 
-					default:
-						return ' ' ; // should not reach here
-				}
+				default:
+				return ' ' ; // should not reach here
+			}
 		}
 		else TUtil.PError("not 3 byte array in arrowKeyToChar");
 		return ' '; // wont reach here
@@ -476,7 +505,7 @@ class ETCUtil{
 		ArgumentParser argParse = new ArgumentParser(args);
 		if (!argParse.check()){ // bad input
 			TUtil.PError("bad arguments\n" +
-			 "usage : \'java Vim a.txt\' OR \'java Vim\'");
+			"usage : \'java Vim a.txt\' OR \'java Vim\'");
 		}
 
 		String fileName = argParse.getFileName(); // null if : usage : "vim"
@@ -485,15 +514,15 @@ class ETCUtil{
 			case WRITABLE:
 			case NOT_EXISTS:
 			case NULL_YET:
-				return fileName;
+			return fileName;
 
 			case IS_DIR:
-				TUtil.PError("error: target is directory: "+fileName);
-				break;
+			TUtil.PError("error: target is directory: "+fileName);
+			break;
 
 			case NOT_OK:
-				TUtil.PError("error: cant open input file: "+fileName);
-				break;
+			TUtil.PError("error: cant open input file: "+fileName);
+			break;
 		}
 		throw new RuntimeException("should not reach here!, probalby bad FileStatus enum");
 
@@ -510,17 +539,17 @@ class ArgumentParser{
 
 	public Boolean check(){
 		if (args == null)
-			return false;
+		return false;
 		if(args.length ==  0)
-			return true;
+		return true;
 		if(args.length > 1)
-			return false;
+		return false;
 		return true;
 	}
 
 	public String getFileName(){
 		if( args.length == 1)
-			return args[0];
+		return args[0];
 		return null;
 	}
 }
@@ -538,20 +567,20 @@ class FilesUtil{
 	@Deprecated // untested
 	public static String toAbsoloutePath(String fileName){
 		if(fileName == null)
-			return null;
+		return null;
 		File f = new File(fileName);
 		if(f.canRead() && f.isFile() && f.exists())
-			return f.getAbsolutePath();
+		return f.getAbsolutePath();
 		return null;
 	}
 
 	public static Boolean canCreateFile(String fileName){
 		if(fileName == null)
-			return false;
+		return false;
 		try {
 			File f = new File(fileName);
 			if(f.exists())
-				return false;
+			return false;
 			f.createNewFile();
 			f.delete(); // check if we can create it or not
 			return true;
@@ -562,16 +591,16 @@ class FilesUtil{
 
 	public static FileStatus getFileState(String fileName){
 		if(fileName == null)
-			return FileStatus.NULL_YET;
+		return FileStatus.NULL_YET;
 
 		File f = new File(fileName);
 
 		if(f.isDirectory())
-			return FileStatus.IS_DIR;
+		return FileStatus.IS_DIR;
 		if (f.exists() && f.canWrite())
-			return FileStatus.WRITABLE;
+		return FileStatus.WRITABLE;
 		if(!f.exists() && canCreateFile(fileName))
-			return FileStatus.NOT_EXISTS; // but it can be created
+		return FileStatus.NOT_EXISTS; // but it can be created
 		return FileStatus.NOT_OK;
 	}
 
