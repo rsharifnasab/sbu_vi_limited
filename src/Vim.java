@@ -132,7 +132,7 @@ class TUtil{
 	public static void clearConsule(Cursor c){
 		Cursor clone = c.clone();
 		clone.reset();
-		for (int i =1; i <= clone.height; i++ ) {
+		for (int i =1; i <= clone.height; i++ ) { // TODO
 			TUtil.deleteThisLine(clone);
 		}
 		c.reset();
@@ -176,19 +176,11 @@ class TUtil{
 		System.out.print("\u001b[u"); // restore cursor position
 	}
 
-	public static void deleteThisLine(Cursor c){ //TODO : test code
+	public static void deleteThisLine(Cursor c){
 		Cursor clone =c.clone();
-		clone.goToLine(1);
+		clone.goToX(1);
 		System.out.print(LINE_DELETER);
 		c.sync(); // go back
-
-		/*
-		int bpkX = c.x;
-		c.setCursor(1, c.y);
-		System.out.print(LINE_DELETER); // delete line
-		c.setCursor(bpkX, c.y);
-		*/
-
 	}
 
 }
@@ -199,6 +191,23 @@ class ETCUtil{
     		Thread.sleep(1000*second);
 		}catch(InterruptedException ex){
     		Thread.currentThread().interrupt();
+		}
+	}
+}
+
+class Logger{
+	private static String[] command = new String[3];
+	private static final String LOG_FILE = "./logs/log.txt";
+	static{
+		command[0] = "/bin/sh";
+		command[1] = "-c";
+	}
+	public static void log(String toWrite){
+		command[2] = "echo " + "\"" + toWrite + "\"" + " >> " + LOG_FILE;
+		try{
+			Runtime.getRuntime().exec(command).waitFor();
+		} catch( InterruptedException | IOException e ){
+			TUtil.PError("can not log!");
 		}
 	}
 }
@@ -238,7 +247,8 @@ class Screen{
 
 	public void clearAndPrintAll(Cursor c){
 		//TUtil.clearConsule(c);
-		for (int i=1; i<=height; i++ ) {
+		Logger.log("cursor x : " + c.getX() );
+		for (int i=1; i<=height+1; i++ ) {
 				printLine(c);
 				c.down();
 		}
@@ -257,18 +267,6 @@ class Screen{
 			System.out.print(innerArr[c.getLine()][j]);
 		}
 		c.sync(); // go back
-
-		/*
-		int lineNo = c.y;
-		int bpkX = c.x;
-		c.setCursor(1, c.y); // go to first char of line
-		TUtil.deleteThisLine(c);
-
-		for(int j =0; j < width; j++){
-			System.out.print(innerArr[lineNo-1][j]); // trick
-		}
-		c.setCursor(bpkX, lineNo);
-		*/
 	}
 
 }
@@ -281,7 +279,7 @@ class Cursor{
 	public Cursor(int width, int height){
 		this.width = width;
 		this.height = height;
-		setCursor(this.x, this.y);
+		this.reset(); // set x, y
 	}
 
 	public Cursor clone(){ // TODO : test
@@ -320,13 +318,6 @@ class Cursor{
 	public void reset(){
 		setCursor(1, 1);
 	}
-
-	/*
-		up : System.out.print("\u001b[" + 1 + "A");
-		dwn: System.out.print("\u001b[" + 1 + "B");
-		right: System.out.print("\u001b[" + 1 + "C");
-		left: System.out.print("\u001b[" + 1 + "D");
-	*/
 
 	public void up(){
 		y = (y>1)? y-1 : 1;
@@ -379,8 +370,8 @@ public class Vim{
 
 	}
 
-	public final int height = 24;
-	public final int width = 80;
+	public final int height = 5;
+	public final int width = 4;
 
 	public File ourFile;
 	public final Cursor cursor;
@@ -392,10 +383,10 @@ public class Vim{
 		cursor = new Cursor(width,height);
 		screen = new Screen(width,height,'~');
 
-		//greetUser();
-		//TUtil.clearConsule();
+		greetUser();
+
 		screen.clearAndPrintAll(cursor);
-		cursor.reset();
+
 	}
 
 	public Vim(String[] args){
@@ -407,7 +398,7 @@ public class Vim{
 		TUtil.print("initializing vim!", Color.YELLOW);
 		TUtil.print("input file is : " + ourFile, Color.BLUE);
 		TUtil.print("the app is starting ", Color.GREEN);
-		ETCUtil.delay(2);
+		ETCUtil.delay(1);
 	}
 
 	private Boolean appShouldExit(String input){
@@ -440,7 +431,6 @@ public class Vim{
 
 	public void run(){
 
-		TUtil.clearConsule(cursor);
 		int input;
 		do {
 			input = TUtil.getChar();
@@ -465,14 +455,3 @@ public class Vim{
 		app.run();
 	}
 }
-
-
-//	System.out.println("save cursor pos : \u001b[s \n ");
-//	System.out.println("request cursor pos : \u001b[6n \n" );
-//	System.out.println("change pos : \u001b[u \n" );
-/*
-	"\u001b[s"             // save cursor position
-	"\u001b[5000;5000H"    // move to col 5000 row 5000
-	"\u001b[6n"            // request cursor position
-	"\u001b[u"
-*/

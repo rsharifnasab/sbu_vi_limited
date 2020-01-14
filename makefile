@@ -5,7 +5,7 @@ reset:
 	@reset
 
 run: reset justRun
-		
+
 runFull: okTerminal justRun resetTerminal
 
 justRun:
@@ -14,9 +14,9 @@ justRun:
 
 okTerminal:
 	/bin/sh -c "stty -icanon min 1 </dev/tty"
-	
+
 resetTerminal:
-	/bin/sh -c "stty icanon </dev/tty"	
+	/bin/sh -c "stty icanon </dev/tty"
 
 
 compile: clean
@@ -35,6 +35,12 @@ clean:
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
 	@find . -name 'out' -delete
+	@echo "deleted out folder"
+	@find . -name '*log*' -delete
+	@echo "deleted log files"
+	@find . -wholename './logs' -delete
+	@echo "deleted logs folder"
+		
 
 g:
 	git status

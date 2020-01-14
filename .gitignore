@@ -7,3 +7,5 @@ test.txt
 ./classic_vim
 classic_vim
 out
+logs
+log
