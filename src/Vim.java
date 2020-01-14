@@ -97,6 +97,8 @@ class TUtil{
 
 	public static final String CLEARER = "\033[H\033[2J";
 
+	public static final String LINE_DELETER = "\u001b[K";
+
 	// print the toPrint string with the specified color
 	public static void print(String toPrint, Color color){
 		String colorer = White;
@@ -127,14 +129,23 @@ class TUtil{
     	System.out.flush();
 	}
 
+	public static void clearConsule(Cursor c){
+		Cursor clone = c.clone();
+		clone.reset();
+		for (int i =1; i <= clone.height; i++ ) {
+			TUtil.deleteThisLine(clone);
+		}
+		c.reset();
+	}
+
 	// we can handle that in makefile
 	public static void makeTerminalHandy(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty -icanon min 1 </dev/tty"}).waitFor();
-			//TUtil.print("making terminal buffer to one!" ,Color.YELLOW);
+			TUtil.print("making terminal handy (no buffer)!" ,Color.YELLOW);
 		}
 		catch (Exception e){
-			TUtil.PError("couldnt make terminal buffer to one!");
+			TUtil.PError("couldnt change terminal buffer!");
 		}
 	}
 
@@ -165,11 +176,19 @@ class TUtil{
 		System.out.print("\u001b[u"); // restore cursor position
 	}
 
-	public static void deleteThisLine(Cursor c){ //sensetive code
+	public static void deleteThisLine(Cursor c){ //TODO : test code
+		Cursor clone =c.clone();
+		clone.goToLine(1);
+		System.out.print(LINE_DELETER);
+		c.sync(); // go back
+
+		/*
 		int bpkX = c.x;
 		c.setCursor(1, c.y);
-		System.out.print("\u001b[K"); // delete line
+		System.out.print(LINE_DELETER); // delete line
 		c.setCursor(bpkX, c.y);
+		*/
+
 	}
 
 }
@@ -185,42 +204,61 @@ class ETCUtil{
 }
 
 class Screen{
-	char [][] innerArr;
+	Character[][] innerArr;
 	public final int height;
 	public final int width;
 	public Screen(int width,int height,char c){
 		this.width = width;
 		this.height = height;
-		innerArr = new char[this.height][this.width];
+		innerArr = new Character[this.height+1][this.width+1];
 		fillScreen(c);
+		fillWithNumbers(); // TODO remove
 	}
 	public Screen(int height,int width){
 		this(height,width,' ');
 	}
 
+
+	public void fillWithNumbers(){
+		for (int i=1; i<=height; i++ ) {
+			for(int j=1; j<=width; j++){
+				Integer t = i;
+				innerArr[i][j] = t.toString().charAt(0);
+			}
+		}
+	} // end func
+
 	public void fillScreen(char c){
-		for (int i =0;i< height; i++ ) {
-			for(int j =0; j < width; j++){
+		for (int i=1; i<=height; i++ ) {
+			for(int j=1; j<=width; j++){
 				innerArr[i][j] = c;
 			}
 		}
 	} // end func
 
-	public void clearAndPrintAll(){
-		TUtil.clearConsule();
-		for (int i =0;i<height; i++ ) {
-			for(int j =0; j < width; j++){
-				System.out.print(innerArr[i][j]);
-			}
-			System.out.println();
+	public void clearAndPrintAll(Cursor c){
+		//TUtil.clearConsule(c);
+		for (int i=1; i<=height; i++ ) {
+				printLine(c);
+				c.down();
 		}
+		c.reset();
 	}
 
-	public char[] getLine(int n){
+	public Character[] getLine(int n){
 		return innerArr[n];
 	}
 
 	public void printLine(Cursor c){ // sensetive code
+		Cursor clone = c.clone();
+		clone.goToX(1);
+		TUtil.deleteThisLine(clone);
+		for(int j=1; j<=width; j++){
+			System.out.print(innerArr[c.getLine()][j]);
+		}
+		c.sync(); // go back
+
+		/*
 		int lineNo = c.y;
 		int bpkX = c.x;
 		c.setCursor(1, c.y); // go to first char of line
@@ -229,7 +267,8 @@ class Screen{
 		for(int j =0; j < width; j++){
 			System.out.print(innerArr[lineNo-1][j]); // trick
 		}
-		c.setCursor(bpkX, lineNo);;
+		c.setCursor(bpkX, lineNo);
+		*/
 	}
 
 }
@@ -237,21 +276,44 @@ class Screen{
 class Cursor{
 	public final int width;
 	public final int height;
-	int x;
-	int y;
+	private int x;
+	private int y;
 	public Cursor(int width, int height){
 		this.width = width;
 		this.height = height;
 		setCursor(this.x, this.y);
 	}
 
-	void setCursor(int x,int y){ // package access
+	public Cursor clone(){ // TODO : test
+		Cursor clone =  new Cursor(width,height);
+		clone.setCursor(this.x, this.y);
+		return clone;
+	}
+
+	private void setCursor(int x,int y){
 		this.x = x;
 		this.y = y;
 		System.out.print("\u001b[" + y + ";" + x + "H");
 	}
 
-	public void rePut(){
+	public void goToLine(int line){
+		setCursor(this.x, line);
+	}
+
+	public void goToX(int newX){
+		setCursor(newX, this.y);
+	}
+
+	public int getX(){
+		return this.x;
+	}
+
+	public int getLine(){
+		return this.y;
+	}
+
+
+	public void sync(){
 		setCursor(this.x, this.y);
 	}
 
@@ -268,19 +330,19 @@ class Cursor{
 
 	public void up(){
 		y = (y>1)? y-1 : 1;
-		rePut();
+		sync();
 	}
 	public void down(){
 		y = (y<height)? y+1 : height;
-		rePut();
+		sync();
 	}
 	public void left(){
 		x = (x>1)? x-1 : 1;
-		rePut();
+		sync();
 	}
 	public void right(){
 		x = (x<width)? x+1 : width;
-		rePut();
+		sync();
 	}
 
 }
@@ -293,7 +355,7 @@ public class Vim{
 
 		ArgumentParser argParse = new ArgumentParser(args);
 		if (!argParse.check()){ // bad input
-			TUtil.PError("bad arguments" +
+			TUtil.PError("bad arguments\n" +
 			 "usage : \'java Vim a.txt\' OR \'java Vim\'");
 		}
 
@@ -332,7 +394,7 @@ public class Vim{
 
 		//greetUser();
 		//TUtil.clearConsule();
-		screen.clearAndPrintAll();
+		screen.clearAndPrintAll(cursor);
 		cursor.reset();
 	}
 
@@ -378,12 +440,13 @@ public class Vim{
 
 	public void run(){
 
+		TUtil.clearConsule(cursor);
 		int input;
 		do {
 			input = TUtil.getChar();
 
 			screen.printLine(cursor);
-			//cursor.rePut();
+			//cursor.sync();
 
 			handleInput(input);
 
@@ -393,8 +456,8 @@ public class Vim{
 	}
 
 	private void cleanUpForExit(){
-		TUtil.clearConsule();
 		TUtil.makeTerminalNormal();
+		TUtil.clearConsule();
 	}
 
 	public static void main(String[] args){

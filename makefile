@@ -1,12 +1,14 @@
 
-all : reset compile internalRun
+all : reset compile run
 
 reset:
 	@reset
 
-run: okTerminal internalRun resetTerminal
+run: reset justRun
+		
+runFull: okTerminal justRun resetTerminal
 
-internalRun:
+justRun:
 	@java -cp "out/" Vim
 
 
