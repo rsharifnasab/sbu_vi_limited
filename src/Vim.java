@@ -1,34 +1,28 @@
 import java.io.*;
 
+/**
+	TODO
+**/
 enum EditorMode{
 	STATISTICS, INSERT, COMMAND
 }
 
-enum Key{
-	UP, DOWN, LEFT, RIGHT, ESC, UNK
-}
 
-/*
-
-public Key get() {
-if (ans==null) return Key.ESC;
-Logger.log("in get, ans = " + ans);
-switch(ans){
-
-case "[A": return Key.UP;
-case "[B": return Key.DOWN;
-case "[C": return Key.RIGHT;
-case "[D": return Key.LEFT;
-
-default:
-return Key.UNK;
-}
-*/
-
-// TUtil as wr have in Terminal utilities
+/**
+ TUtil as wr have in Terminal utilities
+**/
 class TUtil{
 
+	/**
+	 a String contains just escape
+	**/
 	public static final String ESCAPE = ""+(char) 27 ;
+
+	/**
+		ansi character for reset
+		if we print this, all setting of colored text will be reverted
+		we print this after printing colored text
+	**/
 	public static final String Reset = ESCAPE + "[0m";
 
 	public static final String Red = ESCAPE + "[31m";
@@ -39,9 +33,16 @@ class TUtil{
 
 	public static final String CLEARER = "\033[H\033[2J";
 
+	/**
+		in case of pritning this, terminal will be cleaned!
+	**/
 	public static final String LINE_DELETER = "\u001b[K";
 
-	// print the toPrint string with the specified color
+	/**
+		print the toPrint string with the specified color
+		we get color with the color enum
+		and after printing, we reset terminal printing color
+	**/
 	public static void print(String toPrint, Color color){
 		String colorer = White;
 		switch (color){
@@ -60,18 +61,35 @@ class TUtil{
 		System.out.flush();
 	}
 
-	// print an error in red and exit whole program
+	/**
+	 print an error in red and exit whole program
+	**/
 	public static void PError(String errorText){
 		clearConsule();
 		print(errorText, Color.RED);
 		System.exit(0);
 	}
 
+	/**
+		clear consule with prinitng the clean cunsole escape character
+	**/
 	public static void clearConsule() {
 		System.out.print(CLEARER);
 		System.out.flush();
 	}
 
+	/**
+		clear cunsole with the help of cursor
+		for not printing the clean screen character?
+		why? becuase it this way we can overwrite prevoiusly writed datas
+		not just hit enter after them
+		how it is work?
+		move cursor to the first
+		delete current line of cursor
+		go to next line ..
+		after all, it set cursor to 1,1 position ( up and left )
+
+	**/
 	public static void clearConsuleC(Cursor c){
 		Logger.log("clearing with cursor!");
 		c.reset();
@@ -82,7 +100,13 @@ class TUtil{
 		c.reset();
 	}
 
-	// we can handle that in makefile
+	/**
+		we want to make terminal handy here
+		what is that mean?
+		set the buffer of terminal to one
+		why? if uer enterred a key, we recieve it continuesly not after hittinh enter
+	 	we can handle this in makefile but i wanted to do it here!
+	 **/
 	public static void makeTerminalHandy(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty -icanon min 1 </dev/tty"}).waitFor();
@@ -93,7 +117,12 @@ class TUtil{
 		}
 	}
 
-	// we can handle that in makefile
+	/**
+		we want to make terminal normal
+		we should reset buffer
+		read also : makeTerminalHandy
+	 	we can handle this in makefile but i wanted to do it here!
+	 **/
 	public static void makeTerminalNormal(){
 		try{
 			Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","stty icanon </dev/tty"});
@@ -103,6 +132,24 @@ class TUtil{
 		}
 	}
 
+
+	/**
+		hardest method to write, probably easiest to findout
+		it get a character from user like c's getch
+		but is that easy? no! ofcourse not
+		because java is such platform independent and we can not have low level access
+
+		what we have here?
+		we use System.in (input stream) and read byte by byte from it
+		we can only read one chacter at a time with system.in.read()
+		for handling problem of esc = 27 and arrow_up = 27 - 93 - 65
+		we read a 3-byte array
+		if the length of input is 1? it return 1 as bytesRead and return garbage value and data[1] and data[2]
+		so if the bytesRead == 1 -> we get one character in data[0] such as esc or other chacters
+		of the bytesRead == 3 -> we get arrow key with escape character as data[0] and other characters in data[1] and data[2]
+
+		read also ETCUtil.arrowKeyToChar
+	**/
 	public static char getChar(){ // tricky sensetive code
 		try{
 			byte[] data  = new byte[3];
@@ -117,6 +164,11 @@ class TUtil{
 		return ' '; // should not reach here
 	}
 
+	/**
+		it print terminal size but does not work well
+		it remained in code as deprecated , try to dont use it
+		just see how it should work and read comments after each line
+	**/
 	@Deprecated
 	public static void printTerminalSize(){
 		System.out.print("\u001b[s");  // save cursor position
@@ -125,6 +177,14 @@ class TUtil{
 		System.out.print("\u001b[u"); // restore cursor position
 	}
 
+	/**
+		a bit tricky code!
+		it delete the current line that cursor exists
+		first of all make a copy from cursor
+		move it to first character of line
+		and then delete the escape character for deleting line
+		after all , it relocate cursor to first cursor with unchanged position
+	**/
 	public static void deleteThisLine(Cursor c){
 		Cursor clone = c.clone();
 		clone.goToX(1);
@@ -134,28 +194,74 @@ class TUtil{
 
 }
 
-
-
+/**
+	out main class for vim editor
+**/
 public class Vim{
 
+	/**
+		the tricky up and down (gharardad kardim!)
+		they are calculated like this:
+		up = ord(esc) + ord ([) + ord(A) + 10
+		up = ord(esc) + ord ([) + ord(B) + 10
+		up = ord(esc) + ord ([) + ord(c) + 10
+		up = ord(esc) + ord ([) + ord(AD) + 10
+
+		check about ansi escape codes
+
+		why +10? because set them out of 0-127 scope
+		and also 193-196 are a bit meaningful
+	**/
 	public static final char up = (char)193;
 	public static final char down = (char)194;
 	public static final char right = (char)195;
 	public static final char left = (char)196;
 
+	/**
+		height and width of whole editor
+		they are fixed because it is not possible to find terminal size in java!
+	**/
 
-	public final int height = 24 - 12; // TODO test mode
-	public final int width = 80 - 40;
+	public final int height = 24 - 4; // TODO test mode
+	public final int width = 80 - 10;
 
 	public File ourFile;
 	public final Cursor cursor;
 	public final Screen screen;
 
-
+	/**
+		TODO
+	**/
 	public EditorMode mode = EditorMode.COMMAND;
+
+	/**
+		the command that is entering and not fully enterred yet
+		if user prees enter, we apply this command and reset this string
+
+	**/
 	public String command = "";
+
+	/**
+		a boolean to determine the app sohuld
+		continue to run
+		or it should exit
+
+		exit() method will make this false;
+	**/
 	private Boolean running = true;
 
+	/**
+		first cunstructor of vim class
+		change with caution
+		it make new instance of cursor and screen class
+		checkout the commands order, they are not random
+
+		we do following things :
+			set our file (if any)
+			make terminal handy with decresing buffer to one in order to use terminal as editor!
+			greet uesr ( totally optional )
+			clean cunsole and print all of screen (that should be initailized with ' ')
+	**/
 	public Vim(String ourFile){
 		Logger.log("starting vim app");
 		this.ourFile = (ourFile==null) ? null : new File(ourFile);
@@ -169,32 +275,57 @@ public class Vim{
 		cursor = new Cursor(width,height);
 
 		//TUtil.clearConsuleC(cursor);
-		TUtil.clearConsule();
+		//TUtil.clearConsule();
 
 		screen.clearAndPrintAll(cursor);
 	}
 
+	/**
+		second cunstrctor of vim class
+		it give args as paramter to parse it later and extract filename
+	**/
 	public Vim(String[] args){
 		this( ETCUtil.getFileNameFromArgs(args) );
 	}
 
+	/**
+		this method do nothing except greeting user and
+		waste his/her time a bit
+
+		it also wants to show beautiness of colors!
+	**/
 	private void greetUser(){
 		//	TUtil.clearConsule(cursor);
 		TUtil.print("initializing vim!", Color.YELLOW);
 		TUtil.print("input file is : " + ourFile, Color.BLUE);
 		TUtil.print("the app is starting ", Color.GREEN);
-		ETCUtil.delay(1);
+		ETCUtil.delay(2);
 	}
 
+	/**
+		set the command to ""
+		because we aplied it earlier and we should look for new command,
+		do you agree?
+	**/
 	private void resetCommand(){
 		command = "";
 	}
 
+	/**
+		its obvious!
+		apply the command
+		and reset it
+
+	**/
 	private void applyAndResetCommand(){
 		apply();
 		resetCommand();
 	}
 
+	/**
+		apply the commnad in vim class
+		for now it just support wq and q!
+	**/
 	private void apply(){
 		Logger.log("command is : " + command);
 		switch(command){
@@ -207,11 +338,17 @@ public class Vim{
 			case ":q!":
 				exit();
 				break;
-
 		}
 	}
 
-
+	/**
+		handle the movement of cursor
+		with the given input character
+		note that up and down and right and left are not really up,down ,.. ensi chars
+		because ansi use 3 char to represent arow keys
+		so we used : sum of ord of 3 characters + 10
+		why? check out 193 - 196 on ascii extended table
+	**/
 	public void handleMove(char input){
 
 		switch (input) {
@@ -227,10 +364,12 @@ public class Vim{
 			case left:
 			 	cursor.left();
 				break;
-
 		}
 	}
 
+	/**
+	append last character to input and check it we should run it or not
+	**/
 	private void handleCommand(char inputC){
 		int input = (int) inputC;
 		if( input > 127  || input == 27) // arrow keys or esc
@@ -241,6 +380,9 @@ public class Vim{
 			command += inputC;
 	}
 
+	/**
+	 main function and main loop
+	**/
 	public void run(){
 
 
@@ -257,15 +399,26 @@ public class Vim{
 
 	}
 
+	/**
+	 cleanup and get ready to exit after a loop
+	**/
 	public void exit(){
 		cleanUpForExit();
 		running = false;
 	}
-	private static void cleanUpForExit(){
+
+	/**
+	do some stuff that is neccessay before quiting
+	**/
+	private void cleanUpForExit(){
 		TUtil.makeTerminalNormal();
 		TUtil.clearConsule();
 	}
 
+	/**
+		our lovely main mathod!
+		it just create new instance of vim and run it
+	**/
 	public static void main(String[] args){
 		Vim app = new Vim(args);
 		app.run();
@@ -308,53 +461,98 @@ System.exit(0);
 
 
 
+/**
+	 a class for handling cursor position and movement
+	 it has some tricky things
+	 like clone
+	 and set curser and sync
 
+	 use goToX and gotoline with caution
 
-
+**/
 class Cursor{
+
 	public final int width;
 	public final int height;
+
 	private int x;
 	private int y;
+
+	/**
+		cunstructor of cursor
+		it set width and hegith
+		and also reset cursor
+		for syncing the real place of cursor with the x ,y
+		becasue at first it is not guarantee that cursor is in 1,1 place
+	**/
 	public Cursor(int width, int height){
 		this.width = width;
 		this.height = height;
 		this.reset(); // set x, y
 	}
 
+	/**
+	make a copy from out cursor with exactly same properties
+	it use to temporialy change cursor
+	then we can sync the main cursor to go back ro first place
+	we SHOUD NOT HAVE more than one cursor for long time
+	**/
 	public Cursor clone(){
 		Cursor clone =  new Cursor(width,height);
 		clone.setCursor(this.x, this.y);
 		return clone;
 	}
 
+	/**
+		really move cursor to a position with printing to stdout
+		and save its position to x, y
+	**/
 	private void setCursor(int x,int y){
 		this.x = x;
 		this.y = y;
 		System.out.print("\u001b[" + y + ";" + x + "H");
 	}
 
+	/**
+		set y!
+	**/
 	public void goToLine(int line){
 		setCursor(this.x, line);
 	}
 
+	/**
+		set x
+	**/
 	public void goToX(int newX){
 		setCursor(newX, this.y);
 	}
 
+	/**
+		get x
+	**/
 	public int getX(){
 		return this.x;
 	}
 
+	/**
+		get y
+	**/
 	public int getLine(){
 		return this.y;
 	}
 
+	/**
+		sync the real position of cursor with the x , y
+		it is suitable for syncing back physical cursor after setting x,y
 
+	**/
 	public void sync(){
 		setCursor(this.x, this.y);
 	}
 
+	/**
+		move back cursor to up and left
+	**/
 	public void reset(){
 		setCursor(1, 1);
 	}
@@ -378,10 +576,29 @@ class Cursor{
 
 }
 
+
+/**
+	the screen class to handle
+	thing are currently on terminal
+
+**/
 class Screen{
+
+	/**
+		note that inner array is one row and one culomn bigger
+		than it should be
+		for comfortable syncing indexes with cursor position
+		we do not use 0 row and 0 column at all
+		they are always null
+	**/
 	Character[][] innerArr;
+
 	public final int height;
 	public final int width;
+
+	/**
+		cunstructor with the given char to fill array
+	**/
 	public Screen(int width,int height,char c){
 		this.width = width;
 		this.height = height;
@@ -389,10 +606,19 @@ class Screen{
 		fillScreen(c);
 		//fillWithNumbers(); // for testing
 	}
+
+	/**
+		cunstructor without character to fill
+	**/
 	public Screen(int height,int width){
 		this(height,width,' ');
 	}
 
+
+	/**
+		fill the inner array with some numbers
+		from 2 to 9 for debugging
+	**/
 	public void fillWithNumbers(){
 		for (int i=1; i<=height; i++ ) {
 			for(int j=1; j<=width; j++){
@@ -400,18 +626,26 @@ class Screen{
 				innerArr[i][j] = t.toString().charAt(0);
 			}
 		}
-	} // end func
+	}
 
+	/**
+		fill (and initialize)
+		the inner array of scrren with the given character
+	**/
 	public void fillScreen(char c){
 		for (int i=1; i<=height; i++ ) {
 			for(int j=1; j<=width; j++){
 				innerArr[i][j] = c;
 			}
 		}
-	} // end func
+	}
 
+	/**
+		clear screen and print all of screen
+		it will be used first time
+	**/
 	public void clearAndPrintAll(Cursor c){
-		//TUtil.clearConsule(c);
+		//TUtil.clearConsuleC(c);
 		c.reset();
 		for (int i=1; i<=height; i++ ) {
 			printLine(c);
@@ -420,10 +654,17 @@ class Screen{
 		c.reset();
 	}
 
+	/**
+		get one line of screen
+	**/
 	public Character[] getLine(int n){
 		return innerArr[n];
 	}
 
+	/**
+		get a cursor and print that line of screen array
+		to the line that cursor exists
+	**/
 	public void printLine(Cursor c){ // sensetive code
 		Cursor clone = c.clone();
 		clone.goToX(1);
@@ -438,6 +679,9 @@ class Screen{
 
 }
 
+/**
+	our logger class to write on an external file
+**/
 class Logger{
 	private static String[] command = new String[3];
 	private static final String LOG_FILE = "./log1.txt";
@@ -445,7 +689,9 @@ class Logger{
 		command[0] = "/bin/sh";
 		command[1] = "-c";
 	}
-
+	/**
+		log the toWrite String to : LOG_FILE
+	**/
 	public static void log(String toWrite){
 		command[2] = "echo " + "\"" + toWrite + "\"" + " >> " + LOG_FILE;
 		try{
@@ -459,8 +705,14 @@ class Logger{
 
 }
 
+/**
+	some utilities that dont have a suitable place
+**/
 class ETCUtil{
 
+	/**
+		delay program in seconds
+	**/
 	public static void delay(int second){
 		try{
 			Thread.sleep(1000*second);
@@ -469,21 +721,35 @@ class ETCUtil{
 		}
 	}
 
+	/**
+		calculate sum of 3 byte in an array
+	**/
 	public static int sumByte(byte[] bytes){
 		return bytes[0] + bytes[1] + bytes[2];
 	}
 
+	/**
+		some tricky code to convert array of ascii codes
+		of arrow keys (3 characters) to just one
+		193 : up
+		194 : down
+		195 : right
+		196 : left
+	**/
 	public static char arrowKeyToChar(byte[] charCodes){
 		if(charCodes.length == 3){
 			int sum = sumByte(charCodes);
 			return (char) (sum + 10); // gharar dad baraye arrowkey ha
-			// 193 : up  194 : down  195 : right  196 : left
 		}
 		else
 			TUtil.PError("not 3 byte array in arrowKeyToChar");
 		return ' '; // never reach here
 	}
 
+	/**
+		get arguamets of main method and extract filename
+		it use ArgumentParser and FilesUtil
+	**/
 	public static String getFileNameFromArgs(String[] args){
 
 		ArgumentParser argParse = new ArgumentParser(args);
@@ -514,6 +780,7 @@ class ETCUtil{
 
 }
 
+
 class ArgumentParser{
 	private String[] args;
 
@@ -521,6 +788,9 @@ class ArgumentParser{
 		this.args = args;
 	}
 
+	/**
+		get argument and check if its valid or not
+	**/
 	public Boolean check(){
 		if (args == null)
 		return false;
@@ -531,6 +801,10 @@ class ArgumentParser{
 		return true;
 	}
 
+	/**
+		actually return the filename
+		and null if lenght of argument is 0
+	**/
 	public String getFileName(){
 		if( args.length == 1)
 		return args[0];
@@ -546,6 +820,9 @@ enum FileStatus{
 	NULL_YET // requested address is null
 }
 
+/**
+	some utilities for working with files
+**/
 class FilesUtil{
 
 	@Deprecated // untested
@@ -558,6 +835,10 @@ class FilesUtil{
 		return null;
 	}
 
+	/**
+		check if the filename could be created
+		and its not exists or not
+	**/
 	public static Boolean canCreateFile(String fileName){
 		if(fileName == null)
 			return false;
@@ -573,6 +854,11 @@ class FilesUtil{
 		}
 	}
 
+	/**
+		get states of a file
+		in an enum
+		more info in FileStatus
+	**/
 	public static FileStatus getFileState(String fileName){
 		if(fileName == null)
 			return FileStatus.NULL_YET;
@@ -588,6 +874,10 @@ class FilesUtil{
 		return FileStatus.NOT_OK;
 	}
 
+	/**
+		check if a file is writeble (and we can save it )
+		or no
+	**/
 	public static Boolean isWritableFile(String fileName){
 		return getFileState(fileName) == FileStatus.WRITABLE;
 	}
