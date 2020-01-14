@@ -1,6 +1,5 @@
 package vi_limited;
 
-import java.io.IOException;
 import java.io.File;
 
 /**
@@ -32,7 +31,7 @@ class FilesUtil{
 			f.createNewFile();
 			f.delete(); // check if we can create it or not
 			return true;
-		} catch(IOException e) {
+		} catch(Exception e) {
 			return false;
 		}
 	}

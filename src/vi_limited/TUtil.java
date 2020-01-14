@@ -1,5 +1,4 @@
 package vi_limited;
-import java.io.IOException;
 
 /**
  TUtil as wr have in Terminal utilities
@@ -151,7 +150,7 @@ class TUtil{
 				return ETCUtil.arrowKeyToChar(data);  // 3 char for arrow keys
 			else  // otherwise : one character
 				return (char) (data[0]);
-		} catch(IOException e){
+		} catch(Exception e){
 			TUtil.PError("error in getting char from user with system.in\nexiting");
 		}
 		return ' '; // should not reach here

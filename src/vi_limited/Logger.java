@@ -1,5 +1,4 @@
 package vi_limited;
-import java.io.IOException;
 /**
 	our logger class to write on an external file
 **/
@@ -17,7 +16,7 @@ class Logger{
 		command[2] = "echo " + "\"" + toWrite + "\"" + " >> " + LOG_FILE;
 		try{
 			Runtime.getRuntime().exec(command).waitFor();
-		} catch( InterruptedException | IOException e ){
+		} catch( Exception e ){
 			TUtil.clearConsule();
 			e.printStackTrace();
 			TUtil.PError("can not write to log file!");
