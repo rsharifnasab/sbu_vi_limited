@@ -331,6 +331,7 @@ public class Vim{
 		switch(command){
 
 			case ":wq":
+			case ":x":
 				//save();
 				exit();
 				break;
@@ -338,6 +339,7 @@ public class Vim{
 			case ":q!":
 				exit();
 				break;
+
 		}
 	}
 
@@ -755,7 +757,7 @@ class ETCUtil{
 		ArgumentParser argParse = new ArgumentParser(args);
 		if (!argParse.check()){ // bad input
 			TUtil.PError("bad arguments\n" +
-			"usage : \'java Vim a.txt\' OR \'java Vim\'");
+			"usage : \'java Vim a.txt\' OR \'java Vim\' OR \'java Vim vim a.txt\' ");
 		}
 
 		String fileName = argParse.getFileName(); // null if : usage : "vim"
@@ -793,12 +795,12 @@ class ArgumentParser{
 	**/
 	public Boolean check(){
 		if (args == null)
-		return false;
+			return false;
 		if(args.length ==  0)
-		return true;
-		if(args.length > 1)
+			return true;
+		if(args.length == 1 || args.length == 2)
+			return true;
 		return false;
-		return true;
 	}
 
 	/**
@@ -807,7 +809,9 @@ class ArgumentParser{
 	**/
 	public String getFileName(){
 		if( args.length == 1)
-		return args[0];
+			return args[0];
+		if( args.length == 2)
+			return args[1];
 		return null;
 	}
 }
