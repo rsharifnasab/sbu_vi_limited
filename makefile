@@ -4,7 +4,7 @@ all : reset compile run
 reset:
 	@reset
 
-run: reset justRun
+run: justRun
 
 runFull: okTerminal justRun resetTerminal
 
@@ -38,7 +38,7 @@ clean:
 	@echo "deleted out folder"
 	@find . -name 'log*.txt' -delete
 	@echo "deleted log file"
-	
+
 
 g:
 	git status

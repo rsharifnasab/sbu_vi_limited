@@ -78,10 +78,10 @@ class FilesUtil{
 		return getFileState(fileName) == FileStatus.WRITABLE;
 	}
 
-	public static void saveToFile(String fileName){
-		//TODO
-	}
+}
 
+enum EditorMode{
+	STATISTICS, INSERT, COMMAND
 }
 
 // TUtile as wr have in Terminal utilities
@@ -132,7 +132,7 @@ class TUtil{
 	public static void clearConsule(Cursor c){
 		Cursor clone = c.clone();
 		clone.reset();
-		for (int i =1; i <= clone.height; i++ ) { // TODO
+		for (int i =1; i <= clone.height; i++ ) {
 			TUtil.deleteThisLine(clone);
 		}
 		c.reset();
@@ -186,6 +186,7 @@ class TUtil{
 }
 
 class ETCUtil{
+
 	public static void delay(int second){
 		try{
     		Thread.sleep(1000*second);
@@ -193,6 +194,43 @@ class ETCUtil{
     		Thread.currentThread().interrupt();
 		}
 	}
+
+	public static String charCodeToString(int...charCodes){
+		String ans = "";
+		for(int i : charCodes){
+			ans += (char) i;
+		}
+		return ans;
+	}
+
+	public static String getFileNameFromArgs(String[] args){
+
+		ArgumentParser argParse = new ArgumentParser(args);
+		if (!argParse.check()){ // bad input
+			TUtil.PError("bad arguments\n" +
+			 "usage : \'java Vim a.txt\' OR \'java Vim\'");
+		}
+
+		String fileName = argParse.getFileName(); // null if : usage : "vim"
+		FileStatus status = FilesUtil.getFileState( argParse.getFileName());
+		switch (status){
+			case WRITABLE:
+			case NOT_EXISTS:
+			case NULL_YET:
+				return fileName;
+
+			case IS_DIR:
+				TUtil.PError("error: target is directory: "+fileName);
+				break;
+
+			case NOT_OK:
+				TUtil.PError("error: cant open input file: "+fileName);
+				break;
+		}
+		throw new RuntimeException("should not reach here!, probalby bad FileStatus enum");
+
+	}
+
 }
 
 class Logger{
@@ -202,14 +240,16 @@ class Logger{
 		command[0] = "/bin/sh";
 		command[1] = "-c";
 	}
+
 	public static void log(String toWrite){
 		command[2] = "echo " + "\"" + toWrite + "\"" + " >> " + LOG_FILE;
 		try{
 			Runtime.getRuntime().exec(command).waitFor();
 		} catch( InterruptedException | IOException e ){
-			TUtil.PError("can not log!");
+			TUtil.PError("can not write to log file!");
 		}
 	}
+
 }
 
 class Screen{
@@ -221,12 +261,11 @@ class Screen{
 		this.height = height;
 		innerArr = new Character[this.height+1][this.width+1];
 		fillScreen(c);
-		fillWithNumbers(); // TODO remove
+		//fillWithNumbers(); // for testing
 	}
 	public Screen(int height,int width){
 		this(height,width,' ');
 	}
-
 
 	public void fillWithNumbers(){
 		for (int i=1; i<=height; i++ ) {
@@ -264,7 +303,9 @@ class Screen{
 		clone.goToX(1);
 		TUtil.deleteThisLine(clone);
 		for(int j=1; j<=width; j++){
-			System.out.print(innerArr[c.getLine()][j]);
+			Character toPrint = innerArr[c.getLine()][j];
+			if(toPrint == null || toPrint == '\n') break;
+			System.out.print(toPrint);
 		}
 		c.sync(); // go back
 	}
@@ -282,7 +323,7 @@ class Cursor{
 		this.reset(); // set x, y
 	}
 
-	public Cursor clone(){ // TODO : test
+	public Cursor clone(){
 		Cursor clone =  new Cursor(width,height);
 		clone.setCursor(this.x, this.y);
 		return clone;
@@ -342,40 +383,14 @@ enum Color{	RED, GREEN, BLUE, YELLOW, WHITE }
 
 public class Vim{
 
-	private static String getFileNameFromArgs(String[] args){
-
-		ArgumentParser argParse = new ArgumentParser(args);
-		if (!argParse.check()){ // bad input
-			TUtil.PError("bad arguments\n" +
-			 "usage : \'java Vim a.txt\' OR \'java Vim\'");
-		}
-
-		String fileName = argParse.getFileName(); // null if : usage : "vim"
-		FileStatus status = FilesUtil.getFileState( argParse.getFileName());
-		switch (status){
-			case WRITABLE:
-			case NOT_EXISTS:
-			case NULL_YET:
-				return fileName;
-
-			case IS_DIR:
-				TUtil.PError("error: target is directory: "+fileName);
-				break;
-
-			case NOT_OK:
-				TUtil.PError("error: cant open input file: "+fileName);
-				break;
-		}
-		throw new RuntimeException("should not reach here!, probalby bad FileStatus enum");
-
-	}
-
 	public final int height = 24;
 	public final int width = 80;
 
 	public File ourFile;
 	public final Cursor cursor;
 	public final Screen screen;
+
+	public EditorMode mode;
 	public Vim(String ourFile){
 		this.ourFile = (ourFile==null) ? null : new File(ourFile);
 
@@ -384,13 +399,13 @@ public class Vim{
 		screen = new Screen(width,height,'~');
 
 		greetUser();
-
 		screen.clearAndPrintAll(cursor);
 
+		mode = EditorMode.COMMAND;
 	}
 
 	public Vim(String[] args){
-		this( getFileNameFromArgs(args) );
+		this( ETCUtil.getFileNameFromArgs(args) );
 	}
 
 	private void greetUser(){
@@ -412,7 +427,6 @@ public class Vim{
 		return false;
 	}
 
-
 	private void handleInput(int input){
 		final int up = (int) 'w';
 		final int down = (int) 's';
@@ -427,20 +441,50 @@ public class Vim{
 			case deleteLine : TUtil.deleteThisLine(cursor);
 		}
 	}
+	/*
 
+		command mode :
+			:wq
+			:w
+			:q
+			:q!
+			h j k l
+
+		editor mode :
+		esacpe + [A  [B [C [D
+		up,down, right, left
+
+
+
+
+	*/
+	private String getInput(){ // TODO : complete
+		int inputCode = TUtil.getChar();
+		String out = null;
+		switch (inputCode){
+				case 27:
+					out =  "" + (char) inputCode + TUtil.getChar() + TUtil.getChar();
+					break;
+				default:
+
+		}
+		return out;
+
+	}
 
 	public void run(){
 
-		int input;
+		String input;
 		do {
-			input = TUtil.getChar();
+
+			input = getInput();
 
 			screen.printLine(cursor);
 			//cursor.sync();
 
-			handleInput(input);
+			//handleInput(input);
 
-		} while (input != (int)'x' );
+		} while ( ! appShouldExit(input) );
 
 		cleanUpForExit();
 	}
