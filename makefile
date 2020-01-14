@@ -36,8 +36,10 @@ clean:
 	@echo "deleted exe files"
 	@find . -name 'out' -delete
 	@echo "deleted out folder"
-	#@find . -name 'log*.txt' -delete
-	#@echo "deleted log file"
+
+clean_log:
+	@find . -name 'log*.txt' -delete
+	@echo "deleted log file"
 
 
 g:
