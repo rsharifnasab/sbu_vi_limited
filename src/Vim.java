@@ -4,8 +4,39 @@ enum EditorMode{
 	STATISTICS, INSERT, COMMAND
 }
 
+enum Key{
+		UP, DOWN, LEFT, RIGHT, ESC, UNK
+}
+
+class ESCHandle extends Thread{
+	private String ans = null;
+
+	@Override
+	public void run() {
+		//Logger.log("wating for felan");
+		 ans = ETCUtil.charCodeToString(TUtil.getChar(), TUtil.getChar() );
+	}
+
+	public Key get() {
+			if (ans==null) return Key.ESC;
+			Logger.log("in get, ans = " + ans);
+			switch(ans){
+
+				case "[A": return Key.UP;
+				case "[B": return Key.DOWN;
+				case "[C": return Key.RIGHT;
+				case "[D": return Key.LEFT;
+
+				default:
+					return Key.UNK;
+			}
+	}
+
+}
+
 // TUtil as wr have in Terminal utilities
 class TUtil{
+
 	public static final String ESCAPE = ""+(char) 27 ;
 	public static final String Reset = ESCAPE + "[0m";
 
@@ -120,6 +151,7 @@ public class Vim{
 
 	public EditorMode mode;
 	public Vim(String ourFile){
+		Logger.log("starting vim app");
 		this.ourFile = (ourFile==null) ? null : new File(ourFile);
 
 		TUtil.makeTerminalHandy();
@@ -188,33 +220,38 @@ public class Vim{
 
 	*/
 
-	private String getInput(){ // TODO : complete
-		int inputCode = TUtil.getChar();
-		String out = null;
-		switch (inputCode){
-				case 27:
-					out =  ETCUtil.charCodeToString(inputCode, TUtil.getChar(), TUtil.getChar() );
-					break;
-				default:
 
+
+	public void getInput(){
+		int a = TUtil.getChar();
+
+		if(a==27){
+				ESCHandle escHandle = new ESCHandle();
+				escHandle.start();
+				ETCUtil.minDelay(); // wait a little
+				escHandle.interrupt();
+				Key ans = escHandle.get();
+				Logger.log("ans is : " + ans);
 		}
-		return out;
-
+		else
+		  	Logger.log("another thing");
 	}
 
-	public void run(){
 
+	public void run(){
 		String input;
 		do {
 
-			input = getInput();
+			getInput();
+
+			//input = getInput();
 
 			screen.printLine(cursor);
 			//cursor.sync();
 
 			//handleInput(input);
 
-		} while ( ! appShouldExit(input) );
+		} while ( ! appShouldExit(null) );
 
 		cleanUpForExit();
 	}
@@ -381,9 +418,15 @@ class Logger{
 	public static void log(String toWrite){
 		command[2] = "echo " + "\"" + toWrite + "\"" + " >> " + LOG_FILE;
 		try{
-			Runtime.getRuntime().exec(command).waitFor();
-		} catch( InterruptedException | IOException e ){
-			TUtil.PError("can not write to log file!");
+			Runtime.getRuntime().exec(command);
+			//.waitFor();
+		} catch(
+		//InterruptedException |
+		IOException e ){
+			TUtil.clearConsule();
+			e.printStackTrace();
+			System.exit(0);
+			//	TUtil.PError("can not write to log file!");
 		}
 	}
 
@@ -395,9 +438,18 @@ class ETCUtil{
 		try{
     		Thread.sleep(1000*second);
 		}catch(InterruptedException ex){
-    		Thread.currentThread().interrupt();
+				TUtil.PError("error : interrupt happened in delay!");
 		}
 	}
+
+	public static void minDelay(){ // the least delay possible
+		try{
+    		Thread.sleep(100); // in millisec
+		}catch(InterruptedException ex){
+    		TUtil.PError("error : interrupt happened in minDelay!");
+		}
+	}
+
 
 	public static String charCodeToString(int...charCodes){
 		String ans = "";
