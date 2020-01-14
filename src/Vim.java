@@ -8,14 +8,7 @@ enum Key{
 		UP, DOWN, LEFT, RIGHT, ESC, UNK
 }
 
-class ESCHandle extends Thread{
-	private String ans = null;
-
-	@Override
-	public void run() {
-		//Logger.log("wating for felan");
-		 ans = ETCUtil.charCodeToString(TUtil.getChar(), TUtil.getChar() );
-	}
+/*
 
 	public Key get() {
 			if (ans==null) return Key.ESC;
@@ -30,9 +23,7 @@ class ESCHandle extends Thread{
 				default:
 					return Key.UNK;
 			}
-	}
-
-}
+*/
 
 // TUtil as wr have in Terminal utilities
 class TUtil{
@@ -112,15 +103,18 @@ class TUtil{
 		}
 	}
 
-	public static int getChar(){
+	public static String getChar(){ // tricky sensetive code
 		try{
-			int ans = System.in.read();
-			Logger.log("key is :" + ans);
-			return ans;
+			byte[] data  = new byte[3];
+			int bytesRead = System.in.read(data);
+			if (bytesRead == 3)// arrow key found
+				return ETCUtil.charCodeToString(data);  // 3 char for arrow keys
+			else  // otherwise : one character
+				return ETCUtil.charCodeToString(data[0]);
 		} catch(IOException e){
 			TUtil.PError("error in getting char from user with system.in\nexiting");
 		}
-		return -1; // should not reach here
+		return null; // should not reach here
 	}
 
 	@Deprecated
@@ -140,6 +134,28 @@ class TUtil{
 
 }
 
+class InputHandler{
+
+	public final static  String up = TUtil.ESCAPE + "]A";
+	public final static  String down = TUtil.ESCAPE + "]B";
+	public final static  String right = TUtil.ESCAPE + "]C";
+	public final static  String left = TUtil.ESCAPE + "]D";
+
+	final Cursor cursor;
+	public InputHandler(Cursor c){
+		this.cursor = c;
+	}
+
+	public void handle(String input){
+			switch (input) {
+				case up: cursor.up(); break;
+				case down: cursor.down(); break;
+				case right: cursor.right(); break;
+				case left: cursor.left(); break;
+			}
+	}
+}
+
 public class Vim{
 
 	public final int height = 24;
@@ -148,6 +164,7 @@ public class Vim{
 	public File ourFile;
 	public final Cursor cursor;
 	public final Screen screen;
+	public final InputHandler handler;
 
 	public EditorMode mode;
 	public Vim(String ourFile){
@@ -161,6 +178,7 @@ public class Vim{
 
 		screen = new Screen(width,height,'~');
 		cursor = new Cursor(width,height);
+		handler = new InputHandler(cursor);
 
 		screen.clearAndPrintAll(cursor);
 
@@ -190,20 +208,6 @@ public class Vim{
 		return false;
 	}
 
-	private void handleInput(int input){
-		final int up = (int) 'w';
-		final int down = (int) 's';
-		final int right = (int) 'd';
-		final int left = (int) 'a';
-		final int deleteLine = (int) 'l';
-		switch (input) {
-			case up: cursor.up(); break;
-			case down: cursor.down(); break;
-			case right: cursor.right(); break;
-			case left: cursor.left(); break;
-			case deleteLine : TUtil.deleteThisLine(cursor);
-		}
-	}
 	/*
 
 		command mode :
@@ -222,31 +226,9 @@ public class Vim{
 
 
 
-	public void getInput(){
-		int a = TUtil.getChar();
-
-		if(a==27){
-				ESCHandle escHandle = new ESCHandle();
-				escHandle.start();
-				ETCUtil.minDelay(); // wait a little
-				escHandle.interrupt();
-				Key ans = escHandle.get();
-		}
-		else
-		  	Logger.log("another thing");
-	}
-
+	/*
 	public void test(){
 		try{
-			byte[] data  = new byte[3];
-			int bytesRead = System.in.read(data);
-
-			while(bytesRead != -1) {
-				Logger.log("tedad byte haye read shode : " + bytesRead);
-  			Logger.log( "data : " + data[0] + " " + data[1] + " "+ data[2] );
-  			bytesRead = System.in.read(data);
-			}
-			//System.out.println(System.in.read());
 
 		}catch( Exception e){
 			TUtil.clearConsule();
@@ -254,18 +236,18 @@ public class Vim{
 			System.exit(0);
 		}
 	}
+*/
+
 	public void run(){
 		String input;
 		do {
-			test();
-		//	getInput();
 
-			//input = getInput();
-
+			input = TUtil.getChar();
+			Logger.log("input is : " + input);
 			screen.printLine(cursor);
 			//cursor.sync();
 
-			//handleInput(input);
+			handler.handle(input);
 
 		} while ( ! appShouldExit(null) );
 
@@ -434,15 +416,12 @@ class Logger{
 	public static void log(String toWrite){
 		command[2] = "echo " + "\"" + toWrite + "\"" + " >> " + LOG_FILE;
 		try{
-			Runtime.getRuntime().exec(command);
-			//.waitFor(); // TODO
-		} catch(
-		//InterruptedException |
-		IOException e ){
+			Runtime.getRuntime().exec(command)
+			.waitFor();
+		} catch( InterruptedException | IOException e ){
 			TUtil.clearConsule();
 			e.printStackTrace();
-			System.exit(0);
-			//	TUtil.PError("can not write to log file!");
+			TUtil.PError("can not write to log file!");
 		}
 	}
 
@@ -458,22 +437,17 @@ class ETCUtil{
 		}
 	}
 
-	public static void minDelay(){ // the least delay possible
-		try{
-    		Thread.sleep(100); // in millisec
-		}catch(InterruptedException ex){
-    		TUtil.PError("error : interrupt happened in minDelay!");
-		}
+	public static String charCodeToString(byte[] charCodes){
+		if(charCodes.length == 3)
+			return "" + ((char) charCodes[0]) + ((char) charCodes[1]) + ((char) charCodes[2]) ;
+		TUtil.PError("not 3 byte array in charCodeToString");
+		return null; // wont reach here
 	}
 
-
-	public static String charCodeToString(int...charCodes){
-		String ans = "";
-		for(int i : charCodes){
-			ans += (char) i;
-		}
-		return ans;
+	public static String charCodeToString(byte charCode){
+		return "" + (char) charCode;
 	}
+
 
 	public static String getFileNameFromArgs(String[] args){
 
