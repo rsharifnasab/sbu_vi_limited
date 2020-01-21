@@ -52,4 +52,6 @@ clean_doc:
 			
 doc:
 	javadoc src/vi_limited/*.java  -Xdoclint:none  -d ./doc
-	
+
+q_combine: clean
+	@./q_combiner.py
