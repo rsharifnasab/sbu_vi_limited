@@ -8,10 +8,8 @@ from re import sub as replace_by_regex
 from os import system as shelll
 
 def greet():
-    greet_text = """hello
-this script will combine all java files
-and make one java file for you
-good luck in submitting "Vim.java" to quera"""
+    greet_text = """this script will combine all java files
+and make one compilable java file for you"""
     print(greet_text)
 
 def find_java_files(mypath):
@@ -19,8 +17,6 @@ def find_java_files(mypath):
 
 def clean_java(file_add):
     class_text = open(file_add).read()
-    #class_text = replace_by_regex(r"package *;","",class_text); #remove packages
-    #class_text = replace_by_regex(r"import *;","",class_text); #remove packages
 
     class_text = class_text.replace("package vi_limited;","")
     class_text = class_text.replace("import java.io.*;","")
@@ -42,13 +38,14 @@ def clean_folder(mypath):
             exit(1)
 
 def write_fun(file_add):
-    shelll( f""" echo "/*" > {file_add} """ )
+    shelll( f""" echo "/*" >> {file_add} """ )
     fun_text = "dear TA, im just submitting this for testing, don't take it serious"
     shelll(f"""cowsay "{fun_text}" >> {file_add}""")
     shelll( f""" echo "*/" >> {file_add} """ )
 
 
 def write_file(file_add,text):
+    shelll(f"""echo "" > {file_add} """)
     write_fun(file_add)
     print(f"writing to {file_add}")
     f = open(file_add, "a") #append mode
