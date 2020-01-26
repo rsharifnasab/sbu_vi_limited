@@ -111,6 +111,13 @@ public class Vim{
 		//TODO : show statistics
 	}
 
+	private void goToEndOfFile(){
+		//TODO
+	}
+
+	private void goToFirstOfFile(){
+		//TODO
+	}
 
 
 	private void applyLongCommand(){
@@ -128,6 +135,12 @@ public class Vim{
 				exit();
 				break;
 
+			case "0":
+				goToFirstOfFile();
+				break;
+			case "$":
+				goToEndOfFile();
+				break;
 		}
 	}
 
@@ -139,18 +152,24 @@ public class Vim{
 			return;
 
 		Logger.log( input + " " + inputC);
+		switch (inputC) {
+			case 'i':
+				goToInsertMode();
+				break;
+			case ':':
+				goToOneLongCommandMode();
+				break;
+			case 'v':
+				goToStatisticsMode();
+				break;
+			case '0':
+				cursor.gotoFirstOfLine();
+				break;
+			case '$':
+				cursor.gotoLastOfLine();
+				break;
 
-		if (inputC == 'i')
-			goToInsertMode();
-		else if (inputC == ':')
-			goToOneLongCommandMode();
-		else if (inputC == 'v')
-			goToStatisticsMode();
-		else if (inputC == '0')
-			cursor.gotoFirstOfLine();
-		else if (inputC == '$')
-			cursor.gotoLastOfLine();
-
+		}
 
 	}
 
@@ -306,7 +325,7 @@ public class Vim{
 	}
 
 	private void goToOneKeyCommandMode(){
-		Logger.log("enterring insert one key mode");
+		Logger.log("enterring one key mode");
 		resetCommand();
 		mode = EditorMode.ONE_KEY_COMMAND;
 	}
