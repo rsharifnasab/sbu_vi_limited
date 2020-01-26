@@ -4,5 +4,8 @@ package vi_limited;
 	TODO
 **/
 public enum EditorMode{
-	STATISTICS, INSERT, COMMAND
+	STATISTICS, // to show some statics!
+	INSERT, // for editiing text
+	KEY_COMMAND, // for handling one keycommand such as exit
+	LONG_COMMAND // for handling long command such as :wq (start with : )
 }

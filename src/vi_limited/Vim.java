@@ -38,16 +38,19 @@ public class Vim{
 	public final Screen screen;
 
 	/**
-		TODO
+		this will determine current editor mode
+		command mode for command
+		insert mode for edit
+		and etc..
 	**/
-	public EditorMode mode = EditorMode.COMMAND;
+	public EditorMode mode;
 
 	/**
 		the command that is entering and not fully enterred yet
 		if user prees enter, we apply this command and reset this string
 
 	**/
-	public String command = "";
+	public String command;
 
 	/**
 		a boolean to determine the app sohuld
@@ -86,6 +89,8 @@ public class Vim{
 		//TUtil.clearConsule();
 
 		screen.clearAndPrintAll(cursor);
+
+		goToOneKeyCommandMode();
 	}
 
 	/**
@@ -125,26 +130,27 @@ public class Vim{
 		and reset it
 
 	**/
-	private void applyAndResetCommand(){
-		apply();
+	private void applyAndResetLongCommand(){
+		applyLongCommand();
 		resetCommand();
+		goToOneKeyCommandMode();
 	}
 
 	/**
 		apply the commnad in vim class
 		for now it just support wq and q!
 	**/
-	private void apply(){
+	private void applyLongCommand(){
 		Logger.log("command is : " + command);
 		switch(command){
 
-			case ":wq":
-			case ":x":
+			case "wq":
+			case "x":
 				//save();
 				exit();
 				break;
 
-			case ":q!":
+			case "q!":
 				exit();
 				break;
 
@@ -177,15 +183,70 @@ public class Vim{
 		}
 	}
 
+
+	private void goToInsertMode(){
+		Logger.log("enterring insert mode");
+		resetCommand();
+		mode = EditorMode.INSERT;
+	}
+
+	private void goToOneKeyCommandMode(){
+		Logger.log("enterring insert one key mode");
+		resetCommand();
+		mode = EditorMode.KEY_COMMAND;
+	}
+
+	private void goToOneLongCommandMode(){
+		Logger.log("enterring long command mode");
+		resetCommand();
+		mode = EditorMode.LONG_COMMAND;
+	}
+
+
 	/**
 	append last character to input and check it we should run it or not
 	**/
-	private void handleCommand(char inputC){
+	private void handleOneCharCommand(char inputC){
 		int input = (int) inputC;
 		if( input > 127  || input == 27) // arrow keys or esc
 			return;
+		Logger.log( input + " " + inputC);
+
+		if (inputC == 'i'){ // i
+			goToInsertMode();
+			return;
+		}
+		if (inputC == ':'){
+			goToOneLongCommandMode();
+			return;
+		}
+
+
+	}
+
+	private void handleInsertMode(char inputC){
+		int input = (int) inputC;
+		if( input > 127) // arrow keys
+			return;
+		if (input == 27) // esc presseed
+			goToOneKeyCommandMode();
+
+		//TODO append to text
+		//TODO backspace
+	}
+
+	private void handleLongCommand(char inputC){
+		int input = (int) inputC;
+		if( input > 127) // arrow keys or esc
+			return;
+
+		if(input == 27) //escape
+			goToOneKeyCommandMode();
+
+
 		if(input == 10) // enter
-			applyAndResetCommand();
+			applyAndResetLongCommand();
+		// if(input ==  backspace) // TODO
 		else
 			command += inputC;
 	}
@@ -201,7 +262,26 @@ public class Vim{
 			screen.printLine(cursor);
 
 			handleMove(input);
-			handleCommand(input);
+
+			switch(mode){
+
+				case KEY_COMMAND:
+					handleOneCharCommand(input);
+					break;
+
+				case LONG_COMMAND:
+					handleLongCommand(input);
+					break;
+
+
+				case INSERT:
+					handleInsertMode(input);
+					break;
+
+				case STATISTICS:
+
+
+			}
 
 
 		} while ( running );

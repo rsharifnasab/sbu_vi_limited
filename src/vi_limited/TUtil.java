@@ -6,7 +6,7 @@ package vi_limited;
 public class TUtil{
 
 	/**
-	 a String contains just escape
+	 a String just containing escape
 	**/
 	public static final String ESCAPE = ""+(char) 27 ;
 
@@ -23,10 +23,13 @@ public class TUtil{
 	public static final String Yellow = ESCAPE +  "[93m";
 	public static final String White = ESCAPE +  "[97m";
 
+	/**
+		in case of pritning this, current line of terminal will be cleaned!
+	**/
 	public static final String CLEARER = "\033[H\033[2J";
 
 	/**
-		in case of pritning this, terminal will be cleaned!
+		in case of pritning this, current line of terminal will be cleaned!
 	**/
 	public static final String LINE_DELETER = "\u001b[K";
 
