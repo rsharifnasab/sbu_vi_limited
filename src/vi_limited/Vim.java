@@ -11,9 +11,9 @@ public class Vim{
 	the tricky up and down (gharardad kardim!)
 	they are calculated like this:
 	up = ord(esc) + ord ([) + ord(A) + 10
-	up = ord(esc) + ord ([) + ord(B) + 10
-	up = ord(esc) + ord ([) + ord(c) + 10
-	up = ord(esc) + ord ([) + ord(AD) + 10
+	down = ord(esc) + ord ([) + ord(B) + 10
+	right = ord(esc) + ord ([) + ord(c) + 10
+	left = ord(esc) + ord ([) + ord(AD) + 10
 
 	check about ansi escape codes
 
