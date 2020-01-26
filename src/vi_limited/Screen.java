@@ -22,7 +22,7 @@ public class Screen{
 	public final int height;
 	public final int width;
 
-	public int screenPos=0;
+	public int screenPos=1;
 
 	/**
 		cunstructor with the given char to fill array
@@ -39,14 +39,24 @@ public class Screen{
 
 
 	public void updateScreenContent(){
-		char[][] content = context.getLines(screenPos,height);
-
+		PTIter iter = new PTIter(context);
+		iter.goToLine(screenPos);
 		for (int i=1; i<=height; i++ ) {
+			boolean enterred = false;
 			for(int j=1; j<=width; j++){
-				innerArr[i][j] = content[i][j];
-			}
-		}
-	}
+				if(enterred){
+					innerArr[i][j] = ' ';
+					continue;
+				}
+				innerArr[i][j] = iter.next();
+				if(innerArr[i][j]=='\n'){
+					enterred = true;
+					innerArr[i][j] = '~'; // End of line
+				}
+
+			} // end inner for
+		} // end outer for
+	} // end duntion
 
 
 

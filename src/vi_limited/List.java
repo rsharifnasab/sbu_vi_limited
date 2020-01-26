@@ -42,12 +42,16 @@ public class List<T>{
 
 
 	public void add(T elem){
+		if(elem == null)
+			throw new NullPointerException("null elem cant be in list");
 		ensureCapacity(NOE+1);
 		innerArray[NOE++] = elem;
 	}
 
 	@SuppressWarnings("unchecked")
 	public T get(int index){
+		if(index < 0 || index >= NOE)
+			throw new RuntimeException("get index of list, out of range,\n index : " + index + " but noe : " + NOE);
 		return (T) innerArray[index];
 	}
 

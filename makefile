@@ -35,6 +35,10 @@ clean:
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
 
+	@find . -wholename './out/log*.txt' -delete
+	@echo "deleted lof file in out folder"
+	
+	
 	@find . -wholename './out/vi_limited/piecetable' -delete
 	@echo "deleted piece table folder"
 
