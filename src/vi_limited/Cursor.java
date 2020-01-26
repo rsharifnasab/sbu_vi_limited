@@ -52,6 +52,18 @@ public class Cursor{
 		System.out.print("\u001b[" + y + ";" + x + "H");
 	}
 
+
+	public void gotoFirstOfLine(){
+		goToX(1);
+	}
+
+	public void gotoLastOfLine(){
+		goToX(width);
+	}
+
+
+
+
 	/**
 		set y!
 	**/

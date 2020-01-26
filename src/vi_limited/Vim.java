@@ -1,7 +1,7 @@
 package vi_limited;
 
 import java.io.File;
-
+import vi_limited.piecetable.*;
 /**
 out main class for vim editor
 **/
@@ -146,6 +146,11 @@ public class Vim{
 			goToOneLongCommandMode();
 		else if (inputC == 'v')
 			goToStatisticsMode();
+		else if (inputC == '0')
+			cursor.gotoFirstOfLine();
+		else if (inputC == '$')
+			cursor.gotoLastOfLine();
+
 
 	}
 
