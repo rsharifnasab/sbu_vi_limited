@@ -3,5 +3,5 @@ package vi_limited.piecetable;
 class Node{
 	int start;
 	int length;
-	type NodeType;
+ 	NodeType type;
 }
