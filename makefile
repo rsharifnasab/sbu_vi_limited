@@ -34,22 +34,25 @@ clean:
 	@echo "deleted class files"
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
-	
+
 	@find . -wholename './out/vi_limited' -delete
 	@echo "deleted vi_limited folder"
-	
+
 	@find . -name 'out' -delete
 	@echo "deleted out folder"
 
 clean_log:
 	@find . -name 'log*.txt' -delete
 	@echo "deleted log file"
+	@echo "log file :" > log1.txt
 
-clean_doc: 
+clean_doc:
 	@rm -r ./doc/* || echo "doc directory is clean"
 	@find . -name 'doc' -delete
 	@echo "deleted doc folder"
-			
+
+clean_all: clean clean_doc clean_log
+
 doc:
 	javadoc src/vi_limited/*.java  -Xdoclint:none  -d ./doc
 

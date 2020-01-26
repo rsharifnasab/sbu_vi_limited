@@ -149,7 +149,8 @@ public class Vim{
 				//save();
 				exit();
 				break;
-
+				
+			case "q":
 			case "q!":
 				exit();
 				break;
@@ -202,6 +203,13 @@ public class Vim{
 		mode = EditorMode.LONG_COMMAND;
 	}
 
+	private void goToStatisticsMode(){
+		Logger.log("enterring statistics mode");
+		resetCommand();
+		mode = EditorMode.STATISTICS;
+		//TODO : show statistics
+	}
+
 
 	/**
 	append last character to input and check it we should run it or not
@@ -221,6 +229,10 @@ public class Vim{
 			return;
 		}
 
+		if (inputC == 'v') // esc presseed
+			goToStatisticsMode();
+
+
 
 	}
 
@@ -231,8 +243,17 @@ public class Vim{
 		if (input == 27) // esc presseed
 			goToOneKeyCommandMode();
 
+
 		//TODO append to text
 		//TODO backspace
+	}
+
+	private void handleStatisticsMode(char inputC){
+		int input = (int) inputC;
+		if( input > 127) // arrow keys
+			return;
+		if (input == 27) // esc presseed
+			goToOneKeyCommandMode();
 	}
 
 	private void handleLongCommand(char inputC){
@@ -279,7 +300,7 @@ public class Vim{
 					break;
 
 				case STATISTICS:
-
+					handleStatisticsMode(input);
 
 			}
 
