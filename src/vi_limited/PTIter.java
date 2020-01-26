@@ -18,7 +18,7 @@ public class PTIter{
 	}
 
 	public char next(){
-		if(! hasNext() ) return '~';
+		if(! hasNext() ) return ' ';
 
 		if(indexInNode>=currentNode.length){
 			goToNextNode();
