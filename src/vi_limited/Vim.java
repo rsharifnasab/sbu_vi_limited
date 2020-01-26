@@ -363,6 +363,7 @@ public class Vim{
 	**/
 	public static void main(String[] args){
 		PieceTable pt = new PieceTable();
+		List<Integer> list = new List<>();
 		Vim app = new Vim(args);
 		app.run();
 	}
