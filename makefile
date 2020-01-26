@@ -35,6 +35,9 @@ clean:
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
 
+	@find . -wholename './out/vi_limited/piecetable' -delete
+	@echo "deleted piece table folder"
+
 	@find . -wholename './out/vi_limited' -delete
 	@echo "deleted vi_limited folder"
 

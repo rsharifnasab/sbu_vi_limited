@@ -113,10 +113,12 @@ public class Vim{
 
 	private void goToEndOfFile(){
 		//TODO
+		TUtil.PError("not implemented yet");
 	}
 
 	private void goToFirstOfFile(){
 		//TODO
+		TUtil.PError("not implemented yet");
 	}
 
 
@@ -360,6 +362,7 @@ public class Vim{
 	it just create new instance of vim and run it
 	**/
 	public static void main(String[] args){
+		PieceTable pt = new PieceTable();
 		Vim app = new Vim(args);
 		app.run();
 	}

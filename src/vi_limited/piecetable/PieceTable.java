@@ -1,9 +1,7 @@
 package vi_limited.piecetable;
 
-class PieceTable{
-	String original;
-	String added;
+public class PieceTable{
+	String[] buffers;
 	Node[] nodes; // list e masalan
-
 
 }
