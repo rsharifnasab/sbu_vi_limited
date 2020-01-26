@@ -128,7 +128,7 @@ public class Vim{
 		its obvious!
 		apply the command
 		and reset it
-
+		and go to one key mode!
 	**/
 	private void applyAndResetLongCommand(){
 		applyLongCommand();
@@ -136,10 +136,7 @@ public class Vim{
 		goToOneKeyCommandMode();
 	}
 
-	/**
-		apply the commnad in vim class
-		for now it just support wq and q!
-	**/
+
 	private void applyLongCommand(){
 		Logger.log("command is : " + command);
 		switch(command){
@@ -149,7 +146,7 @@ public class Vim{
 				//save();
 				exit();
 				break;
-				
+
 			case "q":
 			case "q!":
 				exit();
@@ -194,7 +191,7 @@ public class Vim{
 	private void goToOneKeyCommandMode(){
 		Logger.log("enterring insert one key mode");
 		resetCommand();
-		mode = EditorMode.KEY_COMMAND;
+		mode = EditorMode.ONE_KEY_COMMAND;
 	}
 
 	private void goToOneLongCommandMode(){
@@ -211,28 +208,19 @@ public class Vim{
 	}
 
 
-	/**
-	append last character to input and check it we should run it or not
-	**/
 	private void handleOneCharCommand(char inputC){
 		int input = (int) inputC;
 		if( input > 127  || input == 27) // arrow keys or esc
 			return;
+
 		Logger.log( input + " " + inputC);
 
-		if (inputC == 'i'){ // i
+		if (inputC == 'i')
 			goToInsertMode();
-			return;
-		}
-		if (inputC == ':'){
+		else if (inputC == ':')
 			goToOneLongCommandMode();
-			return;
-		}
-
-		if (inputC == 'v') // esc presseed
+		else if (inputC == 'v')
 			goToStatisticsMode();
-
-
 
 	}
 
@@ -261,11 +249,11 @@ public class Vim{
 		if( input > 127) // arrow keys or esc
 			return;
 
-		if(input == 27) //escape
+		else if(input == 27) //escape
 			goToOneKeyCommandMode();
 
 
-		if(input == 10) // enter
+		else if(input == 10) // enter
 			applyAndResetLongCommand();
 		// if(input ==  backspace) // TODO
 		else
@@ -277,8 +265,7 @@ public class Vim{
 	**/
 	public void run(){
 
-
-		do {
+		while(running){
 			char input = TUtil.getChar();
 			screen.printLine(cursor);
 
@@ -286,7 +273,7 @@ public class Vim{
 
 			switch(mode){
 
-				case KEY_COMMAND:
+				case ONE_KEY_COMMAND:
 					handleOneCharCommand(input);
 					break;
 
@@ -302,13 +289,12 @@ public class Vim{
 				case STATISTICS:
 					handleStatisticsMode(input);
 
-			}
+			} // end switch
 
 
-		} while ( running );
+		} // end while
 
-
-	}
+	} // end function run
 
 	/**
 	 cleanup and get ready to exit after a loop

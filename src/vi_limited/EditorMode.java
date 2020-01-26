@@ -6,6 +6,6 @@ package vi_limited;
 public enum EditorMode{
 	STATISTICS, // to show some statics!
 	INSERT, // for editiing text
-	KEY_COMMAND, // for handling one keycommand such as exit
+	ONE_KEY_COMMAND, // for handling one keycommand such as exit
 	LONG_COMMAND // for handling long command such as :wq (start with : )
 }
