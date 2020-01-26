@@ -2,7 +2,7 @@ package vi_limited;
 
 /**
 	 a class for handling cursor position and movement
-	 it has some tricky things
+	 it. has some tricky things
 	 like clone
 	 and set curser and sync
 

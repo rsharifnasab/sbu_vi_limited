@@ -364,6 +364,15 @@ public class Vim{
 	public static void main(String[] args){
 		PieceTable pt = new PieceTable();
 		List<Integer> list = new List<>();
+		list.add(1);
+		list.add(3);
+		list.add(2);
+		list.add(1);
+		Integer[] db = list.getAsArray(1);
+		for(Integer i : db )
+			TUtil.print("i : " + i,Color.YELLOW);
+
+		ETCUtil.delay(5);
 		Vim app = new Vim(args);
 		app.run();
 	}

@@ -4,7 +4,6 @@ public class List<T>{
 	private Object[] innerArray;
 	private int NOE;
 
-
 	public List(){
 		innerArray = new Object[0];
 		NOE = 0;
@@ -21,10 +20,18 @@ public class List<T>{
 	}
 
 	@SuppressWarnings("unchecked")
-	public T[] getAsArray(){
-		T[] clone = (T[]) new Object[NOE];
+	public T[] getAsArray(T alaki){ // sensetive code
+		T[] clone =  (T[]) java.lang.reflect.Array.newInstance(alaki.getClass(), NOE);
 		copy(innerArray,clone,NOE);
 		return clone;
+	}
+
+	public T getLast(){
+		return get(NOE-1);
+	}
+
+	public int noe(){
+		return NOE;
 	}
 
 	public void ensureCapacity(int n){
