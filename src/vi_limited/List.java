@@ -22,6 +22,23 @@ public class List<T>{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public void addAll(T[] toAdd){
+		for(Object  elem : toAdd ){
+			this.add( (T) elem);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addAll(char[] toAdd){
+		for(char  c : toAdd ){
+			Object elem =  (Character) (c);
+			this.add( (T) elem);
+		}
+	}
+
+
+
 
 
 	public void add(T elem){
@@ -70,6 +87,14 @@ public class List<T>{
 		for (int i =0; i<tedad ; i++) {
 			dist[dfrom+i] = source[sfrom+i];
 		}
+	}
+
+	public void delete(int index){
+		for (int i=index;i+1<NOE ;i++ ) {
+			innerArray[i] = innerArray[i+1];
+		}
+		innerArray[NOE-1] = null;
+		NOE--;
 	}
 
 }

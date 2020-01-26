@@ -1,7 +1,5 @@
 package vi_limited;
 
-import java.io.File;
-import vi_limited.piecetable.*;
 /**
 out main class for vim editor
 **/
@@ -33,7 +31,7 @@ public class Vim{
 	public final int height = 24 - 4; // TODO test mode
 	public final int width = 80 - 10;
 
-	public File ourFile;
+	public java.io.File ourFile;
 	public final Cursor cursor;
 	public final Screen screen;
 
@@ -61,6 +59,12 @@ public class Vim{
 	**/
 	private Boolean running = true;
 
+
+
+
+	PieceTable context;
+
+
 	/**
 	first cunstructor of vim class
 	change with caution
@@ -75,16 +79,16 @@ public class Vim{
 	**/
 	public Vim(String ourFile){
 		Logger.log("starting vim app");
-		this.ourFile = (ourFile==null) ? null : new File(ourFile);
+		this.ourFile = (ourFile==null) ? null : new java.io.File(ourFile);
 
 		TUtil.makeTerminalHandy();
 
 		greetUser();
 
 
-		screen = new Screen(width,height,'~');
+		context = new PieceTable();
+		screen = new Screen(width,height,context);
 		cursor = new Cursor(width,height);
-
 		//TUtil.clearConsuleC(cursor);
 		//TUtil.clearConsule();
 

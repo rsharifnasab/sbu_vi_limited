@@ -16,26 +16,38 @@ public class Screen{
 	**/
 	Character[][] innerArr;
 
+
+	PieceTable context;
+
 	public final int height;
 	public final int width;
+
+	public int screenPos=0;
 
 	/**
 		cunstructor with the given char to fill array
 	**/
-	public Screen(int width,int height,char c){
+	public Screen(int width,int height,PieceTable context){
 		this.width = width;
 		this.height = height;
+		this.context = context;
 		innerArr = new Character[this.height+1][this.width+1];
-		fillScreen(c);
+		updateScreenContent();
 		//fillWithNumbers(); // for testing
 	}
 
-	/**
-		cunstructor without character to fill
-	**/
-	public Screen(int height,int width){
-		this(height,width,' ');
+
+
+	public void updateScreenContent(){
+		char[][] content = context.getLines(screenPos,height);
+
+		for (int i=1; i<=height; i++ ) {
+			for(int j=1; j<=width; j++){
+				innerArr[i][j] = content[i][j];
+			}
+		}
 	}
+
 
 
 	/**

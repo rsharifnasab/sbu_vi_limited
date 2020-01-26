@@ -1,0 +1,10 @@
+src/vi_limited/Vim.java
+-cp
+./src/
+-g
+-d
+out/
+-Werror
+-Xlint
+-Xmaxerrs
+3

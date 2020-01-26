@@ -1,6 +1,5 @@
 package vi_limited;
 
-import java.io.File;
 
 /**
 	some utilities for working with files
@@ -11,7 +10,7 @@ public class FilesUtil{
 	public static String toAbsoloutePath(String fileName){
 		if(fileName == null)
 			return null;
-		File f = new File(fileName);
+		java.io.File f = new java.io.File(fileName);
 		if(f.canRead() && f.isFile() && f.exists())
 			return f.getAbsolutePath();
 		return null;
@@ -25,7 +24,7 @@ public class FilesUtil{
 		if(fileName == null)
 			return false;
 		try {
-			File f = new File(fileName);
+			java.io.File f = new java.io.File(fileName);
 			if(f.exists())
 				return false;
 			f.createNewFile();
@@ -45,7 +44,7 @@ public class FilesUtil{
 		if(fileName == null)
 			return FileStatus.NULL_YET;
 
-		File f = new File(fileName);
+		java.io.File f = new java.io.File(fileName);
 
 		if(f.isDirectory())
 			return FileStatus.IS_DIR;
@@ -62,6 +61,30 @@ public class FilesUtil{
 	**/
 	public static Boolean isWritableFile(String fileName){
 		return getFileState(fileName) == FileStatus.WRITABLE;
+	}
+
+	public static String getFileContext(java.io.File file){
+		if(file == null) return null;
+
+		FileStatus state = getFileState( file.getAbsolutePath() );
+		if (state == FileStatus.WRITABLE){
+			try{
+				java.util.Scanner sc = new java.util.Scanner(file);
+	    			// we just need to use \\Z as delimiter
+	   			sc.useDelimiter("\\Z");
+				return sc.next(); // read whole file!
+			}catch (Exception e) {
+				e.printStackTrace();
+				TUtil.PError("cannot read input file");
+				return null;
+			}
+		}
+		else return null;
+	}
+
+	public static String getAddressContext(String address){
+		if (address == null) return getFileContext(null);
+		return getFileContext( new java.io.File(address) );
 	}
 
 }
