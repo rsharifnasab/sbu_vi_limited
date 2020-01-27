@@ -14,10 +14,10 @@ public class PieceTable{
 		nodes.add(Node.getInitialNode(0));
 	}
 
-	public PieceTable(java.io.File file){
+	public PieceTable(String fileAdd){
 	 	this();
-		if(file!=null){
-			String initText = FilesUtil.getFileContext(file);
+		if(fileAdd!=null){
+			String initText = FilesUtil.getAddressContext(fileAdd);
 			buffers[0].addAll(initText.toCharArray()); // set original text TODO
 		}
 		nodes.delete(0);

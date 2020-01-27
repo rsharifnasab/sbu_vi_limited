@@ -86,7 +86,7 @@ public class Vim{
 		greetUser();
 
 
-		context = new PieceTable();
+		context = new PieceTable(ourFile);
 		screen = new Screen(width,height,context);
 		cursor = new Cursor(width,height);
 		//TUtil.clearConsuleC(cursor);

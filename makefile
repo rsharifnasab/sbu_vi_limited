@@ -4,12 +4,17 @@ all : reset compile run
 reset:
 	@reset
 
-run: justRun
+run: runArg
 
 runFull: okTerminal justRun resetTerminal
 
 justRun:
 	@java -cp "out/" vi_limited.Vim
+
+runArg:
+	@java -cp "out/" vi_limited.Vim ~/help.txt
+
+
 
 
 okTerminal:
