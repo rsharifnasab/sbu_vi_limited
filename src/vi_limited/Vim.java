@@ -87,9 +87,10 @@ public class Vim{
 
 
 		context = new PieceTable(ourFile);
-		screen = new Screen(width,height,context);
-		cursor = new Cursor(width,height,screen);
-		screen.setCursor(cursor);
+		cursor = new Cursor(width,height);
+		screen = new Screen(width,height,context,cursor);
+		cursor.setScreen(screen);
+
 		//TUtil.clearConsuleC(cursor);
 		//TUtil.clearConsule();
 
@@ -124,7 +125,7 @@ public class Vim{
 	private void goToFirstOfFile(){ // maybe TODO
 		screen.goToFirstOfFile();
 		screen.updateScreenContent();
-		screen.clearAndPrintAll();
+		//screen.clearAndPrintAll();
 		cursor.reset();
 	}
 
@@ -171,6 +172,22 @@ public class Vim{
 			case 'v':
 				goToStatisticsMode();
 				break;
+
+			case 'h':
+				cursor.left();
+				break;
+			case 'l':
+				cursor.right();
+				break;
+
+			case 'j':
+				cursor.down();
+				break;
+			case 'k':
+				cursor.up();
+				break;
+
+
 			case '0':
 				cursor.gotoFirstOfLine();
 				break;
@@ -218,11 +235,20 @@ public class Vim{
 			command += inputC;
 	}
 
+
+
+	private void addText(String text, PTIter iter){
+		context.add(text,iter);
+		//TUtil.PError("context : "+context);
+		screen.updateScreenContent();
+	}
+
 	/**
 	main function and main loop
 	**/
 	public void run(){
-
+		PTIter iter = new PTIter(context);
+		addText("salam chetori",iter); // bia
 		while(running){
 			char input = TUtil.getChar();
 			screen.printLine(cursor);

@@ -25,11 +25,20 @@ public class Cursor{
 		for syncing the real place of cursor with the x ,y
 		becasue at first it is not guarantee that cursor is in 1,1 place
 	**/
-	public Cursor(int width, int height, Screen screen){
+	public Cursor(int width, int height){
 		this.width = width;
 		this.height = height;
 		this.screen = screen;
 		this.reset(); // set x, y
+	}
+	
+	public Cursor(int width, int height,Screen screen){
+		this(width,height);
+		this.setScreen(screen);
+	}
+
+	public void setScreen(Screen screen){
+		this.screen = screen;
 	}
 
 	/**

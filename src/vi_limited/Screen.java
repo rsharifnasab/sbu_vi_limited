@@ -28,10 +28,11 @@ public class Screen{
 	/**
 		cunstructor with the given char to fill array
 	**/
-	public Screen(int width,int height,PieceTable context){
+	public Screen(int width,int height,PieceTable context,Cursor c){
 		this.width = width;
 		this.height = height;
 		this.context = context;
+		this.cursor = c;
 		innerArr = new Character[this.height+1][this.width+1];
 		updateScreenContent();
 		//fillWithNumbers(); // for testing
@@ -48,7 +49,7 @@ public class Screen{
 	public void up(){
 		posInFile = (posInFile>1)? posInFile-1 : 1;
 		updateScreenContent();
-		clearAndPrintAll();
+		//clearAndPrintAll();
 	}
 
 	public void down(){
@@ -56,12 +57,9 @@ public class Screen{
 		//posInFile = (posInFile>1)? posInFile-1 : 1;
 		posInFile++; // maybe TODO
 		updateScreenContent();
-		clearAndPrintAll();
+		//clearAndPrintAll();
 	}
 
-	public void setCursor(Cursor c){
-		this.cursor = c;
-	}
 
 
 
@@ -84,7 +82,8 @@ public class Screen{
 
 			} // end inner for
 		} // end outer for
-	} // end duntion
+		clearAndPrintAll();
+	} // end funtion
 
 
 
@@ -120,7 +119,7 @@ public class Screen{
 	public void clearAndPrintAll(){
 		Cursor clone = cursor.clone();
 		clone.reset();
-		for (int i=1; i<=height; i++ ) {
+		for (int i=0; i<=height; i++ ) { // TODO 1 bia
 			printLine(clone);
 			clone.justDown();
 		}

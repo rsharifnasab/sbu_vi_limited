@@ -112,6 +112,7 @@ public class List<T>{
 			innerArray[i+tedad] = innerArray[i];
 			innerArray[i] = null;
 		}
+		NOE+=tedad;
 	}
 
 	private void shiftTwoRight(int from){ // 123 -> 12XX3
@@ -135,6 +136,7 @@ public class List<T>{
 	public void replaceOneWithThree(int index, T[] elems){
 		shiftTwoRight(index+1);
 		set3(index,elems);
+
 	}
 
 

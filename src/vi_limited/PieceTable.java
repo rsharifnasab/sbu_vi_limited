@@ -29,6 +29,24 @@ public class PieceTable{
 
 	}
 
+	@Override
+	public String toString(){
+		String ans = "nodes : \n";
+		for(Object n : nodes.getAsArray(Node.getAlaki()) ){
+			ans += n.toString() + "\n";
+		}
+		ans += "\nbuffer[0] :";
+		for(Object n : buffers[0].getAsArray('a')){
+			ans += n.toString();
+		}
+		ans += "\nbuffer[1] :";
+		for(Object n : buffers[1].getAsArray('a')){
+			ans += n.toString();
+		}
+
+		return ans;
+	}
+
 	public void add(String toAdd,PTIter iter){
 		buffers[1].addAll(toAdd.toCharArray());
 
@@ -41,19 +59,8 @@ public class PieceTable{
 			toSplit.split(splitIndex,newTextLen)
 		);
 
+
 	}
 
-/*
-	public char[][] getLines(int from,int width, int lineCount){
-		char[][] ans = new char[lineCount+1][];
-		for (int i =1; i<=lineCount;i++ ) {
-			ans[i] = new char[width+1];
-			for (int j =1; j<=width;j++ ) {
-				ans[i][j] = '-';
-			}
-		}
-		return ans;
-	}
-*/
 
 }

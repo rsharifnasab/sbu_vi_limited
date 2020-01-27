@@ -21,6 +21,10 @@ class Node{
 			return "Node! {start : " + start + ", length : " + length + ", type : " + type + "}";
 	}
 
+	public static Node getAlaki(){
+		return new Node(1,1,1);
+	}
+
 	public Node[] split(int splitPlace, int newTextLen){
 		Node[] ans = new Node[3];
 		ans[0]= new Node(this.start,splitPlace-this.start, this.type);
