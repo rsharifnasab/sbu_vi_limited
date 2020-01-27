@@ -60,7 +60,8 @@ public class Vim{
 	private Boolean running = true;
 
 
-
+	String tempText = "";
+	boolean moved = false;
 
 	PieceTable context;
 
@@ -161,7 +162,7 @@ public class Vim{
 		if( input > 127  || input == 27) // arrow keys or esc
 			return;
 
-		Logger.log( input + " " + inputC);
+		//Logger.log( input + " " + inputC);
 		switch (inputC) {
 			case 'i':
 				goToInsertMode();
@@ -205,9 +206,8 @@ public class Vim{
 			return;
 		if (input == 27) // esc presseed
 			goToOneKeyCommandMode();
+		tempText += inputC;
 
-
-		//TODO append to text
 		//TODO backspace
 	}
 
@@ -237,10 +237,19 @@ public class Vim{
 
 
 
-	private void addText(String text, PTIter iter){
-		context.add(text,iter);
-		//TUtil.PError("context : "+context);
+	private void addText(PTIter iter){
+		context.add(tempText,iter);
 		screen.updateScreenContent();
+		tempText = "";
+		Logger.log("context:"+context);
+		//TUtil.PError("context:"+context);
+
+	}
+
+	private void handleAddText(char inputC,PTIter iter){
+		if(tempText.length() == 0) return;
+		if(inputC == '\n' || inputC == ' ' || moved)
+				addText(iter);
 	}
 
 	/**
@@ -248,12 +257,12 @@ public class Vim{
 	**/
 	public void run(){
 		PTIter iter = new PTIter(context);
-		addText("salam chetori",iter); // bia
+		//iter.goToLine(1);
 		while(running){
 			char input = TUtil.getChar();
-			screen.printLine(cursor);
+			screen.printLine(cursor); // hamoun khat ro dobare chap kon
 
-			handleCursorMove(input);
+			moved = handleCursorMove(input);
 
 			switch(mode){
 
@@ -268,6 +277,7 @@ public class Vim{
 
 				case INSERT:
 					handleInsertMode(input);
+					handleAddText(input,iter);
 					break;
 
 				case STATISTICS:

@@ -4,16 +4,18 @@ all : reset compile q_combine run
 reset:
 	@reset
 
-run: runArg
+run: runArg2
 
 runFull: okTerminal justRun resetTerminal
 
 justRun:
 	@java -cp "out/" vi_limited.Vim
 
-runArg:
+runArg1:
 	@java -cp "out/" vi_limited.Vim ~/Vim.java
 
+runArg2:
+	@java -cp "out/" vi_limited.Vim ~/a.txt
 
 
 

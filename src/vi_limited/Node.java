@@ -25,11 +25,14 @@ class Node{
 		return new Node(1,1,1);
 	}
 
-	public Node[] split(int splitPlace, int newTextLen){
+	public Node[] split(int splitPlace,int indexInBuffer, int newTextLen){
+		int part1len =  splitPlace - this.start;
+		int part2len = this.length - part1len;
+
 		Node[] ans = new Node[3];
-		ans[0]= new Node(this.start,splitPlace-this.start, this.type);
-		ans[1]= new Node(splitPlace,newTextLen,1); //added text
-		ans[2]= new Node(this.start,this.start+this.length-splitPlace, this.type);
+		ans[0]= new Node(this.start,part1len, this.type);
+		ans[1]= new Node(indexInBuffer,newTextLen,1); //added text
+		ans[2]= new Node(splitPlace,part2len, this.type);
 
 		return ans;
 	}

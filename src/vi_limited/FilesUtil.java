@@ -28,7 +28,7 @@ public class FilesUtil{
 			if(f.exists())
 				return false;
 			f.createNewFile();
-			f.delete(); // check if we can create it or not
+			//f.delete(); // check if we can create it or not
 			return true;
 		} catch(Exception e) {
 			return false;

@@ -113,6 +113,7 @@ public class List<T>{
 			innerArray[i] = null;
 		}
 		NOE+=tedad;
+		Logger.log("after shift : " + this);
 	}
 
 	private void shiftTwoRight(int from){ // 123 -> 12XX3
@@ -139,6 +140,15 @@ public class List<T>{
 
 	}
 
+	@Override
+	public String toString(){
+		String ans = "---list :----\n";
+		for(int i =0; i<NOE; i++){
+			ans += innerArray[i] + "\n";
+		}
+		ans+="--------";
+		return ans;
+	}
 
 
 

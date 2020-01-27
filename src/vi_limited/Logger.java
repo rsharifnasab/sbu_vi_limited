@@ -4,7 +4,7 @@ package vi_limited;
 **/
 public class Logger{
 	private static String[] command = new String[3];
-	private static final String LOG_FILE = "./log1.txt";
+	private static final String LOG_FILE = "/tmp/log1.txt";
 	static{
 		command[0] = "/bin/sh";
 		command[1] = "-c";
