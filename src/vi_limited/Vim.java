@@ -89,10 +89,11 @@ public class Vim{
 		context = new PieceTable(ourFile);
 		screen = new Screen(width,height,context);
 		cursor = new Cursor(width,height,screen);
+		screen.setCursor(cursor);
 		//TUtil.clearConsuleC(cursor);
 		//TUtil.clearConsule();
 
-		screen.clearAndPrintAll(cursor);
+		screen.clearAndPrintAll();
 
 		goToOneKeyCommandMode();
 	}
@@ -123,7 +124,8 @@ public class Vim{
 	private void goToFirstOfFile(){ // maybe TODO
 		screen.goToFirstOfFile();
 		screen.updateScreenContent();
-		screen.clearAndPrintAll(cursor);
+		screen.clearAndPrintAll();
+		cursor.reset();
 	}
 
 

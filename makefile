@@ -12,7 +12,7 @@ justRun:
 	@java -cp "out/" vi_limited.Vim
 
 runArg:
-	@java -cp "out/" vi_limited.Vim ~/help.txt
+	@java -cp "out/" vi_limited.Vim ~/Vim.java
 
 
 

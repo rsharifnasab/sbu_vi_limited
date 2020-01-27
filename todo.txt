@@ -1,0 +1,5 @@
+long lines problem 
+---> insert! (sort nodes)
+scroll to end of file problem 
+
+backspace  :-?

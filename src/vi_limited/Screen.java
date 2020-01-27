@@ -18,6 +18,7 @@ public class Screen{
 
 
 	PieceTable context;
+	Cursor cursor;
 
 	public final int height;
 	public final int width;
@@ -47,14 +48,20 @@ public class Screen{
 	public void up(){
 		posInFile = (posInFile>1)? posInFile-1 : 1;
 		updateScreenContent();
+		clearAndPrintAll();
 	}
 
 	public void down(){
+
 		//posInFile = (posInFile>1)? posInFile-1 : 1;
 		posInFile++; // maybe TODO
 		updateScreenContent();
+		clearAndPrintAll();
 	}
 
+	public void setCursor(Cursor c){
+		this.cursor = c;
+	}
 
 
 
@@ -110,14 +117,15 @@ public class Screen{
 		clear screen and print all of screen
 		it will be used first time
 	**/
-	public void clearAndPrintAll(Cursor c){
-		//TUtil.clearConsuleC(c);
-		c.reset();
+	public void clearAndPrintAll(){
+		Cursor clone = cursor.clone();
+		clone.reset();
 		for (int i=1; i<=height; i++ ) {
-			printLine(c);
-			c.down();
+			printLine(clone);
+			clone.justDown();
 		}
-		c.reset();
+		clone.reset();
+		cursor.sync();
 	}
 
 	/**

@@ -111,15 +111,15 @@ public class Cursor{
 	}
 
 	public void up(){
-	//	if (y == 1)
-	//		screen.up();
+		if (y == 1)
+			screen.up();
 		y = (y>1)? y-1 : 1;
 		sync();
 	}
 
 	public void down(){
-	//	if (y >= height-5)
-	//		screen.down();
+		if (y >= height-1)
+			screen.down();
 		y = (y<height)? y+1 : height;
 		sync();
 	}
