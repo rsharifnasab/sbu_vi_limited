@@ -10,7 +10,7 @@ public class PTIter{
 		this.context = context;
 		currentNode = context.nodes.get(currentNodeIndex);
 	}
-
+/*
 	public boolean hasNext(){
 		if(indexInNode+1<currentNode.length)
 			return true;
@@ -40,5 +40,6 @@ public class PTIter{
 			if(t=='\n') i++;
 		}
 	}
+      */
 
 }

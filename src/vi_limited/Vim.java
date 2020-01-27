@@ -259,7 +259,7 @@ public class Vim{
 	public void run(){
 		while(running){
 			PTIter iter = new PTIter(context);
-			iter.goToLine(3);
+			//iter.goToLine(3);
 			char input = TUtil.getChar();
 			screen.printLine(cursor); // hamoun khat ro dobare chap kon
 

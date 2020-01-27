@@ -48,13 +48,13 @@ public class Screen{
 
 	public void goToFirstOfFile(){
 		posInFile = 1;
-		iter.goToLine(posInFile);
+	//	iter.goToLine(posInFile);
 		updateScreenContent();
 	}
 
 	public void up(){
 		posInFile = (posInFile>1)? posInFile-1 : 1;
-		iter.goToLine(posInFile);
+		//iter.goToLine(posInFile);
 		updateScreenContent();
 		//clearAndPrintAll();
 	}
@@ -63,7 +63,7 @@ public class Screen{
 
 		//posInFile = (posInFile>1)? posInFile-1 : 1;
 		posInFile++; // maybe TODO
-		iter.goToLine(posInFile);
+	//	iter.goToLine(posInFile);
 		updateScreenContent();
 		//clearAndPrintAll();
 	}
@@ -72,13 +72,17 @@ public class Screen{
 
 
 	public void updateScreenContent(){ // very coslt operation
-
+		char[] text = context.getAllText().toCharArray(); // TODO omtimize
+		int ind = 0;
+		int len = text.length;
+		outer:
 		for (int i=1; i<=height; i++ ) {
 			for(int j=1; j<=width; j++){
-				innerArr[i][j] = iter.next();
+				innerArr[i][j] = text[ind++];
 				if(innerArr[i][j]=='\n'){
 					break;
 				}
+				if(ind == len) break outer;
 
 			} // end inner for
 		} // end outer for
