@@ -1,6 +1,9 @@
 package vi_limited;
 
-
+/**
+	a class to parse and extract info from args
+	it also check is it parable or not
+**/
 public class ArgumentParser{
 	private String[] args;
 

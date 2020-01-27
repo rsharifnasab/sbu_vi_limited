@@ -18,6 +18,7 @@ public class Cursor{
 	private int y;
 
 	private Screen screen;
+
 	/**
 		cunstructor of cursor
 		it set width and hegith
@@ -28,15 +29,22 @@ public class Cursor{
 	public Cursor(int width, int height){
 		this.width = width;
 		this.height = height;
-		this.screen = screen;
 		this.reset(); // set x, y
 	}
 
+	/**
+		yet another cunstrutor of screen
+		it also want screen
+		if you prefer not to use it, you should set screen later
+	**/
 	public Cursor(int width, int height,Screen screen){
 		this(width,height);
 		this.setScreen(screen);
 	}
 
+	/**
+		it sets the screen if you havnt set it in constructor
+	**/
 	public void setScreen(Screen screen){
 		this.screen = screen;
 	}
@@ -63,11 +71,16 @@ public class Cursor{
 		System.out.print("\u001b[" + y + ";" + x + "H");
 	}
 
-
+	/**
+		its obvious, we go to first char of line
+	**/
 	public void gotoFirstOfLine(){
 		goToX(1);
 	}
 
+	/**
+		change cursor place to end of current line
+	**/
 	public void gotoLastOfLine(){
 		goToX(width);
 	}
@@ -119,27 +132,45 @@ public class Cursor{
 		setCursor(1, 1);
 	}
 
+	/**
+		move cursor up in current x
+	**/
 	public void up(){
 		if (y == 1)	screen.up();
 		y = (y>1)? y-1 : 1;
 		sync();
 	}
 
+	/**
+		move curspr down in current x
+		it also change screen place if cursor reached end of screen
+	**/
 	public void down(){
 		if (y >= height-1) screen.down();
 		y = (y<height)? y+1 : height;
 		sync();
 	}
 
-	public void justDown(){
+
+	/**
+		just go down, no check for screen
+	**/
+	void justDown(){
 		y = (y<height)? y+1 : height;
 		sync();
 	}
 
+	/**
+		move cursor one left
+	**/
 	public void left(){
 		x = (x>1)? x-1 : 1;
 		sync();
 	}
+
+	/**
+		move cursor one right
+	**/
 	public void right(){
 		x = (x<width)? x+1 : width;
 		sync();
