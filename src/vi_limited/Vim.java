@@ -65,6 +65,8 @@ public class Vim{
 
 	PieceTable context;
 
+	PTIter iter;
+
 
 	/**
 	first cunstructor of vim class
@@ -88,7 +90,8 @@ public class Vim{
 
 
 		context = new PieceTable(ourFile);
-		cursor = new Cursor(width,height);
+		iter = new PTIter(context);
+		cursor = new Cursor(width,height,iter);
 		screen = new Screen(width,height,context,cursor);
 		cursor.setScreen(screen);
 

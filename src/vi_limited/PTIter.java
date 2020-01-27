@@ -10,6 +10,22 @@ public class PTIter{
 		this.context = context;
 		currentNode = context.nodes.get(currentNodeIndex);
 	}
+
+
+	public void up(){
+
+	}
+
+	public void down(){
+
+	}
+	public void left(){
+
+	}
+	public void right(){
+
+	}
+
 /*
 	public boolean hasNext(){
 		if(indexInNode+1<currentNode.length)
