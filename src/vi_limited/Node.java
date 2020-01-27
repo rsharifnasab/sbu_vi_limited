@@ -28,6 +28,7 @@ class Node{
 	public Node[] split(int splitPlace,int indexInBuffer, int newTextLen){
 		int part1len =  splitPlace - this.start;
 		int part2len = this.length - part1len;
+		Logger.log("length of toSplit : " + this.length);
 
 		Node[] ans = new Node[3];
 		ans[0]= new Node(this.start,part1len, this.type);

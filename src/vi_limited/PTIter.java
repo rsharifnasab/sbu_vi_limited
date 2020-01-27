@@ -12,9 +12,9 @@ public class PTIter{
 	}
 
 	public boolean hasNext(){
-		if(indexInNode<currentNode.length)
+		if(indexInNode+1<currentNode.length)
 			return true;
-		return context.nodes.noe() > (currentNodeIndex+1);
+		return context.nodes.noe() > (currentNodeIndex+2);
 	}
 
 	public char next(){
@@ -23,6 +23,8 @@ public class PTIter{
 		if(indexInNode>=currentNode.length){
 			goToNextNode();
 		}
+		if(! hasNext() ) return ' ';
+
 		return context.buffers[currentNode.type].get(indexInNode++);
 	}
 
@@ -33,7 +35,7 @@ public class PTIter{
 	}
 
 	public void goToLine(int line){
-		for(int i =1; i < line; ){
+		for(int i =1; i < line && hasNext(); ){
 			char t = this.next();
 			if(t=='\n') i++;
 		}

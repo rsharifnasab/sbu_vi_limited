@@ -200,7 +200,7 @@ public class Vim{
 
 	}
 
-	private void handleInsertMode(char inputC){
+	private void handleInsertMode(char inputC,PTIter iter){
 		int input = (int) inputC;
 		if( input > 127) // arrow keys
 			return;
@@ -208,7 +208,7 @@ public class Vim{
 			goToOneKeyCommandMode();
 		tempText += inputC;
 
-		//TODO backspace
+		handleAddText(inputC,iter);
 	}
 
 	private void handleStatisticsMode(char inputC){
@@ -256,9 +256,9 @@ public class Vim{
 	main function and main loop
 	**/
 	public void run(){
-		PTIter iter = new PTIter(context);
 		//iter.goToLine(1);
 		while(running){
+			PTIter iter = new PTIter(context);
 			char input = TUtil.getChar();
 			screen.printLine(cursor); // hamoun khat ro dobare chap kon
 
@@ -276,8 +276,7 @@ public class Vim{
 
 
 				case INSERT:
-					handleInsertMode(input);
-					handleAddText(input,iter);
+					handleInsertMode(input,iter);
 					break;
 
 				case STATISTICS:

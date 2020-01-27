@@ -10,6 +10,7 @@ public class PieceTable{
 		buffers = (List<Character>[]) new List[2];
 		buffers[0] = new List<Character>(); // original
 		buffers[1] = new List<Character>(); // added
+		
 		nodes = new List<Node>();
 		nodes.add(Node.getInitialNode(0));
 	}
@@ -53,6 +54,7 @@ public class PieceTable{
 
 		int newTextLen = toAdd.length();
 		int splitIndex = iter.currentNode.start + iter.indexInNode;
+		Logger.log("split index(should be 0) : " + splitIndex);
 
 		Node toSplit = iter.currentNode;
 		nodes.replaceOneWithThree(
