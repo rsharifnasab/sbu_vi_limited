@@ -250,8 +250,19 @@ public class Vim{
 
 	}
 
+	private void addCharToScreen(char inputC){
+		Character[] line = screen.getLine(cursor.getLine());
+		int x = cursor.getX();
+		int len = line.length;
+		for(int i = len-1; i > x; i--){
+			line[i] = line[i-1];
+		}
+		line[x] = inputC;
+	}
+
 	private void handleAddText(char inputC,PTIter iter){
 		if(tempText.length() == 0) return;
+		addCharToScreen(inputC);
 		if(inputC == '\n' || inputC == ' ' || moved)
 			addText(iter);
 	}
@@ -310,7 +321,7 @@ public class Vim{
 		TUtil.print("initializing vim!", Color.YELLOW);
 		TUtil.print("input file is : " + ourFile, Color.BLUE);
 		TUtil.print("the app is starting ", Color.GREEN);
-		ETCUtil.delay(2);
+		ETCUtil.delay(1);
 	}
 
 	/**
