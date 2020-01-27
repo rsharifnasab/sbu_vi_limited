@@ -63,7 +63,7 @@ public class Screen{
 
 		//posInFile = (posInFile>1)? posInFile-1 : 1;
 		posInFile++; // maybe TODO
-	//	iter.goToLine(posInFile);
+		//iter.goToLine(posInFile);
 		updateScreenContent();
 		//clearAndPrintAll();
 	}

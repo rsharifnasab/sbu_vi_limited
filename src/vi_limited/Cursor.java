@@ -17,8 +17,6 @@ public class Cursor{
 	private int x;
 	private int y;
 
-	private PTIter iter;
-
 	private Screen screen;
 	/**
 		cunstructor of cursor
@@ -27,16 +25,15 @@ public class Cursor{
 		for syncing the real place of cursor with the x ,y
 		becasue at first it is not guarantee that cursor is in 1,1 place
 	**/
-	public Cursor(int width, int height,PTIter iter){
+	public Cursor(int width, int height){
 		this.width = width;
 		this.height = height;
 		this.screen = screen;
-		this.iter = iter;
 		this.reset(); // set x, y
 	}
 
-	public Cursor(int width, int height,Screen screen,PTIter iter){
-		this(width,height,iter);
+	public Cursor(int width, int height,Screen screen){
+		this(width,height);
 		this.setScreen(screen);
 	}
 
@@ -51,7 +48,7 @@ public class Cursor{
 	we SHOUD NOT HAVE more than one cursor for long time
 	**/
 	public Cursor clone(){
-		Cursor clone =  new Cursor(width,height,screen,iter);
+		Cursor clone =  new Cursor(width,height,screen);
 		clone.setCursor(this.x, this.y);
 		return clone;
 	}
@@ -124,16 +121,12 @@ public class Cursor{
 
 	public void up(){
 		if (y == 1)	screen.up();
-		iter.up();
-
 		y = (y>1)? y-1 : 1;
 		sync();
 	}
 
 	public void down(){
 		if (y >= height-1) screen.down();
-		iter.down();
-
 		y = (y<height)? y+1 : height;
 		sync();
 	}
@@ -144,12 +137,10 @@ public class Cursor{
 	}
 
 	public void left(){
-		iter.left();
 		x = (x>1)? x-1 : 1;
 		sync();
 	}
 	public void right(){
-		iter.right();
 		x = (x<width)? x+1 : width;
 		sync();
 	}

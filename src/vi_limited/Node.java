@@ -27,8 +27,12 @@ class Node{
 	}
 
 
-	public static Node getInitialNode(int length){
-		return new Node(0,length,0,0); // contains all of original
+	public static Node getInitialNode(int length,String text){
+		int toAddLines = 0;
+		for(char c : text.toCharArray() ){
+			if(c=='\n') toAddLines++;
+		}
+		return new Node(0,length,0,toAddLines); // contains all of original
 	}
 
 	@Override

@@ -12,19 +12,20 @@ public class PieceTable{
 		buffers[1] = new List<Character>(); // added
 
 		nodes = new List<Node>();
-		nodes.add(Node.getInitialNode(0));
+		nodes.add(Node.getInitialNode(0,""));
 	}
 
 	public PieceTable(String fileAdd){
 	 	this();
-		if(fileAdd!=null){
-			String initText = FilesUtil.getAddressContext(fileAdd);
-			buffers[0].addAll(initText.toCharArray());
-		}
+		if(fileAdd==null) return;
+
+		String initText = FilesUtil.getAddressContext(fileAdd);
+		buffers[0].addAll(initText.toCharArray());
+
 		nodes.delete(0);
 		nodes.add(
 			Node.getInitialNode(
-				buffers[0].noe()
+				buffers[0].noe(),initText
 			)
 		);
 
@@ -56,13 +57,13 @@ public class PieceTable{
 		return len;
 	}
 	public String getAllText(){
+		PTIter iter = new PTIter(this);
 		int len = getTextLen();
 		char[] ansCHA = new char[len];
 		int le = 0;
-		for (Node n : nodes.getAsArray(Node.getAlaki())) {
-			for(int i=n.start; i<(n.length+n.start); i++){
-				ansCHA[le++] = buffers[n.type].get(i);
-			}
+		for(int i =0;i < len; i++){
+			ansCHA[le++] = iter.get();
+			iter.right();
 		}
 
 		return new String(ansCHA);

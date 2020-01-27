@@ -91,7 +91,7 @@ public class Vim{
 
 		context = new PieceTable(ourFile);
 		iter = new PTIter(context);
-		cursor = new Cursor(width,height,iter);
+		cursor = new Cursor(width,height);
 		screen = new Screen(width,height,context,cursor);
 		cursor.setScreen(screen);
 
@@ -121,12 +121,13 @@ public class Vim{
 		//TODO : show statistics
 	}
 
-	private void goToEndOfFile(){
+	private void vimGoToEndOfFile(){
 		//TODO
 		TUtil.PError("not implemented yet");
 	}
 
-	private void goToFirstOfFile(){ // maybe TODO
+	private void vimGoToFirstOfFile(){ // maybe TODO
+		iter.reset();
 		screen.goToFirstOfFile();
 		screen.updateScreenContent();
 		//screen.clearAndPrintAll();
@@ -135,11 +136,16 @@ public class Vim{
 
 	public void save(){
 		FilesUtil.writeToFile(context.getAllText(),ourFile);
+		Logger.log("saved : \n"+context.getAllText());
 	}
 
 	private void applyLongCommand(){
 		Logger.log("command is : " + command);
 		switch(command){
+
+			case "w":
+				save();
+				break;
 
 			case "wq":
 			case "x":
@@ -153,13 +159,49 @@ public class Vim{
 				break;
 
 			case "0":
-				goToFirstOfFile();
+				vimGoToFirstOfFile();
 				break;
 			case "$":
-				goToEndOfFile();
+				vimGoToEndOfFile();
 				break;
 		}
 	}
+
+
+	private void vimUp(){
+		cursor.up();
+		iter.up();
+	}
+
+	private void vimDown(){
+		cursor.down();
+		iter.down();
+	}
+
+	private void vimLeft(){
+		cursor.left();
+		iter.left();
+	}
+
+
+	private void vimRight(){
+		cursor.right();
+		iter.right();
+	}
+
+	private void vimGotoFirstOfLine(){
+		cursor.gotoLastOfLine();
+		iter.gotoLastOfLine();
+	}
+
+	private void vimGotoLastOfLine(){
+		cursor.gotoFirstOfLine();
+		iter.gotoFirstOfLine();
+	}
+
+
+
+
 
 
 
@@ -181,25 +223,25 @@ public class Vim{
 				break;
 
 			case 'h':
-				cursor.left();
+				vimLeft();
 				break;
 			case 'l':
-				cursor.right();
+				vimRight();
 				break;
 
 			case 'j':
-				cursor.down();
+				vimDown();
 				break;
 			case 'k':
-				cursor.up();
+				vimUp();
 				break;
 
 
 			case '0':
-				cursor.gotoFirstOfLine();
+				vimGotoFirstOfLine();
 				break;
 			case '$':
-				cursor.gotoLastOfLine();
+				vimGotoLastOfLine();
 				break;
 
 		}
@@ -213,7 +255,7 @@ public class Vim{
 		if (input == 27) // esc presseed
 			goToOneKeyCommandMode();
 		tempText += inputC;
-		iter.left();
+		//iter.right(); // TODO bia
 
 		handleAddText(inputC,iter);
 	}
@@ -364,16 +406,16 @@ public class Vim{
 	public boolean handleCursorMove(char input){
 		switch (input) {
 			case up:
-				cursor.up();
+				vimUp();
 				return true;
 			case down:
-				cursor.down();
+				vimDown();
 				return true;
 			case right:
-				cursor.right();
+				vimRight();
 				return true;
 			case left:
-				cursor.left();
+				vimLeft();
 				return true;
 		}
 		return false;
