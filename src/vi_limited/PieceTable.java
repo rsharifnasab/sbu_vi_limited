@@ -69,6 +69,12 @@ public class PieceTable{
 	}
 
 	public void add(String toAdd,PTIter iter){
+
+		int toAddLines = 0;
+		for(char c : toAdd.toCharArray() ){
+			if(c=='\n') toAddLines++;
+		}
+
 		int beginInBuffer = buffers[1].noe();
 		buffers[1].addAll(toAdd.toCharArray());
 
@@ -79,7 +85,7 @@ public class PieceTable{
 		Node toSplit = iter.currentNode;
 		nodes.replaceOneWithThree(
 			iter.currentNodeIndex,
-			toSplit.split(splitIndex,beginInBuffer ,newTextLen)
+			toSplit.split(splitIndex,beginInBuffer ,newTextLen,buffers, toAddLines)
 		);
 
 		Node.deleteEmpty(nodes);

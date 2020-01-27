@@ -75,14 +75,15 @@ public class Screen{
 		char[] text = context.getAllText().toCharArray(); // TODO omtimize
 		int ind = 0;
 		int len = text.length;
+
 		outer:
 		for (int i=1; i<=height; i++ ) {
 			for(int j=1; j<=width; j++){
+				if(ind == len) break outer;
 				innerArr[i][j] = text[ind++];
 				if(innerArr[i][j]=='\n'){
 					break;
 				}
-				if(ind == len) break outer;
 
 			} // end inner for
 		} // end outer for
