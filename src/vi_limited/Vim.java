@@ -250,7 +250,7 @@ public class Vim{
 	private void handleAddText(char inputC,PTIter iter){
 		if(tempText.length() == 0) return;
 		if(inputC == '\n' || inputC == ' ' || moved)
-				addText(iter);
+			addText(iter);
 	}
 
 	/**

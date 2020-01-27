@@ -25,6 +25,8 @@ public class Screen{
 
 	private int posInFile=1;
 
+	private PTIter iter;
+
 	/**
 		cunstructor with the given char to fill array
 	**/
@@ -33,6 +35,8 @@ public class Screen{
 		this.height = height;
 		this.context = context;
 		this.cursor = c;
+
+		this.iter = new PTIter(context);
 		innerArr = new Character[this.height+1][this.width+1];
 		updateScreenContent();
 		//fillWithNumbers(); // for testing
@@ -44,10 +48,13 @@ public class Screen{
 
 	public void goToFirstOfFile(){
 		posInFile = 1;
+		iter.goToLine(posInFile);
+		updateScreenContent();
 	}
 
 	public void up(){
 		posInFile = (posInFile>1)? posInFile-1 : 1;
+		iter.goToLine(posInFile);
 		updateScreenContent();
 		//clearAndPrintAll();
 	}
@@ -56,6 +63,7 @@ public class Screen{
 
 		//posInFile = (posInFile>1)? posInFile-1 : 1;
 		posInFile++; // maybe TODO
+		iter.goToLine(posInFile);
 		updateScreenContent();
 		//clearAndPrintAll();
 	}
@@ -64,20 +72,12 @@ public class Screen{
 
 
 	public void updateScreenContent(){ // very coslt operation
-		PTIter iter = new PTIter(context);
-		iter.goToLine(posInFile);
 
 		for (int i=1; i<=height; i++ ) {
-			boolean enterred = false;
 			for(int j=1; j<=width; j++){
-				if(enterred){
-					innerArr[i][j] = ' ';
-					continue;
-				}
 				innerArr[i][j] = iter.next();
 				if(innerArr[i][j]=='\n'){
-					enterred = true;
-					innerArr[i][j] = ' '; // End of line
+					break;
 				}
 
 			} // end inner for
@@ -119,11 +119,10 @@ public class Screen{
 	public void clearAndPrintAll(){
 		Cursor clone = cursor.clone();
 		clone.reset();
-		for (int i=0; i<=height; i++ ) { // TODO 1 bia
+		for (int i=1; i<=height; i++ ) {
 			printLine(clone);
 			clone.justDown();
 		}
-		clone.reset();
 		cursor.sync();
 	}
 
