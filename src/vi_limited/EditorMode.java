@@ -1,7 +1,8 @@
 package vi_limited;
 
 /**
-	TODO
+	an enum to handle 4 mode of editor
+	more detail in commnets
 **/
 public enum EditorMode{
 	STATISTICS, // to show some statics!

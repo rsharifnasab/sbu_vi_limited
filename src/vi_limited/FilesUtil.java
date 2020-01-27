@@ -5,17 +5,6 @@ package vi_limited;
 	some utilities for working with files
 **/
 public class FilesUtil{
-
-	@Deprecated // untested
-	public static String toAbsoloutePath(String fileName){
-		if(fileName == null)
-			return null;
-		java.io.File f = new java.io.File(fileName);
-		if(f.canRead() && f.isFile() && f.exists())
-			return f.getAbsolutePath();
-		return null;
-	}
-
 	/**
 		check if the filename could be created
 		and its not exists or not
@@ -28,7 +17,7 @@ public class FilesUtil{
 			if(f.exists())
 				return false;
 			f.createNewFile();
-			//f.delete(); // check if we can create it or not
+			f.delete(); // check if we can create it or not
 			return true;
 		} catch(Exception e) {
 			return false;
@@ -63,6 +52,9 @@ public class FilesUtil{
 		return getFileState(fileName) == FileStatus.WRITABLE;
 	}
 
+	/**
+		get all context of file as string with given java.io.File
+	**/
 	public static String getFileContext(java.io.File file){
 		if(file == null) return null;
 
@@ -82,12 +74,19 @@ public class FilesUtil{
 		else return null;
 	}
 
+	/**
+		read all data from the file with string address
+	**/
 	public static String getAddressContext(String address){
 		if (address == null) return getFileContext(null);
 		return getFileContext( new java.io.File(address) );
 	}
 
+	/**
+		wirte specified String to the file with java.io.File input
+	**/
 	public static void writeToFile(String text,java.io.File address){
+		//TODO : null check
 		try {
 			java.io.PrintWriter writer = new java.io.PrintWriter(address, "UTF-8");
 			writer.println(text);
