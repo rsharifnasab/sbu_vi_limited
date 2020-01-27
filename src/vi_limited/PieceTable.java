@@ -27,6 +27,19 @@ public class PieceTable{
 			)
 		);
 
+	}
+
+	public void add(String toAdd,PTIter iter){
+		buffers[1].addAll(toAdd.toCharArray());
+
+		int newTextLen = toAdd.length();
+		int splitIndex = iter.currentNode.start + iter.indexInNode;
+
+		Node toSplit = iter.currentNode;
+		nodes.replaceOneWithThree(
+			iter.currentNodeIndex,
+			toSplit.split(splitIndex,newTextLen)
+		);
 
 	}
 

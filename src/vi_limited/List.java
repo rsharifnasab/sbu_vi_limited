@@ -41,6 +41,8 @@ public class List<T>{
 
 
 
+
+
 	public void add(T elem){
 		if(elem == null)
 			throw new NullPointerException("null elem cant be in list");
@@ -100,5 +102,42 @@ public class List<T>{
 		innerArray[NOE-1] = null;
 		NOE--;
 	}
+
+
+
+
+	private void shiftRight(int from, int tedad){ // 123 -> 12XX3
+		this.ensureCapacity(NOE+tedad);
+		for (int i = NOE-1;i >=from ;i-- ) {
+			innerArray[i+tedad] = innerArray[i];
+			innerArray[i] = null;
+		}
+	}
+
+	private void shiftTwoRight(int from){ // 123 -> 12XX3
+		shiftRight(from,2);
+	}
+
+	private void set(int index,T elem){
+		if(elem == null)
+			throw new NullPointerException("null elem cant be in list");
+		innerArray[index] = elem;
+	}
+
+	private void set3(int index,T[] elems){
+		if(elems == null)
+			throw new NullPointerException("null array of elem");
+		set(index,elems[0]);
+		set(index+1,elems[1]);
+		set(index+2,elems[2]);
+	}
+
+	public void replaceOneWithThree(int index, T[] elems){
+		shiftTwoRight(index+1);
+		set3(index,elems);
+	}
+
+
+
 
 }
