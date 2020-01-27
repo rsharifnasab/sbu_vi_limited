@@ -17,6 +17,7 @@ public class Cursor{
 	private int x;
 	private int y;
 
+	private Screen screen;
 	/**
 		cunstructor of cursor
 		it set width and hegith
@@ -24,9 +25,10 @@ public class Cursor{
 		for syncing the real place of cursor with the x ,y
 		becasue at first it is not guarantee that cursor is in 1,1 place
 	**/
-	public Cursor(int width, int height){
+	public Cursor(int width, int height, Screen screen){
 		this.width = width;
 		this.height = height;
+		this.screen = screen;
 		this.reset(); // set x, y
 	}
 
@@ -37,7 +39,7 @@ public class Cursor{
 	we SHOUD NOT HAVE more than one cursor for long time
 	**/
 	public Cursor clone(){
-		Cursor clone =  new Cursor(width,height);
+		Cursor clone =  new Cursor(width,height,screen);
 		clone.setCursor(this.x, this.y);
 		return clone;
 	}
@@ -109,13 +111,24 @@ public class Cursor{
 	}
 
 	public void up(){
+	//	if (y == 1)
+	//		screen.up();
 		y = (y>1)? y-1 : 1;
 		sync();
 	}
+
 	public void down(){
+	//	if (y >= height-5)
+	//		screen.down();
 		y = (y<height)? y+1 : height;
 		sync();
 	}
+
+	public void justDown(){
+		y = (y<height)? y+1 : height;
+		sync();
+	}
+
 	public void left(){
 		x = (x>1)? x-1 : 1;
 		sync();

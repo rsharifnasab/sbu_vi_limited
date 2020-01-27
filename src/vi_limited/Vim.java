@@ -88,7 +88,7 @@ public class Vim{
 
 		context = new PieceTable(ourFile);
 		screen = new Screen(width,height,context);
-		cursor = new Cursor(width,height);
+		cursor = new Cursor(width,height,screen);
 		//TUtil.clearConsuleC(cursor);
 		//TUtil.clearConsule();
 
@@ -120,9 +120,10 @@ public class Vim{
 		TUtil.PError("not implemented yet");
 	}
 
-	private void goToFirstOfFile(){
-		//TODO
-		TUtil.PError("not implemented yet");
+	private void goToFirstOfFile(){ // maybe TODO
+		screen.goToFirstOfFile();
+		screen.updateScreenContent();
+		screen.clearAndPrintAll(cursor);
 	}
 
 
@@ -302,23 +303,24 @@ public class Vim{
 	because ansi use 3 char to represent arow keys
 	so we used : sum of ord of 3 characters + 10
 	why? check out 193 - 196 on ascii extended table
+	return true if we move it, false toherwise
 	**/
-	public void handleCursorMove(char input){
-
+	public boolean handleCursorMove(char input){
 		switch (input) {
 			case up:
-			cursor.up();
-			break;
+				cursor.up();
+				return true;
 			case down:
-			cursor.down();
-			break;
+				cursor.down();
+				return true;
 			case right:
-			cursor.right();
-			break;
+				cursor.right();
+				return true;
 			case left:
-			cursor.left();
-			break;
+				cursor.left();
+				return true;
 		}
+		return false;
 	}
 
 

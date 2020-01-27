@@ -60,7 +60,7 @@ out_file = quera_folder + "Vim.java"
 
 def get_combined_text(cleaned_javas):
         text = "\n/************ next file **********/\n".join(cleaned_javas)
-        text = "import java.io.*;\n" + text
+       # text = "import java.io.*;\n" + text
         text = text.replace("class Vim", "public class Vim")
         return text
 

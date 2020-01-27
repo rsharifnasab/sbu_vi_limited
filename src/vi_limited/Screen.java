@@ -22,7 +22,7 @@ public class Screen{
 	public final int height;
 	public final int width;
 
-	public int screenPos=1;
+	private int posInFile=1;
 
 	/**
 		cunstructor with the given char to fill array
@@ -36,11 +36,32 @@ public class Screen{
 		//fillWithNumbers(); // for testing
 	}
 
+	public int getPos(){
+		return posInFile;
+	}
+
+	public void goToFirstOfFile(){
+		posInFile = 1;
+	}
+
+	public void up(){
+		posInFile = (posInFile>1)? posInFile-1 : 1;
+		updateScreenContent();
+	}
+
+	public void down(){
+		//posInFile = (posInFile>1)? posInFile-1 : 1;
+		posInFile++; // maybe TODO
+		updateScreenContent();
+	}
 
 
-	public void updateScreenContent(){
+
+
+	public void updateScreenContent(){ // very coslt operation
 		PTIter iter = new PTIter(context);
-		iter.goToLine(screenPos);
+		iter.goToLine(posInFile);
+
 		for (int i=1; i<=height; i++ ) {
 			boolean enterred = false;
 			for(int j=1; j<=width; j++){
@@ -51,7 +72,7 @@ public class Screen{
 				innerArr[i][j] = iter.next();
 				if(innerArr[i][j]=='\n'){
 					enterred = true;
-					innerArr[i][j] = '~'; // End of line
+					innerArr[i][j] = ' '; // End of line
 				}
 
 			} // end inner for

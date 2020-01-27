@@ -1,5 +1,5 @@
 
-all : reset compile run
+all : reset compile q_combine run
 
 reset:
 	@reset
@@ -70,3 +70,4 @@ doc:
 
 q_combine: clean
 	@./q_combiner.py
+	@javac ./quera/Vim.java
