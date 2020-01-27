@@ -82,6 +82,8 @@ public class PieceTable{
 			toSplit.split(splitIndex,beginInBuffer ,newTextLen)
 		);
 
+		Node.deleteEmpty(nodes);
+
 
 	}
 

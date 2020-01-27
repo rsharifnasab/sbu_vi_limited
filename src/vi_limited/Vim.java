@@ -130,6 +130,9 @@ public class Vim{
 		cursor.reset();
 	}
 
+	public void save(){
+		FilesUtil.writeToFile(context.getAllText(),ourFile);
+	}
 
 	private void applyLongCommand(){
 		Logger.log("command is : " + command);
@@ -137,7 +140,7 @@ public class Vim{
 
 			case "wq":
 			case "x":
-				//save();
+				save();
 				exit();
 				break;
 

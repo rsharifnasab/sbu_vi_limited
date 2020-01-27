@@ -5,6 +5,19 @@ class Node{
 	public final int length;
  	public final int type; // zero for orginal and one for added text
 
+	public static final Node empty = new Node(0,0,0);
+
+
+	@SuppressWarnings("unchecked")
+	public boolean mosavi(Object o){
+		if(o==null) return false;
+		if(! (o instanceof Node )) return false;
+		Node other = (Node) o;
+		return other.start == this.start &&
+			other.length == this.length &&
+			 other.type == this.type;
+	}
+
 	public Node(int start,int length,int type){
 		this.start = start;
 		this.length = length;
@@ -36,5 +49,11 @@ class Node{
 		ans[2]= new Node(splitPlace,part2len, this.type);
 
 		return ans;
+	}
+
+	public static void deleteEmpty(List<Node> nodes){
+		for(int i = nodes.noe()-1; i>0; i--){
+			if( empty.mosavi(nodes.get(i)) ) nodes.delete(i);
+		}
 	}
 }

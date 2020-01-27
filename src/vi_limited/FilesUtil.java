@@ -87,4 +87,14 @@ public class FilesUtil{
 		return getFileContext( new java.io.File(address) );
 	}
 
+	public static void writeToFile(String text,java.io.File address){
+		try {
+			java.io.PrintWriter writer = new java.io.PrintWriter(address, "UTF-8");
+			writer.println(text);
+			writer.close();
+		} catch(Exception e) {
+			TUtil.PError("cant save to file");
+		}
+	}
+
 }
