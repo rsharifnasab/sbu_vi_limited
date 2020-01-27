@@ -5,6 +5,7 @@ public class PTIter{
 	Node currentNode;
 	int currentNodeIndex = 0;
 	int indexInNode = 0;
+	int currentLine = 0;
 
 	public PTIter(PieceTable context){
 		this.context = context;
@@ -13,7 +14,7 @@ public class PTIter{
 
 
 	public void up(){
-
+		
 	}
 
 	public void down(){

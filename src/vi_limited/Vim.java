@@ -28,8 +28,8 @@ public class Vim{
 	they are fixed because it is not possible to find terminal size in java!
 	**/
 
-	public final int height = 24 - 4; // TODO test mode
-	public final int width = 80 - 10;
+	public final int height = 24;// - 4;
+	public final int width = 80;// - 10;
 
 	public java.io.File ourFile;
 	public final Cursor cursor;
@@ -213,6 +213,7 @@ public class Vim{
 		if (input == 27) // esc presseed
 			goToOneKeyCommandMode();
 		tempText += inputC;
+		iter.left();
 
 		handleAddText(inputC,iter);
 	}
