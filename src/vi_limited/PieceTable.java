@@ -10,7 +10,7 @@ public class PieceTable{
 		buffers = (List<Character>[]) new List[2];
 		buffers[0] = new List<Character>(); // original
 		buffers[1] = new List<Character>(); // added
-		
+
 		nodes = new List<Node>();
 		nodes.add(Node.getInitialNode(0));
 	}
@@ -19,7 +19,7 @@ public class PieceTable{
 	 	this();
 		if(fileAdd!=null){
 			String initText = FilesUtil.getAddressContext(fileAdd);
-			buffers[0].addAll(initText.toCharArray()); // set original text TODO
+			buffers[0].addAll(initText.toCharArray());
 		}
 		nodes.delete(0);
 		nodes.add(
@@ -46,6 +46,26 @@ public class PieceTable{
 		}
 
 		return ans;
+	}
+
+	public int getTextLen(){
+		int len = 0;
+		for (Node n : nodes.getAsArray(Node.getAlaki())) {
+			len+= n.length;
+		}
+		return len;
+	}
+	public String getAllText(){
+		int len = getTextLen();
+		char[] ansCHA = new char[len];
+		int le = 0;
+		for (Node n : nodes.getAsArray(Node.getAlaki())) {
+			for(int i=n.start; i<(n.length+n.start); i++){
+				ansCHA[le++] = buffers[n.type].get(i);
+			}
+		}
+
+		return new String(ansCHA);
 	}
 
 	public void add(String toAdd,PTIter iter){

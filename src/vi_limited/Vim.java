@@ -230,7 +230,6 @@ public class Vim{
 
 		else if(input == 10) // enter
 			applyAndResetLongCommand();
-		// if(input ==  backspace) // TODO
 		else
 			command += inputC;
 	}
@@ -242,6 +241,8 @@ public class Vim{
 		screen.updateScreenContent();
 		tempText = "";
 		Logger.log("context:"+context);
+		Logger.log("- - - - - - ");
+		Logger.log(context.getAllText());
 		//TUtil.PError("context:"+context);
 
 	}
@@ -256,9 +257,9 @@ public class Vim{
 	main function and main loop
 	**/
 	public void run(){
-		//iter.goToLine(1);
 		while(running){
 			PTIter iter = new PTIter(context);
+			iter.goToLine(3);
 			char input = TUtil.getChar();
 			screen.printLine(cursor); // hamoun khat ro dobare chap kon
 
