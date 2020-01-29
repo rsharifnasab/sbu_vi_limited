@@ -1,6 +1,6 @@
  update iterator as you go (for insert with iterator)
 delete
-SEARCH! trie tree
+SEARCH! trie tree -> stack overflow
 w : kalame badi
 bugs:
 	press enter in last line in command mode 

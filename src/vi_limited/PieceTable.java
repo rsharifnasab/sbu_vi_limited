@@ -262,6 +262,7 @@ public class PieceTable{
 
 	public String search(String toSearch){
 		if(searchTree == null){
+			Logger.log("tree doesnt exist, creating");
 			searchTree = new TrieTree();
 			String txt = getAllText(); // TODO : optimize
 			for (int i = 0; i < txt.length(); i++)
