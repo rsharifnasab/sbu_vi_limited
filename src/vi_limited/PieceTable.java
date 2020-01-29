@@ -80,6 +80,10 @@ public class PieceTable{
 		return ans;
 	}
 
+	/**
+		find location (index) of nth line
+		in the node, to use in sublist
+	**/
 	private int nThLinePostion(Node node, int n){
 		n--;
 		if (n==0) return 0;

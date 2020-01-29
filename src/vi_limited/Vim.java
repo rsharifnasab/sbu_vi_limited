@@ -334,14 +334,17 @@ public class Vim{
 			addText(iter);
 	}
 
-	private void hideCursorMess(){
+	private void hideCursorMess(char inputC){
 		TUtil.printLine(screen,cursor); // hamoun khat ro dobare chap kon
-		if(cursor.getX() >  cursor.width-4 ){
+		if(
+			cursor.getX() >  cursor.width-4
+	 	 ){
 			Cursor clone = cursor.clone();
 			clone.cloneDown();
 			TUtil.printLine(screen,clone);
 			cursor.sync();
 		}
+
 	}
 
 	/**
@@ -352,7 +355,7 @@ public class Vim{
 			PTIter iter = new PTIter(context);
 			//iter.goToLine(3);
 			char input = TUtil.getChar();
-			hideCursorMess();
+			hideCursorMess(input);
 
 			moved = handleCursorMove(input);
 

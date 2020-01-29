@@ -1,10 +1,8 @@
----> update iterator as you go (for insert with iterator)
+ update iterator as you go (for insert with iterator)
 copy paste 
-statistics
+delete
 
-optimize screen rendering
-
-long lines problem 
-croll to end of file problem 
-
-no file to save -> dialog box
+bugs:
+	press enter in last line in command mode 
+	long lines problem 
+	no file to save -> dialog box
