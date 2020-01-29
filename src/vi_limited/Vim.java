@@ -149,7 +149,7 @@ public class Vim{
 	public void save(){
 		Logger.log("saved");
 		FilesUtil.writeToFile(context.getAllText(),ourFile);
-		Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
+		//Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
 	}
 
 	private void goToLine(int x){

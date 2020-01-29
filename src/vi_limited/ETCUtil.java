@@ -81,4 +81,12 @@ public class ETCUtil{
 		return new String(ans);
 	}
 
+	public static int wordCounter(String s){
+		int words = 1;
+		for(char c : s.toCharArray()){
+			if(c==' ') words++;
+		}
+		return words;
+	}
+
 }

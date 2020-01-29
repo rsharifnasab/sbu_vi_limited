@@ -148,7 +148,7 @@ public class PieceTable{
 
 
 	public int wordsCount(){
-		return 0; //TODO
+		return ETCUtil.wordCounter(getAllText());
 	}
 
 	public int linesCount(){

@@ -69,7 +69,7 @@ public class Screen{
 	}
 
 
-	public void updateScreenContent(String stText){ // very coslt operation
+	public void updateScreenContent(String stText){
 		char[] text = stText.toCharArray();
 		int ind = 0;
 		int len = text.length;
