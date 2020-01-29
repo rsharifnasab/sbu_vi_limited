@@ -260,7 +260,7 @@ public class PieceTable{
 		searchTree = null;
 	}
 
-	public String search(String toSearch){
+	public List<Integer> searchwithTrie(String toSearch){
 		if(searchTree == null){
 			Logger.log("tree doesnt exist, creating");
 			searchTree = new TrieTree();
@@ -272,25 +272,45 @@ public class PieceTable{
 
 		List<Integer> result = searchTree.search(toSearch);
 
+		return result;
+	}
+
+
+
+	private List<Integer> searchByRegex(String toSearch){
+		final java.util.regex.Matcher subMatcher = java.util.regex.Pattern.compile(toSearch).matcher(getAllText());
+		List<Integer> result = new List<Integer>();
+
+		while( subMatcher.find() ){
+			result.add(
+				subMatcher.start()
+			);
+		}
+
+		return result;
+	}
+
+	public String search(String toSearch){
+
+		List<Integer> result = searchByRegex(toSearch);
 		if(result == null) return "nothing found dont worry!";
 
-
 		List<Character> ans = new List<Character>();
-
-		ans.addAll("searching for " + toSearch);
-		ans.addAll("number of finds: " + ans.noe());
-
-		int len = toSearch.length();
-
+		ans.addAll("searching for " + toSearch + "\n");
+		ans.addAll("number of finds: " + result.noe() + "\n");
+		int len = result.noe();
 		for( int i = 0; i < len; i++){
 			ans.addAll(
-				"found that on : " + (result.get(i) - len)
+				"found that on : " +
+				(result.get(i))
+				+ "\n"
 			);
 		}
 
 		return new String(ans.toCharArray());
-
 	}
+
+
 
 
 }
