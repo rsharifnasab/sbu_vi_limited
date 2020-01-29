@@ -39,19 +39,14 @@ public class Screen{
 	}
 
 
+	public void goToLine(int x){
+		int contextLines = context.linesCount();
+		posInFile = x<=contextLines ? x : contextLines;
+		updateScreenContent();
+	}
 
 	public int getPos(){
 		return posInFile;
-	}
-
-	public void goToFirstOfFile(){
-		posInFile = 1;
-		updateScreenContent();
-	}
-
-	public void goToEndOfFile(){
-		posInFile = context.linesCount();
-		updateScreenContent();
 	}
 
 

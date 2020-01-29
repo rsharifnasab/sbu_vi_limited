@@ -139,26 +139,36 @@ public class Vim{
 	}
 
 	private void vimGoToEndOfFile(){
-		//iter.
-		cursor.reset();
-		screen.goToEndOfFile();
-		screen.updateScreenContent();
-		TUtil.clearAndPrintScreen(screen,cursor);
+		goToLine( context.linesCount() );
 	}
 
 	private void vimGoToFirstOfFile(){ // maybe TODO
-		iter.reset();
-		cursor.reset();
-		screen.goToFirstOfFile();
-		screen.updateScreenContent();
-		TUtil.clearAndPrintScreen(screen,cursor);
-		//screen.clearAndPrintAll();
+		goToLine(1);
 	}
 
 	public void save(){
 		Logger.log("saved");
 		FilesUtil.writeToFile(context.getAllText(),ourFile);
 		Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
+	}
+
+	private void goToLine(int x){
+		if(x > context.linesCount() ) return;
+		if(x<1) x = 1;
+		//iter. TODO
+		screen.goToLine(x);
+		TUtil.clearAndPrintScreen(screen,cursor);
+		cursor.reset();
+	}
+
+	private void goToLineHandle(){
+		try{
+			if (!command.matches("\\d+") ) return; // not numberical
+			int x = Integer.parseInt(command);
+			goToLine(x);
+		} catch(Exception e){
+			//ignore
+		}
 	}
 
 	private void applyLongCommand(){
@@ -195,6 +205,9 @@ public class Vim{
 			case "p":
 				pasteOneLine();
 				break;
+
+			default:
+				goToLineHandle();
 		}
 	}
 
