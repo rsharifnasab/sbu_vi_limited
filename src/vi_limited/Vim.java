@@ -61,11 +61,14 @@ public class Vim{
 
 
 	String tempText = "";
+	String clipBoard = "";
+
 	boolean moved = false;
 
 	PieceTable context;
 
 	PTIter iter;
+
 
 
 	/**
@@ -112,6 +115,12 @@ public class Vim{
 
 
 	//////////////////////////////////////////////////
+
+	private void copyOneLine(){
+		Character[] line = screen.getLine(cursor);
+		clipBoard = ETCUtil.characterArrToString(line);
+	}
+
 
 	private void goToStatisticsMode(){
 		Logger.log("enterring statistics mode");
@@ -169,6 +178,10 @@ public class Vim{
 
 			case "$":
 				vimGoToEndOfFile();
+				break;
+
+			case "yy":
+				copyOneLine();
 				break;
 		}
 	}
@@ -265,6 +278,10 @@ public class Vim{
 				vimGotoLastOfLine();
 				break;
 
+			case 'Y':
+				copyOneLine();
+				break;
+
 		}
 
 	}
@@ -344,7 +361,6 @@ public class Vim{
 			TUtil.printLine(screen,clone);
 			cursor.sync();
 		}
-
 	}
 
 	/**
