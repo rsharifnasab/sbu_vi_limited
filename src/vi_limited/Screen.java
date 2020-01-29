@@ -18,29 +18,27 @@ public class Screen{
 
 
 	PieceTable context;
-	Cursor cursor;
 
 	public final int height;
 	public final int width;
 
 	private int posInFile=1;
 
-	private PTIter iter;
 
 	/**
 		cunstructor with the given char to fill array
 	**/
-	public Screen(int width,int height,PieceTable context,Cursor c){
+	public Screen(int width,int height,PieceTable context){
 		this.width = width;
 		this.height = height;
 		this.context = context;
-		this.cursor = c;
 
-		this.iter = new PTIter(context);
 		innerArr = new Character[this.height+1][this.width+1];
 		updateScreenContent();
 		//fillWithNumbers(); // for testing
 	}
+
+
 
 	public int getPos(){
 		return posInFile;
@@ -48,31 +46,27 @@ public class Screen{
 
 	public void goToFirstOfFile(){
 		posInFile = 1;
-	//	iter.goToLine(posInFile);
 		updateScreenContent();
 	}
 
 	public void up(){
 		posInFile = (posInFile>1)? posInFile-1 : 1;
-		//iter.goToLine(posInFile);
 		updateScreenContent();
-		//clearAndPrintAll();
 	}
 
 	public void down(){
-
-		//posInFile = (posInFile>1)? posInFile-1 : 1;
-		posInFile++; // maybe TODO
-		//iter.goToLine(posInFile);
+		int lines = context.linesCount();
+		posInFile = (posInFile>lines-1)? lines : posInFile+1;
 		updateScreenContent();
-		//clearAndPrintAll();
+	}
+
+	public void updateScreenContent(){
+		updateScreenContent(context.getText(posInFile,height));
 	}
 
 
-
-
-	public void updateScreenContent(){ // very coslt operation
-		char[] text = context.getAllText().toCharArray(); // TODO omtimize
+	public void updateScreenContent(String stText){ // very coslt operation
+		char[] text = stText.toCharArray();
 		int ind = 0;
 		int len = text.length;
 
@@ -87,7 +81,6 @@ public class Screen{
 
 			} // end inner for
 		} // end outer for
-		clearAndPrintAll();
 	} // end funtion
 
 
@@ -96,6 +89,7 @@ public class Screen{
 		fill the inner array with some numbers
 		from 2 to 9 for debugging
 	**/
+	@Deprecated
 	public void fillWithNumbers(){
 		for (int i=1; i<=height; i++ ) {
 			for(int j=1; j<=width; j++){
@@ -109,26 +103,13 @@ public class Screen{
 		fill (and initialize)
 		the inner array of scrren with the given character
 	**/
+	@Deprecated
 	public void fillScreen(char c){
 		for (int i=1; i<=height; i++ ) {
 			for(int j=1; j<=width; j++){
 				innerArr[i][j] = c;
 			}
 		}
-	}
-
-	/**
-		clear screen and print all of screen
-		it will be used first time
-	**/
-	public void clearAndPrintAll(){
-		Cursor clone = cursor.clone();
-		clone.reset();
-		for (int i=1; i<=height; i++ ) {
-			printLine(clone);
-			clone.justDown();
-		}
-		cursor.sync();
 	}
 
 	/**
@@ -139,19 +120,11 @@ public class Screen{
 	}
 
 	/**
-		get a cursor and print that line of screen array
-		to the line that cursor exists
+		get one line of screen by Cursor
 	**/
-	public void printLine(Cursor c){ // sensetive code
-		Cursor clone = c.clone();
-		clone.goToX(1);
-		TUtil.deleteThisLine(clone);
-		for(int j=1; j<=width; j++){
-			Character toPrint = innerArr[c.getLine()][j];
-			if(toPrint == null || toPrint == '\n') break;
-				System.out.print(toPrint);
-		}
-		c.sync(); // go back
+	public Character[] getLine(Cursor c){
+		return innerArr[c.getLine()];
 	}
+
 
 }

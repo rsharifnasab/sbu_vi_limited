@@ -36,8 +36,8 @@ public class List<T>{
 	**/
 	@SuppressWarnings("unchecked")
 	public void addAll(List<T> toAdd){
-		for(Object  elem : toAdd.innerArray ){
-			this.add( (T) elem);
+		for(int i =0; i < toAdd.NOE; i++){
+			this.add( (T) toAdd.innerArray[i] );
 		}
 	}
 
@@ -62,6 +62,10 @@ public class List<T>{
 			Object elem =  (Character) (c);
 			this.add( (T) elem);
 		}
+	}
+
+	public void addAll(String s){
+		addAll(s.toCharArray());
 	}
 
 	/**
@@ -93,6 +97,21 @@ public class List<T>{
 		copy(innerArray,clone,NOE);
 		return clone;
 	}
+
+
+	/**
+		get whole list as the array of char
+		it only work with List<character>
+	**/
+	@SuppressWarnings("unchecked")
+	public char[] toCharArray(){ // sensetive code,
+		char[] ans =  new char[NOE];
+		for (int i =0;i<NOE;i++ ) {
+			ans[i] = (Character) innerArray[i];
+		}
+		return ans;
+	}
+
 
 	/**
 		get lest elem of list

@@ -86,10 +86,9 @@ public class TUtil{
 
 	**/
 	public static void clearConsuleC(Cursor c){
-		Logger.log("clearing with cursor!");
 		c.reset();
 		for (int i =1; i <= c.height; i++ ) {
-			TUtil.deleteThisLine(c);
+			deleteThisLine(c);
 			c.down();
 		}
 		c.reset();
@@ -186,5 +185,43 @@ public class TUtil{
 		System.out.print(LINE_DELETER);
 		c.sync(); // go back
 	}
+
+
+
+	/**
+		clear screen and print all of screen
+		it will be used first time
+	**/
+	public static void clearAndPrintScreen(Screen screen, Cursor cursor){
+		//clearConsuleC(cursor);
+		Cursor clone = cursor.clone();
+		clone.reset();
+		for (int i=1; i<=cursor.height; i++ ) { // <
+			printLine(screen,clone);
+			clone.cloneDown();
+		}
+		cursor.sync();
+	}
+
+	/**
+		get a cursor and print that line of screen array
+		to the line that cursor exists
+	**/
+	public static void printLine(Screen screen, Cursor cursor){ // sensetive code
+		Cursor clone = cursor.clone();
+		clone.goToX(1);
+		deleteThisLine(clone);
+		Character[] line = screen.getLine(clone);
+
+		for(int j=1; j<=clone.width; j++){ // < ?
+			Character toPrint = line[j];
+			if(toPrint == null || toPrint == '\n') break;
+			System.out.print(toPrint);
+		}
+		cursor.sync(); // go back
+	}
+
+
+
 
 }

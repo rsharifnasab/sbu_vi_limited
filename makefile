@@ -4,7 +4,7 @@ all : reset compile q_combine run
 reset:
 	@reset
 
-run: runArg2
+run: runArg1
 
 runFull: okTerminal justRun resetTerminal
 

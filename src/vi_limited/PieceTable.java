@@ -56,6 +56,7 @@ public class PieceTable{
 		}
 		return len;
 	}
+
 	public String getAllText(){
 		PTIter iter = new PTIter(this);
 		int len = getTextLen();
@@ -67,6 +68,38 @@ public class PieceTable{
 		}
 
 		return new String(ansCHA);
+	}
+
+	public List<Character> getNodeText(Node node){
+		List<Character> ans = new List<Character>();
+		for (int i =node.start;i<node.start+node.length;i++ ) {
+			ans.add(
+				buffers[node.type].get(i)
+			);
+		}
+		return ans;
+	}
+
+	public String getText(int fromLine,int height){
+		int nodeInd = 0;
+		while(nodes.get(nodeInd).lineCount < fromLine){
+			fromLine -= nodes.get(nodeInd).lineCount;
+			nodeInd++;
+		}
+
+		List<Character> ans = new List<Character>();
+
+		for(int i = nodeInd; i<nodes.noe(); i++){
+			Node currNode = nodes.get(i);
+			ans.addAll(
+				getNodeText(currNode)
+			);
+			height -= currNode.lineCount;
+			if(height <=0) break;
+		}
+
+		return new String(ans.toCharArray());
+
 	}
 
 	public void add(String toAdd,PTIter iter){
@@ -91,6 +124,40 @@ public class PieceTable{
 
 		Node.deleteEmpty(nodes);
 
+
+	}
+
+
+	public int wordsCount(){
+		return 0; //TODO
+	}
+
+	public int linesCount(){
+		int ans = 0;
+		for(Node n : nodes.getAsArray(Node.getAlaki()))
+			ans += n.lineCount;
+		return ans;
+	}
+
+	public String[] tenWords(){
+		String [] ans = new String[20];
+			//TODO
+		return ans;
+	}
+
+	public String getStatistics(){
+		List<Character> ans = new List<Character>();
+		ans.addAll(
+			"number of words:" + wordsCount()
+		);
+
+		ans.addAll(
+			"number of lines:" + linesCount()
+		);
+
+		//TODO : ten words
+
+		return new String(ans.toCharArray());
 
 	}
 

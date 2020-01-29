@@ -17,14 +17,13 @@ public class Cursor{
 	private int x;
 	private int y;
 
-	private Screen screen;
-
 	/**
-		cunstructor of cursor
-		it set width and hegith
-		and also reset cursor
-		for syncing the real place of cursor with the x ,y
-		becasue at first it is not guarantee that cursor is in 1,1 place
+	cunstructor of cursor
+	it set width and hegith
+	and also reset cursor
+	for syncing the real place of cursor with the x ,y
+	becasue at first it is not guarantee that cursor is in 1,1 place
+	it also want screen
 	**/
 	public Cursor(int width, int height){
 		this.width = width;
@@ -32,22 +31,6 @@ public class Cursor{
 		this.reset(); // set x, y
 	}
 
-	/**
-		yet another cunstrutor of screen
-		it also want screen
-		if you prefer not to use it, you should set screen later
-	**/
-	public Cursor(int width, int height,Screen screen){
-		this(width,height);
-		this.setScreen(screen);
-	}
-
-	/**
-		it sets the screen if you havnt set it in constructor
-	**/
-	public void setScreen(Screen screen){
-		this.screen = screen;
-	}
 
 	/**
 	make a copy from out cursor with exactly same properties
@@ -56,7 +39,7 @@ public class Cursor{
 	we SHOUD NOT HAVE more than one cursor for long time
 	**/
 	public Cursor clone(){
-		Cursor clone =  new Cursor(width,height,screen);
+		Cursor clone =  new Cursor(width,height);
 		clone.setCursor(this.x, this.y);
 		return clone;
 	}
@@ -84,8 +67,6 @@ public class Cursor{
 	public void gotoLastOfLine(){
 		goToX(width);
 	}
-
-
 
 
 	/**
@@ -136,7 +117,6 @@ public class Cursor{
 		move cursor up in current x
 	**/
 	public void up(){
-		if (y == 1)	screen.up();
 		y = (y>1)? y-1 : 1;
 		sync();
 	}
@@ -146,16 +126,22 @@ public class Cursor{
 		it also change screen place if cursor reached end of screen
 	**/
 	public void down(){
-		if (y >= height-1) screen.down();
 		y = (y<height)? y+1 : height;
 		sync();
 	}
 
+	public boolean screenUpNeed(){
+		return y==1;
+	}
+
+	public boolean screenDownNeed(){
+		return y==height;
+	}
 
 	/**
 		just go down, no check for screen
 	**/
-	void justDown(){
+	void cloneDown(){
 		y = (y<height)? y+1 : height;
 		sync();
 	}

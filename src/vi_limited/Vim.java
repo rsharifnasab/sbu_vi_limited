@@ -91,14 +91,13 @@ public class Vim{
 
 		context = new PieceTable(ourFile);
 		iter = new PTIter(context);
+		screen = new Screen(width,height,context);
 		cursor = new Cursor(width,height);
-		screen = new Screen(width,height,context,cursor);
-		cursor.setScreen(screen);
 
 		//TUtil.clearConsuleC(cursor);
 		//TUtil.clearConsule();
 
-		screen.clearAndPrintAll();
+		TUtil.clearAndPrintScreen(screen,cursor);
 
 		goToOneKeyCommandMode();
 	}
@@ -118,7 +117,8 @@ public class Vim{
 		Logger.log("enterring statistics mode");
 		resetCommand();
 		mode = EditorMode.STATISTICS;
-		//TODO : show statistics
+
+		screen.updateScreenContent(context.getStatistics());
 	}
 
 	private void vimGoToEndOfFile(){
@@ -128,10 +128,10 @@ public class Vim{
 
 	private void vimGoToFirstOfFile(){ // maybe TODO
 		iter.reset();
+		cursor.reset();
 		screen.goToFirstOfFile();
 		screen.updateScreenContent();
 		//screen.clearAndPrintAll();
-		cursor.reset();
 	}
 
 	public void save(){
@@ -161,6 +161,7 @@ public class Vim{
 			case "0":
 				vimGoToFirstOfFile();
 				break;
+
 			case "$":
 				vimGoToEndOfFile();
 				break;
@@ -169,13 +170,23 @@ public class Vim{
 
 
 	private void vimUp(){
-		cursor.up();
 		iter.up();
+		cursor.up();
+		if(cursor.screenUpNeed()){
+			screen.up();
+			TUtil.clearAndPrintScreen(screen,cursor);
+
+		}
 	}
 
 	private void vimDown(){
-		cursor.down();
 		iter.down();
+		cursor.down();
+		if(cursor.screenDownNeed()){
+			screen.down();
+			TUtil.clearAndPrintScreen(screen,cursor);
+		}
+
 	}
 
 	private void vimLeft(){
@@ -198,9 +209,6 @@ public class Vim{
 		cursor.gotoFirstOfLine();
 		iter.gotoFirstOfLine();
 	}
-
-
-
 
 
 
@@ -321,7 +329,7 @@ public class Vim{
 			PTIter iter = new PTIter(context);
 			//iter.goToLine(3);
 			char input = TUtil.getChar();
-			screen.printLine(cursor); // hamoun khat ro dobare chap kon
+			TUtil.printLine(screen,cursor); // hamoun khat ro dobare chap kon
 
 			moved = handleCursorMove(input);
 
