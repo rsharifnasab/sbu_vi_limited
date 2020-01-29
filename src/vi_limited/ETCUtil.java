@@ -73,4 +73,12 @@ public class ETCUtil{
 
 	}
 
+
+	public static String characterArrToString(Character[] arr){
+		char[] ans = new char[arr.length];
+		for(int i =0; i < arr.length; i++)
+			ans[i] = arr[i]==null?' ':arr[i];
+		return new String(ans);
+	}
+
 }

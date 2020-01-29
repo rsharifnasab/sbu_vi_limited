@@ -116,9 +116,13 @@ public class Vim{
 	private void goToStatisticsMode(){
 		Logger.log("enterring statistics mode");
 		resetCommand();
+
 		mode = EditorMode.STATISTICS;
 
 		screen.updateScreenContent(context.getStatistics());
+		TUtil.clearAndPrintScreen(screen,cursor);
+
+		//TUtil.PError("khat e akhar : " + ETCUtil.characterArrToString(screen.getLine(20) ) );
 	}
 
 	private void vimGoToEndOfFile(){
@@ -171,6 +175,8 @@ public class Vim{
 
 
 	private void vimUp(){
+		if(mode == EditorMode.STATISTICS)
+			return;
 		//iter.up();
 		cursor.up();
 		if(cursor.screenUpNeed()){
@@ -181,6 +187,8 @@ public class Vim{
 	}
 
 	private void vimDown(){
+		if(mode == EditorMode.STATISTICS)
+			return;
 		//iter.down();
 		cursor.down();
 		if(cursor.screenDownNeed()){
@@ -192,12 +200,16 @@ public class Vim{
 	}
 
 	private void vimLeft(){
+		if(mode == EditorMode.STATISTICS)
+			return;
 		//iter.left();
 		cursor.left();
 	}
 
 
 	private void vimRight(){
+		if(mode == EditorMode.STATISTICS)
+			return;
 		//iter.right();
 		cursor.right();
 	}
@@ -331,6 +343,7 @@ public class Vim{
 			cursor.sync();
 		}
 	}
+
 	/**
 	main function and main loop
 	**/
@@ -353,7 +366,6 @@ public class Vim{
 					handleLongCommand(input);
 					break;
 
-
 				case INSERT:
 					handleInsertMode(input,iter);
 					break;
@@ -372,8 +384,6 @@ public class Vim{
 
 
 
-
-
 	/**
 	this method do nothing except greeting user and
 	waste his/her time a bit
@@ -381,7 +391,6 @@ public class Vim{
 	it also wants to show beautiness of colors!
 	**/
 	private void greetUser(){
-		//	TUtil.clearConsule(cursor);
 		TUtil.print("initializing vim!", Color.YELLOW);
 		TUtil.print("input file is : " + ourFile, Color.BLUE);
 		TUtil.print("the app is starting ", Color.GREEN);
@@ -440,21 +449,31 @@ public class Vim{
 	}
 
 
-
+	private void cleanStatistics(){
+		screen.updateScreenContent();
+		TUtil.clearAndPrintScreen(screen,cursor);
+	}
 
 	private void goToInsertMode(){
+		if(mode == EditorMode.STATISTICS)
+			cleanStatistics();
 		Logger.log("enterring insert mode");
 		resetCommand();
 		mode = EditorMode.INSERT;
+
 	}
 
 	private void goToOneKeyCommandMode(){
+		if(mode == EditorMode.STATISTICS)
+			cleanStatistics();
 		Logger.log("enterring one key mode");
 		resetCommand();
 		mode = EditorMode.ONE_KEY_COMMAND;
 	}
 
 	private void goToOneLongCommandMode(){
+		if(mode == EditorMode.STATISTICS)
+			cleanStatistics();
 		Logger.log("enterring long command mode");
 		resetCommand();
 		mode = EditorMode.LONG_COMMAND;

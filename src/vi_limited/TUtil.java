@@ -215,7 +215,10 @@ public class TUtil{
 
 		for(int j=1; j<=clone.width; j++){ // < ?
 			Character toPrint = line[j];
-			if(toPrint == null || toPrint == '\n') break;
+			if(toPrint == null || toPrint == '\n'){
+				if(j==1) System.out.println();
+				break;
+			}
 			System.out.print(toPrint);
 		}
 		cursor.sync(); // go back

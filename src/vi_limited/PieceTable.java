@@ -149,11 +149,11 @@ public class PieceTable{
 	public String getStatistics(){
 		List<Character> ans = new List<Character>();
 		ans.addAll(
-			"number of words:" + wordsCount()
+			"number of words:" + wordsCount() + "\n"
 		);
 
 		ans.addAll(
-			"number of lines:" + linesCount()
+			"number of lines:" + linesCount() + "\n"
 		);
 
 		//TODO : ten words

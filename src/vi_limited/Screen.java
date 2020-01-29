@@ -69,11 +69,16 @@ public class Screen{
 		char[] text = stText.toCharArray();
 		int ind = 0;
 		int len = text.length;
-
+		boolean tamum = false;
 		outer:
 		for (int i=1; i<=height; i++ ) {
 			for(int j=1; j<=width; j++){
-				if(ind == len) break outer;
+				if(ind == len)
+					tamum = true;
+				if(tamum){
+					innerArr[i][j] = ' ';
+					continue;
+				}
 				innerArr[i][j] = text[ind++];
 				if(innerArr[i][j]=='\n'){
 					break;
