@@ -277,6 +277,7 @@ public class PieceTable{
 		List<Character> ans = new List<Character>();
 
 		ans.addAll("searching for " + toSearch);
+		ans.addAll("number of finds: " + ans.noe());
 
 		int len = toSearch.length();
 

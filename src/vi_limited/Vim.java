@@ -666,6 +666,7 @@ public class Vim{
 	private void gotoSearchMode(){
 		Logger.log("enterring search mode");
 		mode = EditorMode.SEARCH;
+		resetCommand();
 	}
 
 	/**
