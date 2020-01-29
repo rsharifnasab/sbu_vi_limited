@@ -208,16 +208,35 @@ public class Vim{
 	}
 
 	/**
+		go to statistics mode (because its much similiar to search mdoe)
+		get searched text from piece table search method
+		and show it in screen
+	**/
+	private void search(){
+		Logger.log("searching");
+		String toSearch = command;// hame be joz oun /
+		mode = EditorMode.STATISTICS;
+
+		screen.updateScreenContent(context.search(toSearch));
+		TUtil.clearAndPrintScreen(screen,cursor);
+	}
+
+
+
+	/**
 		if command is just numberical
 		we go to that line of file
 	**/
-	private void goToLineHandle(){
+	private void etcHandle(){
+		if(command.length() == 0) return; // empty command
+
 		try{
 			if (!command.matches("\\d+") ) return; // not numberical
 			int x = Integer.parseInt(command);
 			goToLine(x);
+
 		} catch(Exception e){
-			//ignore
+			//ignore any bad command
 		}
 	}
 
@@ -263,7 +282,7 @@ public class Vim{
 				break;
 
 			default:
-				goToLineHandle();
+				etcHandle();
 		}
 	}
 
@@ -357,6 +376,9 @@ public class Vim{
 			case ':':
 				goToOneLongCommandMode();
 				break;
+			case '/':
+				gotoSearchMode();
+				break;
 			case 'v':
 				goToStatisticsMode();
 				break;
@@ -437,6 +459,21 @@ public class Vim{
 
 		else if(input == 10) // enter
 			applyAndResetLongCommand();
+		else
+			command += inputC;
+	}
+
+	private void handleSearchMode(char inputC){
+		int input = (int) inputC;
+		if( input > 127) // arrow keys or esc
+			return;
+
+		else if(input == 27) //escape
+			goToOneKeyCommandMode();
+
+
+		else if(input == 10) // enter
+			search();
 		else
 			command += inputC;
 	}
@@ -526,6 +563,10 @@ public class Vim{
 
 				case STATISTICS:
 					handleStatisticsMode(input);
+					break;
+
+				case SEARCH:
+					handleSearchMode(input);
 
 			} // end switch
 
@@ -614,9 +655,17 @@ public class Vim{
 	**/
 	private void goToInsertMode(){
 		Logger.log("enterring insert mode");
-		resetCommand();
 		mode = EditorMode.INSERT;
 
+	}
+
+	/**
+		foing to insert mode from one key mode ( i pressed)
+		it reset commdn string
+	**/
+	private void gotoSearchMode(){
+		Logger.log("enterring search mode");
+		mode = EditorMode.SEARCH;
 	}
 
 	/**

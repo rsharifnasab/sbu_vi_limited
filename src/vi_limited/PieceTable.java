@@ -19,6 +19,13 @@ public class PieceTable{
 	**/
 	public List<Node> nodes; // list e masalan
 
+
+	/**
+		one instacne of TrieTree to do search stuff
+		it is null, if text is modified and tree should me re created
+	**/
+	public TrieTree searchTree;
+
 	/**
 		the main constructor
 		it make buffers and first noe!
@@ -31,6 +38,8 @@ public class PieceTable{
 
 		nodes = new List<Node>();
 		nodes.add(Node.getInitialNode(0,""));
+
+		searchTree = null;
 	}
 
 	/**
@@ -170,6 +179,7 @@ public class PieceTable{
 		addting a String tp the text in the location of iterator
 	**/
 	public void add(String toAdd,PTIter iter){
+		deleteSearchTree();
 
 		int toAddLines = 0;
 		for(char c : toAdd.toCharArray() ){
@@ -244,6 +254,40 @@ public class PieceTable{
 		}
 
 		return new String(ans.toCharArray());
+	}
+
+	private void deleteSearchTree(){
+		searchTree = null;
+	}
+
+	public String search(String toSearch){
+		if(searchTree == null){
+			searchTree = new TrieTree();
+			String txt = getAllText(); // TODO : optimize
+			for (int i = 0; i < txt.length(); i++)
+			    searchTree.insert(txt.substring(i), i);
+
+		}
+
+		List<Integer> result = searchTree.search(toSearch);
+
+		if(result == null) return "nothing found dont worry!";
+
+
+		List<Character> ans = new List<Character>();
+
+		ans.addAll("searching for " + toSearch);
+
+		int len = toSearch.length();
+
+		for( int i = 0; i < len; i++){
+			ans.addAll(
+				"found that on : " + (result.get(i) - len)
+			);
+		}
+
+		return new String(ans.toCharArray());
+
 	}
 
 

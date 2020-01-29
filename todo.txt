@@ -1,7 +1,7 @@
  update iterator as you go (for insert with iterator)
 delete
 SEARCH! trie tree
-
+w : kalame badi
 bugs:
 	press enter in last line in command mode 
 	long lines problem 
