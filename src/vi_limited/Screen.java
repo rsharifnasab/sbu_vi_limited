@@ -49,6 +49,12 @@ public class Screen{
 		updateScreenContent();
 	}
 
+	public void goToEndOfFile(){
+		posInFile = context.linesCount();
+		updateScreenContent();
+	}
+
+
 	public void up(){
 		posInFile = (posInFile>1)? posInFile-1 : 1;
 		updateScreenContent();

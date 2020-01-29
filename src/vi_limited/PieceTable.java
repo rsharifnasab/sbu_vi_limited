@@ -57,6 +57,7 @@ public class PieceTable{
 		return len;
 	}
 
+
 	public String getAllText(){
 		PTIter iter = new PTIter(this);
 		int len = getTextLen();

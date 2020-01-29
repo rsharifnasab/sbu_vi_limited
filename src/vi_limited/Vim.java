@@ -70,7 +70,6 @@ public class Vim{
 	PTIter iter;
 
 
-
 	/**
 	first cunstructor of vim class
 	change with caution
@@ -140,8 +139,11 @@ public class Vim{
 	}
 
 	private void vimGoToEndOfFile(){
-		//TODO
-		TUtil.PError("not implemented yet");
+		//iter.
+		cursor.reset();
+		screen.goToEndOfFile();
+		screen.updateScreenContent();
+		TUtil.clearAndPrintScreen(screen,cursor);
 	}
 
 	private void vimGoToFirstOfFile(){ // maybe TODO
@@ -149,6 +151,7 @@ public class Vim{
 		cursor.reset();
 		screen.goToFirstOfFile();
 		screen.updateScreenContent();
+		TUtil.clearAndPrintScreen(screen,cursor);
 		//screen.clearAndPrintAll();
 	}
 
