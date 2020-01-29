@@ -57,11 +57,14 @@ public class Screen{
 	public void down(){
 		int lines = context.linesCount();
 		posInFile = (posInFile>lines-1)? lines : posInFile+1;
+		Logger.log("in scren down, poseinfile:" + posInFile);
 		updateScreenContent();
 	}
 
 	public void updateScreenContent(){
-		updateScreenContent(context.getText(posInFile,height));
+		updateScreenContent(
+			context.getText(posInFile,height)
+		);
 	}
 
 

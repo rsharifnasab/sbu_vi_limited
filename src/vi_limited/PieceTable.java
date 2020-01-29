@@ -80,6 +80,17 @@ public class PieceTable{
 		return ans;
 	}
 
+	private int nThLinePostion(Node node, int n){
+		n--;
+		if (n==0) return 0;
+		for(int i=node.start;i<node.start+node.length; i++){
+			if(n==0) return i;
+			if (buffers[node.type].get(i) == '\n' ) n--;
+		}
+		return node.start+node.length; // not found
+	}
+
+
 	public String getText(int fromLine,int height){
 		int nodeInd = 0;
 		while(nodes.get(nodeInd).lineCount < fromLine){
@@ -93,7 +104,9 @@ public class PieceTable{
 		for(int i = nodeInd; i<nodes.noe(); i++){
 			Node currNode = nodes.get(i);
 			ans.addAll(
-				getNodeText(currNode)
+				getNodeText(currNode).subList(
+					nThLinePostion(currNode,fromLine)
+				,' ')
 			);
 			height -= currNode.lineCount;
 			if(height <=0) break;

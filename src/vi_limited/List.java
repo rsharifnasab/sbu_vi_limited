@@ -234,6 +234,22 @@ public class List<T>{
 		return ans;
 	}
 
+	@SuppressWarnings({"unchecked"})
+	public List<T> subList(int from, int to, T alaki){
+		T[] clone =  (T[]) java.lang.reflect.Array.newInstance(alaki.getClass(), to-from);
+		int le = 0;
+		for (int i =from;i < to;i++ ) {
+			clone[le++] = (T) innerArray[i];
+		}
+		List<T> ans = new List<T>();
+		ans.addAll(clone);
+		return ans;
+	}
+
+	public List<T> subList(int from, T alaki){
+		return subList(from,NOE, alaki);
+	}
+
 
 
 }
