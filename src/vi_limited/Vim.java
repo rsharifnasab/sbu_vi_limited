@@ -46,7 +46,8 @@ public class Vim{
 	/**
 	the command that is entering and not fully enterred yet
 	if user prees enter, we apply this command and reset this string
-
+	IT IS ONLY FILLED In long command mode
+	in other modes, itis supported to be emtpy
 	**/
 	public String command;
 
@@ -59,12 +60,26 @@ public class Vim{
 	**/
 	private Boolean running = true;
 
-
+	/**
+		out string to handle the typed text but not appedded to text yet
+	**/
 	String tempText = "";
+
+	/**
+		an String to hadnle clipboard
+	**/
 	String clipBoard = "";
 
+	/**
+		check if cursor is moved from last character enterred or not
+		if it moved, we should append temptext to the piece table
+		if not? it doenst matter
+	**/
 	boolean moved = false;
 
+	/**
+		OUT PIECE TABLE THAT KEEP ALL TEXT
+	**/
 	PieceTable context;
 
 	PTIter iter;
@@ -80,7 +95,7 @@ public class Vim{
 	set our file (if any)
 	make terminal handy with decresing buffer to one in order to use terminal as editor!
 	greet uesr ( totally optional )
-	clean cunsole and print all of screen (that should be initailized with ' ')
+	clean cunsole and print all of screen (that should be initailized with the file or ' ')
 	**/
 	public Vim(String ourFile){
 		Logger.log("starting vim app");
@@ -115,17 +130,32 @@ public class Vim{
 
 	//////////////////////////////////////////////////
 
+	/**
+		copy current line of screen to the cliboard
+	**/
 	private void copyOneLine(){
 		Character[] line = screen.getLine(cursor);
 		clipBoard = ETCUtil.characterArrToString(line);
 	}
 
+	/**
+		paste the copied line to the iterator position
+		it set the tempText so first, check it temptext is ok to add or not
+		it do not empty the clipboard, maybe we want to paste that text again
+	**/
 	private void pasteOneLine(){
+		addText(); // add the remaining temp text to piece table
 		tempText = clipBoard;
-		addText();
+		addText(); // add the new clipboard text to the piece table
+		tempText = "";
 	}
 
-
+	/**
+		handle going to statistics mode
+		it get static text from piece table
+		and  fill screen with it
+		and also reprint the screen with the new text
+	**/
 	private void goToStatisticsMode(){
 		Logger.log("enterring statistics mode");
 		resetCommand();
@@ -134,24 +164,40 @@ public class Vim{
 
 		screen.updateScreenContent(context.getStatistics());
 		TUtil.clearAndPrintScreen(screen,cursor);
-
-		//TUtil.PError("khat e akhar : " + ETCUtil.characterArrToString(screen.getLine(20) ) );
 	}
 
+	/**
+		handle going to last line of file
+		note that this will bring ;last line to the top of screen
+		and whole screen will be empty , but no problem
+	**/
 	private void vimGoToEndOfFile(){
 		goToLine( context.linesCount() );
 	}
 
+	/**
+		handle going to fist line of file
+	**/
 	private void vimGoToFirstOfFile(){ // maybe TODO
 		goToLine(1);
 	}
 
+	/**
+		handle saving all file to the file
+		if the file is null, program will exit with an error
+		it get all of piece table text with getAllTExt method
+	**/
 	public void save(){
 		Logger.log("saved");
 		FilesUtil.writeToFile(context.getAllText(),ourFile);
 		//Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
 	}
 
+	/**
+		handle going to line x
+		if x is bigger that total lines, the command is ignored
+		it will bring the xth line to the top of screen and reset the cursor for eas eof implement
+	**/
 	private void goToLine(int x){
 		if(x > context.linesCount() ) return;
 		if(x<1) x = 1;
@@ -161,6 +207,10 @@ public class Vim{
 		cursor.reset();
 	}
 
+	/**
+		if command is just numberical
+		we go to that line of file
+	**/
 	private void goToLineHandle(){
 		try{
 			if (!command.matches("\\d+") ) return; // not numberical
@@ -171,6 +221,12 @@ public class Vim{
 		}
 	}
 
+	/**
+		if user press enter after :command
+		this method will be called
+		we have a swtich case to fetermine commands
+		if command is none of the cases, we think that it is gotoline x command
+	**/
 	private void applyLongCommand(){
 		Logger.log("comamnd: " + command);
 		switch(command){
@@ -212,6 +268,9 @@ public class Vim{
 	}
 
 
+	/**
+		handle ,oving cursor to one line up
+	**/
 	private void vimUp(){
 		if(mode == EditorMode.STATISTICS)
 			return;
@@ -224,6 +283,9 @@ public class Vim{
 		}
 	}
 
+	/**
+		handle moving cursor to one line down
+	**/
 	private void vimDown(){
 		if(mode == EditorMode.STATISTICS)
 			return;
@@ -237,6 +299,9 @@ public class Vim{
 
 	}
 
+	/**
+		handle movement of cursor the left
+	**/
 	private void vimLeft(){
 		if(mode == EditorMode.STATISTICS)
 			return;
@@ -244,7 +309,9 @@ public class Vim{
 		cursor.left();
 	}
 
-
+	/**
+		handle moveing cursor to right
+	**/
 	private void vimRight(){
 		if(mode == EditorMode.STATISTICS)
 			return;
@@ -252,11 +319,19 @@ public class Vim{
 		cursor.right();
 	}
 
+	/**
+		we user want to go to end  of line, this method will be called
+		it move cursor and iterator to end of the  current line
+	**/
 	private void vimGotoLastOfLine(){
 		//iter.gotoLastOfLine();
 		cursor.gotoLastOfLine();
 	}
 
+	/**
+		we user want to go to first of line, this method will be called
+		it move cursor and iterator to beginning of the line
+	**/
 	private void vimGotoFirstOfLine(){
 		//iter.gotoFirstOfLine();
 		cursor.gotoFirstOfLine();
@@ -264,7 +339,12 @@ public class Vim{
 
 
 
-
+	/**
+	handle keys in one key mode
+	here we can go to any other mode with diffrent keys
+	also we can go up and down and .. with hjkl
+	also copying and goi0ng to fist and end of line is handled here
+	**/
 	private void handleOneCharCommand(char inputC){
 		int input = (int) inputC;
 		if( input > 127  || input == 27) // arrow keys or esc
@@ -311,6 +391,11 @@ public class Vim{
 
 	}
 
+	/**
+		handle new character in insert mode
+		it add it to tempText
+		and handle esc key go back to one key mode
+	**/
 	private void handleInsertMode(char inputC){
 		int input = (int) inputC;
 		if( input > 127) // arrow keys
@@ -323,6 +408,11 @@ public class Vim{
 		handleAddText(inputC);
 	}
 
+	/**
+		handle input char in statistics mode
+		in this mode we ignoe all cursor movement to prevent bugs
+		if esc key pressed, we go back to one key mode
+	**/
 	private void handleStatisticsMode(char inputC){
 		int input = (int) inputC;
 		if( input > 127) // arrow keys
@@ -331,6 +421,11 @@ public class Vim{
 			goToOneKeyCommandMode();
 	}
 
+	/**
+		handle new input character in long commnad mod e
+		it append it to the command string
+		and handle going back to one key mode or when to appy
+	**/
 	private void handleLongCommand(char inputC){
 		int input = (int) inputC;
 		if( input > 127) // arrow keys or esc
@@ -348,6 +443,10 @@ public class Vim{
 
 
 
+	/**
+		handle adding text (in tempText string) to the piece table
+		it will update screen and reprint it
+	**/
 	private void addText(){
 		if(tempText.length() == 0) return;
 		context.add(tempText,iter);
@@ -359,7 +458,9 @@ public class Vim{
 		//TUtil.PError("context:"+context);
 
 	}
-
+	/**
+		TODO
+	**/
 	private void addCharToScreen(char inputC){
 		Character[] line = screen.getLine(cursor.getLine());
 		int x = cursor.getX();
@@ -370,6 +471,10 @@ public class Vim{
 		line[x] = inputC;
 	}
 
+	/**
+		handle aif we need adding text or not!
+		it will make pieces  between '\n' and ' ' s
+	**/
 	private void handleAddText(char inputC){
 		if(tempText.length() == 0) return;
 		addCharToScreen(inputC);
@@ -377,6 +482,10 @@ public class Vim{
 			addText();
 	}
 
+	/**
+		hide mess of cursor at next line (if you move cursor and end of the line
+		it re print current line and next line )
+	**/
 	private void hideCursorMess(char inputC){
 		TUtil.printLine(screen,cursor); // hamoun khat ro dobare chap kon
 		if(
@@ -424,8 +533,6 @@ public class Vim{
 		} // end while
 
 	} // end function run
-
-
 
 
 
@@ -493,21 +600,29 @@ public class Vim{
 		return false;
 	}
 
-
+	/**
+		clean screen after exiting srtatistics mode
+	**/
 	private void cleanStatistics(){
 		screen.updateScreenContent();
 		TUtil.clearAndPrintScreen(screen,cursor);
 	}
 
+	/**
+		foing to insert mode from one key mode ( i pressed)
+		it reset commdn string
+	**/
 	private void goToInsertMode(){
-		if(mode == EditorMode.STATISTICS)
-			cleanStatistics();
 		Logger.log("enterring insert mode");
 		resetCommand();
 		mode = EditorMode.INSERT;
 
 	}
 
+	/**
+		got to one key mode from any mode
+		it clean screen when we came fro mstatistics mode
+	**/
 	private void goToOneKeyCommandMode(){
 		if(mode == EditorMode.STATISTICS)
 			cleanStatistics();
@@ -518,9 +633,10 @@ public class Vim{
 		mode = EditorMode.ONE_KEY_COMMAND;
 	}
 
+	/**
+		got to long command mode from any mode
+	**/
 	private void goToOneLongCommandMode(){
-		if(mode == EditorMode.STATISTICS)
-			cleanStatistics();
 		Logger.log("enterring long command mode");
 		resetCommand();
 		mode = EditorMode.LONG_COMMAND;
@@ -530,7 +646,7 @@ public class Vim{
 
 
 	/**
-	cleanup and get ready to exit after a loop
+		cleanup and get ready to exit after a loop
 	**/
 	public void exit(){
 		cleanUpForExit();
@@ -554,17 +670,3 @@ public class Vim{
 		app.run();
 	}
 }
-
-
-
-/*
-public void test(){
-try{
-
-}catch( Exception e){
-TUtil.clearConsule();
-e.printStackTrace();
-System.exit(0);
-}
-}
-*/
