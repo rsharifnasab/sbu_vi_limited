@@ -349,6 +349,7 @@ public class Vim{
 
 
 	private void addText(){
+		if(tempText.length() == 0) return;
 		context.add(tempText,iter);
 		screen.updateScreenContent();
 		tempText = "";
@@ -510,6 +511,8 @@ public class Vim{
 	private void goToOneKeyCommandMode(){
 		if(mode == EditorMode.STATISTICS)
 			cleanStatistics();
+		if(mode == EditorMode.INSERT)
+			addText();
 		Logger.log("enterring one key mode");
 		resetCommand();
 		mode = EditorMode.ONE_KEY_COMMAND;

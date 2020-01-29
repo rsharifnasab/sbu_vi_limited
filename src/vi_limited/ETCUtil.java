@@ -81,12 +81,85 @@ public class ETCUtil{
 		return new String(ans);
 	}
 
-	public static int charCounter(String s,char toFind){
+	public static int charCounter(String s,char...toFind){
 		int count = 1;
 		for(char c : s.toCharArray()){
-			if(c==toFind) count++;
+			for(char toFindi : toFind)
+			if(c==toFindi) count++;
 		}
 		return count;
 	}
+
+	private static void shiftRight(int ind,String[] a,int[] b, int[] c){
+		for (int i =9;i>i+1;i--){
+			a[i] = a[i-1];
+			b[i] = b[i-1];
+			c[i] = c[i-1];
+		}
+		a[ind] = null;
+		b[ind] = -1;
+		c[ind] = 0;
+	}
+
+	public static String[] tenShortWords(String[] allText){
+		String [] ans = new String[10];
+		int[] indexes = new int[10];
+		int[] toolHa = new int[10];
+
+		for (int i =0;i<10;i++ ) { // initialize 3 arrays
+			ans[i] = null;
+			indexes[i] = -1;
+			toolHa[i] = 0;
+		}
+
+		for (int i =0;i<allText.length;i++) {
+			String s = allText[i];
+			int len = s.length();
+			if(len==0) continue;
+			if(s.matches("\\s*")) continue;
+			for (int j =0;j<10;j++ ) {
+				if(len > toolHa[j]){
+					shiftRight(j,ans,indexes,toolHa);
+					ans[j] = s;
+					indexes[j] = i;
+					toolHa[j] = len;
+					continue;
+				}
+			}
+		}
+
+		return ans;
+	}
+
+	public static String[] tenLongWords(String[] allText){
+		String [] ans = new String[10];
+		int[] indexes = new int[10];
+		int[] toolHa = new int[10];
+
+		for (int i =0;i<10;i++ ) { // initialize 3 arrays
+			ans[i] = null;
+			indexes[i] = -1;
+			toolHa[i] = 0;
+		}
+
+		for (int i =0;i<allText.length;i++) {
+			String s = allText[i];
+			int len = s.length();
+			if(len==0) continue;
+			if(s.matches("\\s*")) continue;
+			for (int j =0;j<10;j++ ) {
+				if(len < toolHa[j]){
+					shiftRight(j,ans,indexes,toolHa);
+					ans[j] = s;
+					indexes[j] = i;
+					toolHa[j] = len;
+				}
+			}
+		}
+
+		return ans;
+	}
+
+
 
 }
