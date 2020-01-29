@@ -1,6 +1,6 @@
  update iterator as you go (for insert with iterator)
-copy paste 
 delete
+SEARCH! trie tree
 
 bugs:
 	press enter in last line in command mode 

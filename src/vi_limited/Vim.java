@@ -123,7 +123,7 @@ public class Vim{
 
 	private void pasteOneLine(){
 		tempText = clipBoard;
-		addText(iter);
+		addText();
 	}
 
 
@@ -295,7 +295,7 @@ public class Vim{
 
 	}
 
-	private void handleInsertMode(char inputC,PTIter iter){
+	private void handleInsertMode(char inputC){
 		int input = (int) inputC;
 		if( input > 127) // arrow keys
 			return;
@@ -304,7 +304,7 @@ public class Vim{
 		tempText += inputC;
 		//iter.right(); // TODO bia
 
-		handleAddText(inputC,iter);
+		handleAddText(inputC);
 	}
 
 	private void handleStatisticsMode(char inputC){
@@ -332,7 +332,7 @@ public class Vim{
 
 
 
-	private void addText(PTIter iter){
+	private void addText(){
 		context.add(tempText,iter);
 		screen.updateScreenContent();
 		tempText = "";
@@ -353,11 +353,11 @@ public class Vim{
 		line[x] = inputC;
 	}
 
-	private void handleAddText(char inputC,PTIter iter){
+	private void handleAddText(char inputC){
 		if(tempText.length() == 0) return;
 		addCharToScreen(inputC);
 		if(inputC == '\n' || inputC == ' ' || moved)
-			addText(iter);
+			addText();
 	}
 
 	private void hideCursorMess(char inputC){
@@ -377,7 +377,7 @@ public class Vim{
 	**/
 	public void run(){
 		while(running){
-			PTIter iter = new PTIter(context);
+			iter = new PTIter(context);
 			//iter.goToLine(3);
 			char input = TUtil.getChar();
 			hideCursorMess(input);
@@ -395,7 +395,7 @@ public class Vim{
 					break;
 
 				case INSERT:
-					handleInsertMode(input,iter);
+					handleInsertMode(input);
 					break;
 
 				case STATISTICS:
