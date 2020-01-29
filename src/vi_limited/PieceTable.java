@@ -173,14 +173,14 @@ public class PieceTable{
 
 		String[] allTextSplited = allText.split("\\s+");
 
-		ans.addAll("ten longest words: \n");
+		ans.addAll("ten shortest words: \n");
 		String[] smallWords = ETCUtil.tenShortWords(allTextSplited);
 		for(int i =0; i < 10; i++){
 			String word = smallWords[i];
 			if(word!=null) ans.addAll(word+"\n");
 		}
 
-		ans.addAll("ten smallest words: \n");
+		ans.addAll("ten longest words: \n");
 		String[] longWords = ETCUtil.tenLongWords(allTextSplited);
 		for(int i =0; i < 10; i++){
 			String word = longWords[i];

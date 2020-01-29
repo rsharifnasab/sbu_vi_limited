@@ -109,21 +109,21 @@ public class ETCUtil{
 		for (int i =0;i<10;i++ ) { // initialize 3 arrays
 			ans[i] = null;
 			indexes[i] = -1;
-			toolHa[i] = 0;
+			toolHa[i] = Integer.MAX_VALUE;
 		}
 
 		for (int i =0;i<allText.length;i++) {
 			String s = allText[i];
 			int len = s.length();
 			if(len==0) continue;
-			if(s.matches("\\s*")) continue;
+			if(s.matches("\\s+")) continue;
 			for (int j =0;j<10;j++ ) {
-				if(len > toolHa[j]){
+				if(len < toolHa[j]){
 					shiftRight(j,ans,indexes,toolHa);
 					ans[j] = s;
 					indexes[j] = i;
 					toolHa[j] = len;
-					continue;
+					break;
 				}
 			}
 		}
@@ -146,13 +146,14 @@ public class ETCUtil{
 			String s = allText[i];
 			int len = s.length();
 			if(len==0) continue;
-			if(s.matches("\\s*")) continue;
+			if(s.matches("\\s+")) continue;
 			for (int j =0;j<10;j++ ) {
-				if(len < toolHa[j]){
+				if(len > toolHa[j]){
 					shiftRight(j,ans,indexes,toolHa);
 					ans[j] = s;
 					indexes[j] = i;
 					toolHa[j] = len;
+					break;
 				}
 			}
 		}
