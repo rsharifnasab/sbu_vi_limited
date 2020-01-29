@@ -16,17 +16,24 @@ public class Screen{
 	**/
 	Character[][] innerArr;
 
-
+	/**
+		rerence of out piece table
+		it is used to get new text and fill scren when its needed
+	**/
 	PieceTable context;
 
 	public final int height;
 	public final int width;
 
+	/**
+		position of first line of screen in file
+		in scoll (and some toher command) we change this and re genrate screen contentents from piece table
+	**/
 	private int posInFile=1;
 
 
 	/**
-		cunstructor with the given char to fill array
+		cunstructor with the piece table to fill screen
 	**/
 	public Screen(int width,int height,PieceTable context){
 		this.width = width;
@@ -39,22 +46,37 @@ public class Screen{
 	}
 
 
+	/**
+		same as set position
+		it give a position (in line)
+		and move first line of screen to that line
+	**/
 	public void goToLine(int x){
 		int contextLines = context.linesCount();
 		posInFile = x<=contextLines ? x : contextLines;
 		updateScreenContent();
 	}
 
+	/**
+		get current line of top of screen
+	**/
 	public int getPos(){
 		return posInFile;
 	}
 
-
+	/**
+		move screen one line up (if its available)
+	**/
 	public void up(){
 		posInFile = (posInFile>1)? posInFile-1 : 1;
 		updateScreenContent();
 	}
 
+	/**
+	move screen one line down (if its available)
+	it come down untill just first line of scrren is filled with text
+	other lines are emtpy
+	**/
 	public void down(){
 		int lines = context.linesCount();
 		posInFile = (posInFile>lines-1)? lines : posInFile+1;
@@ -62,6 +84,13 @@ public class Screen{
 		updateScreenContent();
 	}
 
+	/**
+		update context of scrren with the help of piece table
+		ig get few line (as much as screen height)
+		from "posInfile" to "posInFile+height"
+
+		note that it is possible that getText return longer text, we ignore it!
+	**/
 	public void updateScreenContent(){
 		updateScreenContent(
 			context.getText(posInFile,height)
@@ -69,6 +98,13 @@ public class Screen{
 	}
 
 
+	/**
+		get as String from input ans set it to the screen charArray character by character
+		if input text is longer, we ignore it
+		it it is shorter that size of screeen, we print ' ' instead of it
+		the tamum boolean show that we reached end od the input text or not
+		we do not add anything after '\n' characger
+	**/
 	public void updateScreenContent(String stText){
 		char[] text = stText.toCharArray();
 		int ind = 0;

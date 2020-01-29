@@ -190,7 +190,8 @@ public class TUtil{
 
 	/**
 		clear screen and print all of screen
-		it will be used first time
+		it will be used every time that we need to re prrint whole screen
+		for exmaple enterring and wuiting statistics mode and scrolling
 	**/
 	public static void clearAndPrintScreen(Screen screen, Cursor cursor){
 		//clearConsuleC(cursor);
