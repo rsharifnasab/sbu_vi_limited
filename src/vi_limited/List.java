@@ -178,7 +178,11 @@ public class List<T>{
 
 
 
-
+	/**
+		add 2 to the capacity of the list
+		and shift all elements after from index to the right (be andaze ye tedad)
+		khde from ro ham shift mide gouya
+	**/
 	private void shiftRight(int from, int tedad){ // 123 -> 12XX3
 		this.ensureCapacity(NOE+tedad);
 		for (int i = NOE-1;i >=from ;i-- ) {
@@ -189,16 +193,27 @@ public class List<T>{
 		Logger.log("after shift : " + this);
 	}
 
+	/**
+		it uses the shift right method to shift all elements after from, exactly two positions
+	**/
 	private void shiftTwoRight(int from){ // 123 -> 12XX3
 		shiftRight(from,2);
 	}
 
+	/**
+		set the specific index!
+		it dont allow null elements
+	**/
 	private void set(int index,T elem){
 		if(elem == null)
 			throw new NullPointerException("null elem cant be in list");
 		innerArray[index] = elem;
 	}
 
+	/**
+		if set 3 items (gived as array) at the given positon
+		it **do not shift** elements itself
+	**/
 	private void set3(int index,T[] elems){
 		if(elems == null)
 			throw new NullPointerException("null array of elem");
@@ -234,6 +249,12 @@ public class List<T>{
 		return ans;
 	}
 
+	/**
+		get and from , to ( and a alaki element to making new array of T[])
+		and then returning new list containing elements from: from, to : to
+		it used in GEtText to remove prevoius characters of the PossInFile to make sure
+		that scroll in the original buffer is ok
+	**/
 	@SuppressWarnings({"unchecked"})
 	public List<T> subList(int from, int to, T alaki){
 		T[] clone =  (T[]) java.lang.reflect.Array.newInstance(alaki.getClass(), to-from);
@@ -246,10 +267,13 @@ public class List<T>{
 		return ans;
 	}
 
+	/**
+		an override of subList
+		it only take from index and the TO index is : noe!
+		it return from from to last of the list (like -1 in python)
+	**/
 	public List<T> subList(int from, T alaki){
 		return subList(from,NOE, alaki);
 	}
-
-
 
 }
