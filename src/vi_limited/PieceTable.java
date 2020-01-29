@@ -85,6 +85,7 @@ public class PieceTable{
 		while(nodes.get(nodeInd).lineCount < fromLine){
 			fromLine -= nodes.get(nodeInd).lineCount;
 			nodeInd++;
+			if(nodeInd >= nodes.noe()) break;
 		}
 
 		List<Character> ans = new List<Character>();

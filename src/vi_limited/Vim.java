@@ -135,12 +135,13 @@ public class Vim{
 	}
 
 	public void save(){
+		Logger.log("saved");
 		FilesUtil.writeToFile(context.getAllText(),ourFile);
-		Logger.log("saved : \n"+context.getAllText());
+		Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
 	}
 
 	private void applyLongCommand(){
-		Logger.log("command is : " + command);
+		Logger.log("comamnd: " + command);
 		switch(command){
 
 			case "w":
@@ -170,7 +171,7 @@ public class Vim{
 
 
 	private void vimUp(){
-		iter.up();
+		//iter.up();
 		cursor.up();
 		if(cursor.screenUpNeed()){
 			screen.up();
@@ -180,9 +181,10 @@ public class Vim{
 	}
 
 	private void vimDown(){
-		iter.down();
+		//iter.down();
 		cursor.down();
 		if(cursor.screenDownNeed()){
+			Logger.log("down needed");
 			screen.down();
 			TUtil.clearAndPrintScreen(screen,cursor);
 		}
@@ -190,24 +192,24 @@ public class Vim{
 	}
 
 	private void vimLeft(){
+		//iter.left();
 		cursor.left();
-		iter.left();
 	}
 
 
 	private void vimRight(){
+		//iter.right();
 		cursor.right();
-		iter.right();
-	}
-
-	private void vimGotoFirstOfLine(){
-		cursor.gotoLastOfLine();
-		iter.gotoLastOfLine();
 	}
 
 	private void vimGotoLastOfLine(){
+		//iter.gotoLastOfLine();
+		cursor.gotoLastOfLine();
+	}
+
+	private void vimGotoFirstOfLine(){
+		//iter.gotoFirstOfLine();
 		cursor.gotoFirstOfLine();
-		iter.gotoFirstOfLine();
 	}
 
 
@@ -218,7 +220,6 @@ public class Vim{
 		if( input > 127  || input == 27) // arrow keys or esc
 			return;
 
-		//Logger.log( input + " " + inputC);
 		switch (inputC) {
 			case 'i':
 				goToInsertMode();
@@ -321,6 +322,15 @@ public class Vim{
 			addText(iter);
 	}
 
+	private void hideCursorMess(){
+		TUtil.printLine(screen,cursor); // hamoun khat ro dobare chap kon
+		if(cursor.getX() >  cursor.width-4 ){
+			Cursor clone = cursor.clone();
+			clone.cloneDown();
+			TUtil.printLine(screen,clone);
+			cursor.sync();
+		}
+	}
 	/**
 	main function and main loop
 	**/
@@ -329,7 +339,7 @@ public class Vim{
 			PTIter iter = new PTIter(context);
 			//iter.goToLine(3);
 			char input = TUtil.getChar();
-			TUtil.printLine(screen,cursor); // hamoun khat ro dobare chap kon
+			hideCursorMess();
 
 			moved = handleCursorMove(input);
 
