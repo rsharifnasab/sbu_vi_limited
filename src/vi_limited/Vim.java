@@ -121,6 +121,11 @@ public class Vim{
 		clipBoard = ETCUtil.characterArrToString(line);
 	}
 
+	private void pasteOneLine(){
+		tempText = clipBoard;
+		addText(iter);
+	}
+
 
 	private void goToStatisticsMode(){
 		Logger.log("enterring statistics mode");
@@ -182,6 +187,10 @@ public class Vim{
 
 			case "yy":
 				copyOneLine();
+				break;
+
+			case "p":
+				pasteOneLine();
 				break;
 		}
 	}
