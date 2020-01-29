@@ -164,7 +164,7 @@ public class PieceTable{
 
 		List<Character> ans = new List<Character>();
 		ans.addAll(
-			"number of words:" + wordsCount(allText) + "\n"
+			"number of words:" + wordsCount(allText) + " and "
 		);
 
 		ans.addAll(
