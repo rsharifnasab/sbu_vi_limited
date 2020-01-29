@@ -86,7 +86,6 @@ public class FilesUtil{
 		wirte specified String to the file with java.io.File input
 	**/
 	public static void writeToFile(String text,java.io.File address){
-		//TODO : null check
 		try {
 			java.io.PrintWriter writer = new java.io.PrintWriter(address, "UTF-8");
 			writer.println(text);

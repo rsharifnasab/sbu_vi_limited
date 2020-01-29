@@ -73,7 +73,14 @@ public class ETCUtil{
 		throw new RuntimeException("should not reach here!, probalby bad FileStatus enum");
 	}
 
-
+	/**
+		java dont have built in method to convert Character[] to String
+		it only accept char[]
+		so what should i do?
+		i wrote this funtion to convert all Character s to chars
+		and then i cretead new String with them
+		in the parallel world, this method doesnt exist and java handles it, itslef
+	**/
 	public static String characterArrToString(Character[] arr){
 		char[] ans = new char[arr.length];
 		for(int i =0; i < arr.length; i++)
@@ -81,6 +88,12 @@ public class ETCUtil{
 		return new String(ans);
 	}
 
+	/**
+		very nive and good function!
+		it get a sTring as first argument and few characters as second argument ( as varars)
+		it count happenning of all characters in toFind array in the main String
+		it is used to count number of words (by counting "\n" and ' ' s)
+	**/
 	public static int charCounter(String s,char...toFind){
 		int count = 1;
 		for(char c : s.toCharArray()){
@@ -90,6 +103,11 @@ public class ETCUtil{
 		return count;
 	}
 
+	/**
+		this is private method so this javadoc isnt important right?
+		it shift all elemts after ind of 3 arrays to the right
+		what if they have more elemets? ignore them
+	**/
 	private static void shiftRight(int ind,String[] a,int[] b, int[] c){
 		for (int i =9;i>i+1;i--){
 			a[i] = a[i-1];
@@ -101,6 +119,11 @@ public class ETCUtil{
 		c[ind] = 0;
 	}
 
+	/**
+		this method give an String[] as the text which is splited in white spaces
+		it should find 10 shortest words (word is sth between whitespaces)
+		it is sensetive code, take care of it
+	**/
 	public static String[] tenShortWords(String[] allText){
 		String [] ans = new String[10];
 		int[] indexes = new int[10];
@@ -131,6 +154,11 @@ public class ETCUtil{
 		return ans;
 	}
 
+	/**
+		this method give an String[] as the text which is splited in white spaces
+		it should find 10 longest words (word is sth between whitespaces)
+		it is sensetive code, take care of it
+	**/
 	public static String[] tenLongWords(String[] allText){
 		String [] ans = new String[10];
 		int[] indexes = new int[10];
