@@ -8,9 +8,10 @@ public class ETCUtil{
 	/**
 		delay program in seconds
 	**/
-	public static void delay(int second){
+	public static void delay(double second){
 		try{
-			Thread.sleep(1000*second);
+			int delayInMS = (int) (second * 1000);
+			Thread.sleep( delayInMS );
 		} catch(InterruptedException ex){
 			TUtil.PError("error : interrupt happened in delay!");
 		}
@@ -70,7 +71,6 @@ public class ETCUtil{
 				break;
 		}
 		throw new RuntimeException("should not reach here!, probalby bad FileStatus enum");
-
 	}
 
 
@@ -159,6 +159,13 @@ public class ETCUtil{
 		}
 
 		return ans;
+	}
+
+	/**
+		calcualte words of input String
+	**/
+	public static int wordsCount(String allText){
+		return ETCUtil.charCounter(allText,' ','\n');
 	}
 
 

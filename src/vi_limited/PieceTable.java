@@ -1,10 +1,28 @@
 package vi_limited;
 
-
+/**
+	the class which handle keeping al text in memory
+	main part of project!
+**/
 public class PieceTable{
+
+	/**
+		2 list for buffers
+		one for original buffer
+		and one for add buffers
+	**/
 	public List<Character> [] buffers; // original , added
+
+	/**
+		the nodes list
+		it hand;e adding node and splitting and etc
+	**/
 	public List<Node> nodes; // list e masalan
 
+	/**
+		the main constructor
+		it make buffers and first noe!
+	**/
 	@SuppressWarnings({"unchecked","rawtypes"})
 	public PieceTable(){
 		buffers = (List<Character>[]) new List[2];
@@ -15,6 +33,10 @@ public class PieceTable{
 		nodes.add(Node.getInitialNode(0,""));
 	}
 
+	/**
+		the constructor with fileaddress
+		it read all file content and add to original buffer
+	**/
 	public PieceTable(String fileAdd){
 	 	this();
 		if(fileAdd==null) return;
@@ -31,6 +53,10 @@ public class PieceTable{
 
 	}
 
+	/**
+		make a debug friendly string for debugging
+		not for prpintg or saving
+	**/
 	@Override
 	public String toString(){
 		String ans = "nodes : \n";
@@ -49,6 +75,10 @@ public class PieceTable{
 		return ans;
 	}
 
+	/**
+		calacualte count of \n  of all text
+		by adding linecount pof every node
+	**/
 	public int getTextLen(){
 		int len = 0;
 		for (Node n : nodes.getAsArray(Node.getAlaki())) {
@@ -57,7 +87,12 @@ public class PieceTable{
 		return len;
 	}
 
-
+	/**
+		get all of text of piece table as an String
+		is is costly
+		it only called when saving ot searching
+		or statistics
+	**/
 	public String getAllText(){
 		PTIter iter = new PTIter(this);
 		int len = getTextLen();
@@ -71,6 +106,9 @@ public class PieceTable{
 		return new String(ansCHA);
 	}
 
+	/**
+		convert a node to text which is pointing to
+	**/
 	public List<Character> getNodeText(Node node){
 		List<Character> ans = new List<Character>();
 		for (int i =node.start;i<node.start+node.length;i++ ) {
@@ -95,7 +133,14 @@ public class PieceTable{
 		return node.start+node.length; // not found
 	}
 
-
+	/**
+		get a part of text
+		from the line : fromLine
+		to line : fromLine + height
+		it is used for updating screen
+		it is not explicit to be height line
+		because screen class can ignore longer text
+	**/
 	public String getText(int fromLine,int height){
 		int nodeInd = 0;
 		while(nodes.get(nodeInd).lineCount < fromLine){
@@ -121,6 +166,9 @@ public class PieceTable{
 
 	}
 
+	/**
+		addting a String tp the text in the location of iterator
+	**/
 	public void add(String toAdd,PTIter iter){
 
 		int toAddLines = 0;
@@ -147,10 +195,10 @@ public class PieceTable{
 	}
 
 
-	private int wordsCount(String allText){
-		return ETCUtil.charCounter(allText,' ','\n');
-	}
 
+	/**
+		calcualte number of lines based on linecount in every node
+	**/
 	public int linesCount(){
 		int ans = 1;
 		for(Node n : nodes.getAsArray(Node.getAlaki()))
@@ -158,13 +206,21 @@ public class PieceTable{
 		return ans;
 	}
 
-
+	/**
+		it returns a text in string
+		less than 10 lines
+		which contains statisticsabout text
+		it is effiecient because it calcalte all test just one time
+		it also split text just one time
+		finding 10 longest and 10 shortest is O(n)
+		it implemented in ETCUtils
+	**/
 	public String getStatistics(){
 		String allText = getAllText();
 
 		List<Character> ans = new List<Character>();
 		ans.addAll(
-			"number of words:" + wordsCount(allText) + " and "
+			"number of words:" + ETCUtil.wordsCount(allText) + " and "
 		);
 
 		ans.addAll(
@@ -188,7 +244,6 @@ public class PieceTable{
 		}
 
 		return new String(ans.toCharArray());
-
 	}
 
 
