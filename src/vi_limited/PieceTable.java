@@ -147,8 +147,8 @@ public class PieceTable{
 	}
 
 
-	public int wordsCount(){
-		return ETCUtil.wordCounter(getAllText());
+	private int wordsCount(String allText){
+		return ETCUtil.charCounter(allText,' ')+1;
 	}
 
 	public int linesCount(){
@@ -158,23 +158,45 @@ public class PieceTable{
 		return ans;
 	}
 
-	public String[] tenWords(){
-		String [] ans = new String[20];
+	private String[] smallWords(String alText){
+		String [] ans = new String[10];
 			//TODO
 		return ans;
 	}
 
+	private String[] largeWords(){
+		String[] ans = new Stirng[10];
+		//TODO
+		return ans;
+	}
+
+
+
 	public String getStatistics(){
+		String allText = getAllText();
+
 		List<Character> ans = new List<Character>();
 		ans.addAll(
-			"number of words:" + wordsCount() + "\n"
+			"number of words:" + wordsCount(allText) + "\n"
 		);
 
 		ans.addAll(
 			"number of lines:" + linesCount() + "\n"
 		);
 
-		//TODO : ten words
+		ans.addAll("ten longest words: \n");
+		String[] smallWords = smallWords(allText);
+		for(int i =0; i < 10; i++){
+			String word = smallWords[i];
+			if(word!=null) ans.addAll(word+"\n")
+		}
+
+		ans.addAll("ten smallest words: \n");
+		String[] longWords = longWords(allText);
+		for(int i =0; i < 10; i++){
+			String word = longWords[i];
+			if(word!=null) ans.addAll(word+"\n")
+		}
 
 		return new String(ans.toCharArray());
 

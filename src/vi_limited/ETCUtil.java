@@ -81,12 +81,12 @@ public class ETCUtil{
 		return new String(ans);
 	}
 
-	public static int wordCounter(String s){
-		int words = 1;
+	public static int charCounter(String s,char toFind){
+		int count = 1;
 		for(char c : s.toCharArray()){
-			if(c==' ') words++;
+			if(c==toFind) count++;
 		}
-		return words;
+		return count;
 	}
 
 }
