@@ -151,49 +151,6 @@ public class Vim{
 	}
 
 	/**
-		handle going to statistics mode
-		it get static text from piece table
-		and  fill screen with it
-		and also reprint the screen with the new text
-	**/
-	private void goToStatisticsMode(){
-		Logger.log("enterring statistics mode");
-		resetCommand();
-
-		mode = EditorMode.STATISTICS;
-
-		screen.updateScreenContent(context.getStatistics());
-		TUtil.clearAndPrintScreen(screen,cursor);
-	}
-
-	/**
-		handle going to last line of file
-		note that this will bring ;last line to the top of screen
-		and whole screen will be empty , but no problem
-	**/
-	private void vimGoToEndOfFile(){
-		goToLine( context.linesCount() );
-	}
-
-	/**
-		handle going to fist line of file
-	**/
-	private void vimGoToFirstOfFile(){
-		goToLine(1);
-	}
-
-	/**
-		handle saving all file to the file
-		if the file is null, program will exit with an error
-		it get all of piece table text with getAllTExt method
-	**/
-	public void save(){
-		Logger.log("saved");
-		FilesUtil.writeToFile(context.getAllText(),ourFile);
-		//Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
-	}
-
-	/**
 		handle going to line x
 		if x is bigger that total lines, the command is ignored
 		it will bring the xth line to the top of screen and reset the cursor for eas eof implement
@@ -207,38 +164,6 @@ public class Vim{
 		cursor.reset();
 	}
 
-	/**
-		go to statistics mode (because its much similiar to search mdoe)
-		get searched text from piece table search method
-		and show it in screen
-	**/
-	private void search(){
-		Logger.log("searching");
-		String toSearch = command;// hame be joz oun /
-		mode = EditorMode.STATISTICS;
-
-		screen.updateScreenContent(context.search(toSearch));
-		TUtil.clearAndPrintScreen(screen,cursor);
-	}
-
-
-
-	/**
-		if command is just numberical
-		we go to that line of file
-	**/
-	private void etcHandle(){
-		if(command.length() == 0) return; // empty command
-
-		try{
-			if (!command.matches("\\d+") ) return; // not numberical
-			int x = Integer.parseInt(command);
-			goToLine(x);
-
-		} catch(Exception e){
-			//ignore any bad command
-		}
-	}
 
 	private void forwardWord(int n){
 		Logger.log("forward");
@@ -252,51 +177,26 @@ public class Vim{
 		TUtil.PError("forward not implemented");
 	}
 
+
 	/**
-		if user press enter after :command
-		this method will be called
-		we have a swtich case to fetermine commands
-		if command is none of the cases, we think that it is gotoline x command
+		we user want to go to end  of line, this method will be called
+		it move cursor and iterator to end of the  current line
 	**/
-	private void applyLongCommand(){
-		Logger.log("comamnd: " + command);
-		switch(command){
-
-			case "w":
-				save();
-				break;
-
-			case "wq":
-			case "x":
-				save();
-				exit();
-				break;
-
-			case "q":
-			case "q!":
-				exit();
-				break;
-
-			case "0":
-				vimGoToFirstOfFile();
-				break;
-
-			case "$":
-				vimGoToEndOfFile();
-				break;
-
-			case "yy":
-				copyOneLine();
-				break;
-
-			case "p":
-				pasteOneLine();
-				break;
-
-			default:
-				etcHandle();
-		}
+	private void vimGotoLastOfLine(){
+		//iter.gotoLastOfLine();
+		cursor.gotoLastOfLine();
 	}
+
+	/**
+		we user want to go to first of line, this method will be called
+		it move cursor and iterator to beginning of the line
+	**/
+	private void vimGotoFirstOfLine(){
+		//iter.gotoFirstOfLine();
+		cursor.gotoFirstOfLine();
+	}
+
+
 
 
 	/**
@@ -350,22 +250,82 @@ public class Vim{
 		cursor.right();
 	}
 
+
 	/**
-		we user want to go to end  of line, this method will be called
-		it move cursor and iterator to end of the  current line
+		handle adding text (in tempText string) to the piece table
+		it will update screen and reprint it
+		TODO
 	**/
-	private void vimGotoLastOfLine(){
-		//iter.gotoLastOfLine();
-		cursor.gotoLastOfLine();
+	private void addText(){
+		if(tempText.length() == 0) return;
+		context.add(tempText,iter);
+		screen.updateScreenContent();
+		tempText = "";
+		Logger.log("context:"+context);
+		Logger.log("- - - - - - ");
+		Logger.log(context.getAllText());
+		//TUtil.PError("context:"+context);
 	}
 
 	/**
-		we user want to go to first of line, this method will be called
-		it move cursor and iterator to beginning of the line
+		TODO
 	**/
-	private void vimGotoFirstOfLine(){
-		//iter.gotoFirstOfLine();
-		cursor.gotoFirstOfLine();
+	private void addCharToScreen(char inputC){
+		Character[] line = screen.getLine(cursor.getLine());
+		int x = cursor.getX();
+		int len = line.length;
+		for(int i = len-1; i > x; i--){
+			line[i] = line[i-1];
+		}
+		line[x] = inputC;
+	}
+
+
+
+	/**
+		if user press enter after :command
+		this method will be called
+		we have a swtich case to fetermine commands
+		if command is none of the cases, we think that it is gotoline x command
+	**/
+	private void applyLongCommand(){
+		Logger.log("comamnd: " + command);
+		switch(command){
+
+			case "w":
+				save();
+				break;
+
+			case "wq":
+			case "x":
+				save();
+				exit();
+				break;
+
+			case "q":
+			case "q!":
+				exit();
+				break;
+
+			case "0":
+				vimGoToFirstOfFile();
+				break;
+
+			case "$":
+				vimGoToEndOfFile();
+				break;
+
+			case "yy":
+				copyOneLine();
+				break;
+
+			case "p":
+				pasteOneLine();
+				break;
+
+			default:
+				etcHandle();
+		}
 	}
 
 
@@ -498,36 +458,6 @@ public class Vim{
 			command += inputC;
 	}
 
-
-
-	/**
-		handle adding text (in tempText string) to the piece table
-		it will update screen and reprint it
-		TODO
-	**/
-	private void addText(){
-		if(tempText.length() == 0) return;
-		context.add(tempText,iter);
-		screen.updateScreenContent();
-		tempText = "";
-		Logger.log("context:"+context);
-		Logger.log("- - - - - - ");
-		Logger.log(context.getAllText());
-		//TUtil.PError("context:"+context);
-	}
-
-	/**
-		TODO
-	**/
-	private void addCharToScreen(char inputC){
-		Character[] line = screen.getLine(cursor.getLine());
-		int x = cursor.getX();
-		int len = line.length;
-		for(int i = len-1; i > x; i--){
-			line[i] = line[i-1];
-		}
-		line[x] = inputC;
-	}
 
 	/**
 		handle aif we need adding text or not!
@@ -716,6 +646,87 @@ public class Vim{
 		resetCommand();
 		mode = EditorMode.LONG_COMMAND;
 	}
+
+
+	/**
+		go to statistics mode (because its much similiar to search mdoe)
+		get searched text from piece table search method
+		and show it in screen
+	**/
+	private void search(){
+		Logger.log("searching");
+		String toSearch = command;// hame be joz oun /
+		mode = EditorMode.STATISTICS;
+
+		screen.updateScreenContent(context.search(toSearch));
+		TUtil.clearAndPrintScreen(screen,cursor);
+	}
+
+
+
+	/**
+		if command is just numberical
+		we go to that line of file
+	**/
+	private void etcHandle(){
+		if(command.length() == 0) return; // empty command
+
+		try{
+			if (!command.matches("\\d+") ) return; // not numberical
+			int x = Integer.parseInt(command);
+			goToLine(x);
+
+		} catch(Exception e){
+			//ignore any bad command
+		}
+	}
+
+
+
+	/**
+		handle going to statistics mode
+		it get static text from piece table
+		and  fill screen with it
+		and also reprint the screen with the new text
+	**/
+	private void goToStatisticsMode(){
+		Logger.log("enterring statistics mode");
+		resetCommand();
+
+		mode = EditorMode.STATISTICS;
+
+		screen.updateScreenContent(context.getStatistics());
+		TUtil.clearAndPrintScreen(screen,cursor);
+	}
+
+	/**
+		handle going to last line of file
+		note that this will bring ;last line to the top of screen
+		and whole screen will be empty , but no problem
+	**/
+	private void vimGoToEndOfFile(){
+		goToLine( context.linesCount() );
+	}
+
+	/**
+		handle going to fist line of file
+	**/
+	private void vimGoToFirstOfFile(){
+		goToLine(1);
+	}
+
+	/**
+		handle saving all file to the file
+		if the file is null, program will exit with an error
+		it get all of piece table text with getAllTExt method
+	**/
+	public void save(){
+		Logger.log("saved");
+		FilesUtil.writeToFile(context.getAllText(),ourFile);
+		//Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
+	}
+
+
 
 
 	/**
