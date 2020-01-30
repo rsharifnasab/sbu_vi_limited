@@ -1,4 +1,4 @@
-*my DS project for DS class with DR.Ebrahim moghaddam in fall 98*
+**my DS project for DS class with DR.Ebrahim moghaddam in fall 98**
 project is : VIM editor(!) explicity written in java or CPP
 
 the rules are :
@@ -27,4 +27,4 @@ the rules are :
 + you can simply run : `make` 
 	be careful, this command will open the Vim.java fro msrc folder to edit! 
 + if you have ant, you can run `ant` and then `java -jar Vim.jar`
-	or `java -jar Vim.jar filename.txt'`
+	or `java -jar Vim.jar filename.txt`
