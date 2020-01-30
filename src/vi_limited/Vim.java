@@ -240,6 +240,18 @@ public class Vim{
 		}
 	}
 
+	private void forwardWord(int n){
+		Logger.log("forward");
+		//TODO
+		TUtil.PError("forward not implemented");
+	}
+
+	private void backWord(int n){
+		Logger.log("back word");
+		//TODO
+		TUtil.PError("forward not implemented");
+	}
+
 	/**
 		if user press enter after :command
 		this method will be called
@@ -408,6 +420,14 @@ public class Vim{
 
 			case 'Y':
 				copyOneLine();
+				break;
+
+			case 'w':
+				forwardWord(1);
+				break;
+
+			case 'b':
+				backWord(1);
 				break;
 
 		}

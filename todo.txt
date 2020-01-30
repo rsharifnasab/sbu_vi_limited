@@ -6,6 +6,8 @@ search : trie tree dorost
 search: convert char to line (index ha)
 
 w : kalame badi
+b : kalame ghabli 
+
 
 bugs:
 	press enter in last line in command mode 
