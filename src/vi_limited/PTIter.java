@@ -7,14 +7,21 @@ public class PTIter{
 	int indexInNode;
 	int currentLine;
 
+	@Override
+	public String toString(){
+			return "node of iter: " + currentNode
+				+ "\ncurrentNodeIndex: " + currentNodeIndex
+				+ "\nindexInNode: " + indexInNode;
+	}
+
 	public PTIter(PieceTable context){
 		this.context = context;
 		this.reset();
 	}
 
 	public void add(String toAdd){
-
-		TUtil.PError("add text not implemented yet");
+		context.add(toAdd,this);
+		//TUtil.PError("add text not implemented yet");
 	}
 
 	public void reset(){

@@ -120,9 +120,9 @@ class Node{
 		Logger.log("length of toSplit : " + this.length);
 
 		Node[] ans = new Node[3];
-		ans[0]= new Node(this.start,part1len, this.type,part1lines);
-		ans[1]= new Node(indexInBuffer,newTextLen,1,toAddLines); //added text
-		ans[2]= new Node(splitPlace,part2len, this.type,part2lines);
+		ans[0]= new Node(this.start,   part1len,  this.type,part1lines);
+		ans[1]= new Node(indexInBuffer,newTextLen,1        ,toAddLines); //added text
+		ans[2]= new Node(splitPlace,   part2len,  this.type,part2lines);
 
 		return ans;
 	}

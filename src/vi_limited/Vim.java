@@ -262,7 +262,7 @@ public class Vim{
 
 		tempText = "";
 		Logger.log("context:"+context);
-		Logger.log("- - - - - - ");
+		Logger.log("- - - - - - all text : - - - - ");
 		Logger.log(context.getAllText());
 
 	}
@@ -496,7 +496,7 @@ public class Vim{
 	**/
 	public void run(){
 		while(running){
-			iter.reset();
+			//iter.reset();
 			char input = TUtil.getChar();
 			hideCursorMess(input);
 

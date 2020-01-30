@@ -68,20 +68,29 @@ public class PieceTable{
 		not for prpintg or saving
 	**/
 	@Override
+	@SuppressWarnings("unchecked")
 	public String toString(){
-		String ans = "nodes : \n";
+		List<Character> ans = new List<Character>();
+
+		ans.addAll("\n---this is pieceTable toString-------------\nnodes : \n");
+
 		for(Object n : nodes.getAsArray(Node.getAlaki()) ){
-			ans += n.toString() + "\n";
+			ans.addAll( "\n" + n.toString() + "\n nodeText : \n" );
+			ans.addAll( getNodeText( (Node) n) );
+			ans.addAll( "\n\n" );
 		}
-		ans += "\nbuffer[0] :\n";
+		ans.addAll("\n----nodes complete------\n");
+		ans.addAll("\nbuffer[0] :\n");
 		for(Object n : buffers[0].getAsArray('a')){
-			ans += n.toString();
+			ans.addAll(n.toString() );
 		}
-		ans += "\nbuffer[1] :\n";
+		ans.addAll("\nbuffer[1] :\n");
 		for(Object n : buffers[1].getAsArray('a')){
-			ans += n.toString();
+			ans.addAll( n.toString() );
 		}
-		return ans;
+		ans.addAll ("\n-----------=======------------------\n");
+
+		return ETCUtil.characterArrToString(ans.getAsArray(' '));
 	}
 
 	/**
@@ -194,14 +203,30 @@ public class PieceTable{
 		Logger.log("split index(should be 0) : " + splitIndex);
 
 		Node toSplit = iter.currentNode;
+		Node [] threeNewNodes = toSplit.split(splitIndex,beginInBuffer ,newTextLen,buffers, toAddLines);
 		nodes.replaceOneWithThree(
 			iter.currentNodeIndex,
-			toSplit.split(splitIndex,beginInBuffer ,newTextLen,buffers, toAddLines)
+			threeNewNodes
 		);
 
-		Node.deleteEmpty(nodes);
+		iter.currentNode = threeNewNodes[2]; /// bad az matn e insert shode
+		iter.currentNodeIndex = iter.currentNodeIndex + 2; // 2
+		iter.indexInNode = 0; // aval e oun node
+		iter.currentLine = countOfLinesBeforeNode(iter.currentNodeIndex);
 
+		Logger.log("\niter is :\n"+iter);
+		Logger.log("============================add done===========");
 
+		//Node.deleteEmpty(nodes);
+
+	}
+
+	private int countOfLinesBeforeNode(int index){
+		int sum = 0;
+		for(int i =0; i < index; i++){
+			sum += nodes.get(i).lineCount;
+		}
+		return sum;
 	}
 
 
