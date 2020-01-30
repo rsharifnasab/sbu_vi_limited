@@ -14,7 +14,7 @@ public class PTIter{
 
 	public void add(String toAdd){
 
-		TUtil.PError("not implemented yet");
+		TUtil.PError("add text not implemented yet");
 	}
 
 	public void reset(){

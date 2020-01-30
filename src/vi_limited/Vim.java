@@ -71,13 +71,6 @@ public class Vim{
 	String clipBoard = "";
 
 	/**
-		check if cursor is moved from last character enterred or not
-		if it moved, we should append temptext to the piece table
-		if not? it doenst matter
-	**/
-	boolean moved = false;
-
-	/**
 		OUT PIECE TABLE THAT KEEP ALL TEXT
 	**/
 	PieceTable context;
@@ -174,7 +167,7 @@ public class Vim{
 	private void backWord(int n){
 		Logger.log("back word");
 		//TODO
-		TUtil.PError("forward not implemented");
+		TUtil.PError("backward not implemented");
 	}
 
 
@@ -185,6 +178,7 @@ public class Vim{
 	private void vimGotoLastOfLine(){
 		//iter.gotoLastOfLine();
 		cursor.gotoLastOfLine();
+		addText();
 	}
 
 	/**
@@ -194,6 +188,7 @@ public class Vim{
 	private void vimGotoFirstOfLine(){
 		//iter.gotoFirstOfLine();
 		cursor.gotoFirstOfLine();
+		addText();
 	}
 
 
@@ -207,6 +202,7 @@ public class Vim{
 			return;
 		//iter.up();
 		cursor.up();
+		addText();
 		if(cursor.screenUpNeed()){
 			screen.up();
 			TUtil.clearAndPrintScreen(screen,cursor);
@@ -222,6 +218,7 @@ public class Vim{
 			return;
 		//iter.down();
 		cursor.down();
+		addText();
 		if(cursor.screenDownNeed()){
 			screen.down();
 			TUtil.clearAndPrintScreen(screen,cursor);
@@ -237,6 +234,7 @@ public class Vim{
 			return;
 		//iter.left();
 		cursor.left();
+		addText();
 	}
 
 	/**
@@ -247,6 +245,7 @@ public class Vim{
 			return;
 		//iter.right();
 		cursor.right();
+		addText();
 	}
 
 
@@ -265,6 +264,7 @@ public class Vim{
 		Logger.log("context:"+context);
 		Logger.log("- - - - - - ");
 		Logger.log(context.getAllText());
+
 	}
 
 	/**
@@ -404,10 +404,14 @@ public class Vim{
 			return;
 		if (input == 27) // esc presseed
 			goToOneKeyCommandMode();
+
 		tempText += inputC;
+		addCharToScreen(inputC);
+
 		//iter.right(); // TODO bia
 
-		handleAddText(inputC);
+		if(inputC == '\n' || inputC == ' ')
+			addText();
 	}
 
 	/**
@@ -457,16 +461,6 @@ public class Vim{
 			command += inputC;
 	}
 
-	/**
-		handle aif we need adding text or not!
-		it will make pieces  between '\n' and ' ' s
-	**/
-	private void handleAddText(char inputC){
-		if(tempText.length() == 0) return;
-		addCharToScreen(inputC);
-		if(inputC == '\n' || inputC == ' ' || moved)
-			addText();
-	}
 
 	/**
 		hide mess of cursor at next line (if you move cursor and end of the line
@@ -493,7 +487,7 @@ public class Vim{
 			char input = TUtil.getChar();
 			hideCursorMess(input);
 
-			moved = handleCursorMove(input);
+			handleCursorMove(input);
 
 			switch(mode){
 
@@ -574,22 +568,21 @@ public class Vim{
 	why? check out 193 - 196 on ascii extended table
 	return true if we move it, false toherwise
 	**/
-	public boolean handleCursorMove(char input){
+	public void handleCursorMove(char input){
 		switch (input) {
 			case up:
 				vimUp();
-				return true;
+				break;
 			case down:
 				vimDown();
-				return true;
+				break;
 			case right:
 				vimRight();
-				return true;
+				break;
 			case left:
 				vimLeft();
-				return true;
+				break;
 		}
-		return false;
 	}
 
 	/**
