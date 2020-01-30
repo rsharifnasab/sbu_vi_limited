@@ -1,5 +1,6 @@
 **my DS project for DS class with DR.Ebrahim moghaddam in fall 98**
-project is : VIM editor(!) explicity written in java or CPP
+
+#### project is : VIM editor(!) explicity written in java or CPP
 
 the rules are :
 1. no using any library (import or include)
@@ -9,11 +10,6 @@ the rules are :
 ### TODO
 + update iterator as you go (for insert with iterator)
 + delete
-
-+ SEARCH! trie tree -> stack overflow
-+ search : trie tree dorost 
-+ search: convert char to line (index ha)
-
 + w : kalame badi
 + b : kalame ghabli 
 
