@@ -223,7 +223,6 @@ public class Vim{
 		//iter.down();
 		cursor.down();
 		if(cursor.screenDownNeed()){
-			Logger.log("down needed");
 			screen.down();
 			TUtil.clearAndPrintScreen(screen,cursor);
 		}
@@ -290,7 +289,6 @@ public class Vim{
 		if command is none of the cases, we think that it is gotoline x command
 	**/
 	private void applyLongCommand(){
-		Logger.log("comamnd: " + command);
 		switch(command){
 
 			case "w":
@@ -721,7 +719,6 @@ public class Vim{
 	public void save(){
 		Logger.log("saved");
 		FilesUtil.writeToFile(context.getAllText(),ourFile);
-		//Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
 	}
 
 
