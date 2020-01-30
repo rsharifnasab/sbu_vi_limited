@@ -36,7 +36,7 @@
 
     <target name="clean-doc">
       <delete dir="${doc.dir}"/>
-  </target>
+    </target>
 
     <target name="jar" depends="compile">
         <mkdir dir="${jar.dir}"/>
@@ -78,6 +78,8 @@
     <target name="main" >
          <antcall target="clean-build"/>
          <antcall target="copy-jar"/>
+         <antcall target="reset"/>
+
     </target>
 
 
