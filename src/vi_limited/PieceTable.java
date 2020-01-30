@@ -256,7 +256,10 @@ public class PieceTable{
 	}
 
 	private void updateSearchTree(String newText,int startIndex){
-	//	if(newText.length() > 1000) return; // avoid stack over flow
+		if(newText.length() > 1000){
+			searchTree = null;
+			return; // avoid stack over flow
+		}
 
 		for (int i = 0; i < newText.length(); i++){
 			searchTree.insert(newText.substring(i), i+startIndex);
@@ -266,11 +269,11 @@ public class PieceTable{
 	private void makeSearchTree(){
 		Logger.log("tree doesnt exist, creating");
 		searchTree = new TrieTree();
-		String txt = getAllText();
-		updateSearchTree(txt,0);
 	}
 
 	public List<Integer> searchwithTrie(String toSearch){
+		if(searchTree == null)
+			return null; // long text, we cant search
 	 	return searchTree.search(toSearch);
 	}
 
