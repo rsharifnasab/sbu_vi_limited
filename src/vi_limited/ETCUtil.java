@@ -120,6 +120,17 @@ public class ETCUtil{
 	}
 
 	/**
+		check if the string s exists in the array or not
+		it is used to unique the 10 short words and 10 long words
+	**/
+	public static boolean exists(String s,String[] strings){
+		for(String toCheck : strings){
+			if (s.equals(toCheck)) return true;
+		}
+		return false;
+	}
+
+	/**
 		this method give an String[] as the text which is splited in white spaces
 		it should find 10 shortest words (word is sth between whitespaces)
 		it is sensetive code, take care of it
@@ -142,6 +153,7 @@ public class ETCUtil{
 			if(s.matches("\\s+")) continue;
 			for (int j =0;j<10;j++ ) {
 				if(len < toolHa[j]){
+					if(exists(s,ans)) break;
 					shiftRight(j,ans,indexes,toolHa);
 					ans[j] = s;
 					indexes[j] = i;
@@ -177,6 +189,7 @@ public class ETCUtil{
 			if(s.matches("\\s+")) continue;
 			for (int j =0;j<10;j++ ) {
 				if(len > toolHa[j]){
+					if(exists(s,ans)) break;
 					shiftRight(j,ans,indexes,toolHa);
 					ans[j] = s;
 					indexes[j] = i;
