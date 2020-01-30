@@ -116,7 +116,7 @@ public class Screen{
 				if(ind == len)
 					tamum = true;
 				if(tamum){
-					innerArr[i][j] = ' ';
+					innerArr[i][j] = '~';
 					continue;
 				}
 				innerArr[i][j] = text[ind++];

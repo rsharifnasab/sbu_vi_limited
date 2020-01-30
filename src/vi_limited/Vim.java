@@ -82,6 +82,9 @@ public class Vim{
 	**/
 	PieceTable context;
 
+	/**
+		TODO
+	**/
 	PTIter iter;
 
 
@@ -99,12 +102,11 @@ public class Vim{
 	**/
 	public Vim(String ourFile){
 		Logger.log("starting vim app");
+		TUtil.makeTerminalHandy();
 		this.ourFile = (ourFile==null) ? null : new java.io.File(ourFile);
 
-		TUtil.makeTerminalHandy();
 
 		greetUser();
-
 
 		context = new PieceTable(ourFile);
 		iter = new PTIter(context);
@@ -112,8 +114,6 @@ public class Vim{
 		cursor = new Cursor(width,height);
 
 		//TUtil.clearConsuleC(cursor);
-		//TUtil.clearConsule();
-
 		TUtil.clearAndPrintScreen(screen,cursor);
 
 		goToOneKeyCommandMode();
@@ -178,7 +178,7 @@ public class Vim{
 	/**
 		handle going to fist line of file
 	**/
-	private void vimGoToFirstOfFile(){ // maybe TODO
+	private void vimGoToFirstOfFile(){
 		goToLine(1);
 	}
 
@@ -363,6 +363,7 @@ public class Vim{
 	here we can go to any other mode with diffrent keys
 	also we can go up and down and .. with hjkl
 	also copying and goi0ng to fist and end of line is handled here
+	note that search will start from here (/)
 	**/
 	private void handleOneCharCommand(char inputC){
 		int input = (int) inputC;
@@ -471,7 +472,6 @@ public class Vim{
 		else if(input == 27) //escape
 			goToOneKeyCommandMode();
 
-
 		else if(input == 10) // enter
 			search();
 		else
@@ -483,6 +483,7 @@ public class Vim{
 	/**
 		handle adding text (in tempText string) to the piece table
 		it will update screen and reprint it
+		TODO
 	**/
 	private void addText(){
 		if(tempText.length() == 0) return;
@@ -493,8 +494,8 @@ public class Vim{
 		Logger.log("- - - - - - ");
 		Logger.log(context.getAllText());
 		//TUtil.PError("context:"+context);
-
 	}
+
 	/**
 		TODO
 	**/
@@ -567,6 +568,10 @@ public class Vim{
 
 				case SEARCH:
 					handleSearchMode(input);
+					break;
+
+				default:
+					throw new RuntimeException("should not reach here, probably bad EditorMode enum");
 
 			} // end switch
 
@@ -587,7 +592,7 @@ public class Vim{
 		TUtil.print("initializing vim!", Color.YELLOW);
 		TUtil.print("input file is : " + ourFile, Color.BLUE);
 		TUtil.print("the app is starting ", Color.GREEN);
-		ETCUtil.delay(1);
+		ETCUtil.delay(0.8);
 	}
 
 	/**
@@ -691,8 +696,6 @@ public class Vim{
 		resetCommand();
 		mode = EditorMode.LONG_COMMAND;
 	}
-
-
 
 
 	/**
