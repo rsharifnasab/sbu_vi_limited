@@ -278,6 +278,8 @@ public class Vim{
 			line[i] = line[i-1];
 		}
 		line[x] = inputC;
+		TUtil.printLine(screen,cursor);
+
 	}
 
 
@@ -393,6 +395,11 @@ public class Vim{
 
 	}
 
+
+	private void deleteOneChar(){
+		TUtil.PError("backspace handle didnt implemented yet");
+	}
+
 	/**
 		handle new character in insert mode
 		it add it to tempText
@@ -402,12 +409,18 @@ public class Vim{
 		int input = (int) inputC;
 		if( input > 127) // arrow keys
 			return;
-		if (input == 27) // esc presseed
+		if (input == 27){ // esc presseed
 			goToOneKeyCommandMode();
+			return;
+		}
+		if (input == 127){ // DEL presseed
+			deleteOneChar();
+			return;
+		}
 
 		tempText += inputC;
 		addCharToScreen(inputC);
-
+		cursor.right();
 		//iter.right(); // TODO bia
 
 		if(inputC == '\n' || inputC == ' ')
