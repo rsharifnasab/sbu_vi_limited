@@ -53,7 +53,7 @@ def write_file(file_add,text):
     f.close()
 
 source_folder = "./src/vi_limited/"
-quera_folder = "./quera/"
+quera_folder = "./build/quera/"
 out_file = quera_folder + "Vim.java"
 
 
