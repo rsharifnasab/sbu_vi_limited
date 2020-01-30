@@ -1,68 +1,73 @@
 package vi_limited;
 
-
+/**
+    out tree class to handle search with good performance
+**/
 class TrieTree {
 
-    final static int MAX_CHAR = 256;
+    /**
+        tedad e horouf e alephba ro negah midaraim
+        baraye array ha niaz darim
+    **/
+    final static int ALPHABET_SIZE = 256;
 
-    TrieTree[] children = new TrieTree[MAX_CHAR];
+    TrieTree[] children = new TrieTree[ALPHABET_SIZE];
+
     List<Integer> indexes;
 
-    TrieTree() // Constructor
-    {
-        // Create an empty linked list for indexes of
-        // suffixes starting from this node
+    /**
+        only construcotr without paramter
+        search text will be added later
+    **/
+    public TrieTree(){
+        /**
+         Create list for indexes of
+         suffixes starting from this node
+        */
         indexes = new List<Integer>();
 
-        // Initialize all child pointers as NULL
-        for (int i = 0; i < MAX_CHAR; i++)
+        /**
+            hame bache ha ro null bezarim
+        **/
+        for (int i = 0; i < ALPHABET_SIZE; i++)
             children[i] = null;
     }
 
-    // A recursive function to insert a suffix of
-    // the text in subtree rooted with this node
-    void insert(String s, int index) {
+    /**
+        insert function,
+        get a string and a index and add it
+    **/
+    void insert(String toAdd, int index) {
 
         // Store index in linked list
         indexes.add(index);
 
-        // If string has more characters
-        if (s.length() > 0) {
+        if(toAdd.length() == 0) return; // shart e paye as masalan
 
-            // Find the first character
-            char cIndex = s.charAt(0);
 
-            // If there is no edge for this character,
-            // add a new edge
-            if (children[cIndex] == null)
-                children[cIndex] = new TrieTree();
+        char cIndex = toAdd.charAt(0);
 
-            // Recur for next suffix
-            children[cIndex].insert(s.substring(1),
-                                              index + 1);
-        }
+        if (children[cIndex] == null)
+            children[cIndex] = new TrieTree();
+
+        children[cIndex].insert(toAdd.substring(1), index + 1);
     }
 
-    // A function to search a pattern in subtree rooted
-    // with this node.The function returns pointer to a
-    // linked list containing all indexes where pattern
-    // is present. The returned indexes are indexes of
-    // last characters of matched text.
-    List<Integer> search(String s) {
+    /**
+        the function that actually search
+    **/
+    List<Integer> search(String toSearch) {
 
-        // If all characters of pattern have been
-        // processed,
-        if (s.length() == 0)
+        // we are done, whole string processed
+        // dar vaghe shart e paye as
+        if (toSearch.length() == 0)
             return indexes;
 
-        // if there is an edge from the current node of
-        // suffix tree, follow the edge.
-        if (children[s.charAt(0)] != null)
-            return (children[s.charAt(0)]).search(s.substring(1));
+        char avvali = toSearch.charAt(0);
+        if( children[avvali] == null ) return null;
 
-        // If there is no edge, pattern doesnt exist in
-        // text
-        else
-            return null;
+        String baghie = toSearch.substring(1); // engar head o tail ro joda kardim
+        return (children[avvali]).search(baghie);
+
     }
 }

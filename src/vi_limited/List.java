@@ -36,6 +36,7 @@ public class List<T>{
 	**/
 	@SuppressWarnings("unchecked")
 	public void addAll(List<T> toAdd){
+		ensureCapacity(toAdd.noe());
 		for(int i =0; i < toAdd.NOE; i++){
 			this.add( (T) toAdd.innerArray[i] );
 		}
@@ -46,6 +47,7 @@ public class List<T>{
 	**/
 	@SuppressWarnings("unchecked")
 	public void addAll(T[] toAdd){
+		ensureCapacity(toAdd.length);
 		for(Object  elem : toAdd ){
 			this.add( (T) elem);
 		}
@@ -58,6 +60,7 @@ public class List<T>{
 	**/
 	@SuppressWarnings("unchecked")
 	public void addAll(char[] toAdd){
+		ensureCapacity(toAdd.length);
 		for(char  c : toAdd ){
 			Object elem =  (Character) (c);
 			this.add( (T) elem);

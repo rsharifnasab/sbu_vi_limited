@@ -12,6 +12,10 @@ public class PTIter{
 		this.reset();
 	}
 
+	public void add(String toAdd){
+
+		TUtil.PError("not implemented yet");
+	}
 
 	public void reset(){
 		currentNodeIndex = 0;

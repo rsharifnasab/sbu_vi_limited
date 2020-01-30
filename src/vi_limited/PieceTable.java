@@ -39,7 +39,7 @@ public class PieceTable{
 		nodes = new List<Node>();
 		nodes.add(Node.getInitialNode(0,""));
 
-		searchTree = null;
+		makeSearchTree();
 	}
 
 	/**
@@ -60,6 +60,7 @@ public class PieceTable{
 			)
 		);
 
+		updateSearchTree(initText, 0);
 	}
 
 	/**
@@ -80,7 +81,6 @@ public class PieceTable{
 		for(Object n : buffers[1].getAsArray('a')){
 			ans += n.toString();
 		}
-
 		return ans;
 	}
 
@@ -103,16 +103,15 @@ public class PieceTable{
 		or statistics
 	**/
 	public String getAllText(){
-		PTIter iter = new PTIter(this);
 		int len = getTextLen();
-		char[] ansCHA = new char[len];
-		int le = 0;
-		for(int i =0;i < len; i++){
-			ansCHA[le++] = iter.get();
-			iter.right();
+		List<Character> ans = new List<Character>();
+		ans.ensureCapacity(len);
+		for(Node n : nodes.getAsArray(Node.getAlaki())){
+			ans.addAll(
+				getNodeText(n)
+			);
 		}
-
-		return new String(ansCHA);
+		return ETCUtil.characterArrToString(ans.getAsArray(' '));
 	}
 
 	/**
@@ -120,6 +119,7 @@ public class PieceTable{
 	**/
 	public List<Character> getNodeText(Node node){
 		List<Character> ans = new List<Character>();
+		ans.ensureCapacity(node.length);
 		for (int i =node.start;i<node.start+node.length;i++ ) {
 			ans.add(
 				buffers[node.type].get(i)
@@ -179,12 +179,12 @@ public class PieceTable{
 		addting a String tp the text in the location of iterator
 	**/
 	public void add(String toAdd,PTIter iter){
-		deleteSearchTree();
+		updateSearchTree(
+			toAdd,
+			iter.indexInNode + iter.currentNode.start // starting index
+		);
 
-		int toAddLines = 0;
-		for(char c : toAdd.toCharArray() ){
-			if(c=='\n') toAddLines++;
-		}
+		int toAddLines = ETCUtil.charCounter(toAdd,'\n');
 
 		int beginInBuffer = buffers[1].noe();
 		buffers[1].addAll(toAdd.toCharArray());
@@ -203,7 +203,6 @@ public class PieceTable{
 
 
 	}
-
 
 
 	/**
@@ -256,27 +255,27 @@ public class PieceTable{
 		return new String(ans.toCharArray());
 	}
 
-	private void deleteSearchTree(){
-		searchTree = null;
+	private void updateSearchTree(String newText,int startIndex){
+	//	if(newText.length() > 1000) return; // avoid stack over flow
+
+		for (int i = 0; i < newText.length(); i++){
+			searchTree.insert(newText.substring(i), i+startIndex);
+		}
+	}
+
+	private void makeSearchTree(){
+		Logger.log("tree doesnt exist, creating");
+		searchTree = new TrieTree();
+		String txt = getAllText();
+		updateSearchTree(txt,0);
 	}
 
 	public List<Integer> searchwithTrie(String toSearch){
-		if(searchTree == null){
-			Logger.log("tree doesnt exist, creating");
-			searchTree = new TrieTree();
-			String txt = getAllText(); // TODO : optimize
-			for (int i = 0; i < txt.length(); i++)
-			    searchTree.insert(txt.substring(i), i);
-
-		}
-
-		List<Integer> result = searchTree.search(toSearch);
-
-		return result;
+	 	return searchTree.search(toSearch);
 	}
 
 
-
+/*
 	private List<Integer> searchByRegex(String toSearch){
 		final java.util.regex.Matcher subMatcher = java.util.regex.Pattern.compile(toSearch).matcher(getAllText());
 		List<Integer> result = new List<Integer>();
@@ -289,11 +288,11 @@ public class PieceTable{
 
 		return result;
 	}
-
+*/
 	public String search(String toSearch){
 
-		List<Integer> result = searchByRegex(toSearch);
-		if(result == null) return "nothing found dont worry!";
+		List<Integer> result = searchwithTrie(toSearch);
+		if(result == null) return "nothing found dont worry!\n";
 
 		List<Character> ans = new List<Character>();
 		ans.addAll("searching for " + toSearch + "\n");
@@ -301,8 +300,8 @@ public class PieceTable{
 		int len = result.noe();
 		for( int i = 0; i < len; i++){
 			ans.addAll(
-				"found that on : " +
-				(result.get(i))
+				"found that on line: " +
+				charIndToLine(result.get(i))
 				+ "\n"
 			);
 		}
@@ -310,7 +309,26 @@ public class PieceTable{
 		return new String(ans.toCharArray());
 	}
 
+	private int charIndToLine(int index){
+		int index_bpk = index;
+		int line = 1;
 
+		for(Node n : nodes.getAsArray(Node.getAlaki())){
+			if(n.length <= index){
+				index -= n.length;
+				line += n.lineCount;
+			}
+			else{
+				for(int i=0; i<= index_bpk; i++){
+					if( buffers[n.type].get(i) == '\n' ) line++;
+				}
+				break;
+			}
+
+		}
+
+		return line;
+	}
 
 
 }

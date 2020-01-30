@@ -258,13 +258,14 @@ public class Vim{
 	**/
 	private void addText(){
 		if(tempText.length() == 0) return;
-		context.add(tempText,iter);
+		iter.add(tempText);
 		screen.updateScreenContent();
+		TUtil.clearAndPrintScreen(screen,cursor);
+
 		tempText = "";
 		Logger.log("context:"+context);
 		Logger.log("- - - - - - ");
 		Logger.log(context.getAllText());
-		//TUtil.PError("context:"+context);
 	}
 
 	/**
@@ -331,11 +332,11 @@ public class Vim{
 
 
 	/**
-	handle keys in one key mode
-	here we can go to any other mode with diffrent keys
-	also we can go up and down and .. with hjkl
-	also copying and goi0ng to fist and end of line is handled here
-	note that search will start from here (/)
+		handle keys in one key mode
+		here we can go to any other mode with diffrent keys
+		also we can go up and down and .. with hjkl
+		also copying and goi0ng to fist and end of line is handled here
+		note that search will start from here (/)
 	**/
 	private void handleOneCharCommand(char inputC){
 		int input = (int) inputC;
@@ -458,7 +459,6 @@ public class Vim{
 			command += inputC;
 	}
 
-
 	/**
 		handle aif we need adding text or not!
 		it will make pieces  between '\n' and ' ' s
@@ -491,8 +491,7 @@ public class Vim{
 	**/
 	public void run(){
 		while(running){
-			iter = new PTIter(context);
-			//iter.goToLine(3);
+			iter.reset();
 			char input = TUtil.getChar();
 			hideCursorMess(input);
 
@@ -565,7 +564,6 @@ public class Vim{
 		resetCommand();
 		goToOneKeyCommandMode();
 	}
-
 
 
 
@@ -725,8 +723,6 @@ public class Vim{
 		FilesUtil.writeToFile(context.getAllText(),ourFile);
 		//Logger.log("--------\nsaved : \n"+ (context.getAllText().substring(0,200)) + "\n-------\n" );
 	}
-
-
 
 
 	/**
