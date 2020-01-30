@@ -22,3 +22,7 @@ the rules are :
 +press enter in last line in command mode 
 +long lines problem 
 +no file to save -> dialog box
+
+## how to run: 
++ you can simply run : make 
++ if you have ant, you can type 'ant' and then 'java -jar Vim.jar'
