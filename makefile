@@ -1,5 +1,6 @@
+quick: reset compile run
 
-all : reset compile q_combine create_jar run
+all: reset compile q_combine create_jar run
 
 reset:
 	@reset
@@ -16,7 +17,6 @@ runArg1:
 
 runArg2:
 	@java -cp "out/" vi_limited.Vim ~/a.txt
-
 
 
 okTerminal:
