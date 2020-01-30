@@ -24,5 +24,5 @@ the rules are :
 + no file to save -> dialog box
 
 ## how to run: 
-+ you can simply run : make 
-+ if you have ant, you can type 'ant' and then 'java -jar Vim.jar'
++ you can simply run : `make` 
++ if you have ant, you can type 'ant' and then `java -jar Vim.jar`
