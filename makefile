@@ -1,5 +1,5 @@
 
-all : reset compile q_combine run
+all : reset compile q_combine create_jar run
 
 reset:
 	@reset
@@ -37,18 +37,19 @@ compile: clean
 
 clean:
 	@echo "cleaning project folder.."
+
 	@find . -name '*.class' -delete
 	@echo "deleted class files"
+
 	@find . -name '*.exe' -delete
 	@echo "deleted exe files"
 
+	@find . -name '*.jar' -delete
+	@echo "deleted jar files"
+
 	@find . -wholename './out/log*.txt' -delete
 	@echo "deleted lof file in out folder"
-	
-	
-	@find . -wholename './out/vi_limited/piecetable' -delete
-	@echo "deleted piece table folder"
-
+		
 	@find . -wholename './out/vi_limited' -delete
 	@echo "deleted vi_limited folder"
 
@@ -73,3 +74,11 @@ doc:
 q_combine: clean
 	@./q_combiner.py
 	@javac ./quera/Vim.java
+	
+create_jar: compile
+	cd out && jar cfe ../Vim.jar vi_limited.Vim   vi_limited/*.class && cd ..
+
+run_jar : 
+	java -jar Vim.jar
+
+jar : create_jar run_jar

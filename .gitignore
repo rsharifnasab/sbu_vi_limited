@@ -1,6 +1,7 @@
 *.class
 *.exe
 *.out
+*.jar
 test.txt
 */idea/
 */.code/
