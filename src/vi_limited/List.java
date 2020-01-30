@@ -193,7 +193,6 @@ public class List<T>{
 			innerArray[i] = null;
 		}
 		NOE+=tedad;
-		Logger.log("after shift : " + this);
 	}
 
 	/**

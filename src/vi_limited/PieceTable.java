@@ -267,7 +267,6 @@ public class PieceTable{
 	}
 
 	private void makeSearchTree(){
-		Logger.log("tree doesnt exist, creating");
 		searchTree = new TrieTree();
 	}
 
