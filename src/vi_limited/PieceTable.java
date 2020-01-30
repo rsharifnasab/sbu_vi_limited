@@ -159,9 +159,10 @@ public class PieceTable{
 		it is not explicit to be height line
 		because screen class can ignore longer text
 	**/
-	public String getText(int fromLine,int height){
+	public String getText(int fromLine,int height){ // TODO some bugs
+		if(fromLine < 0) fromLine = 0;
 		int nodeInd = 0;
-		while(nodes.get(nodeInd).lineCount < fromLine){
+		while(nodes.get(nodeInd).lineCount < fromLine && fromLine > 0){
 			fromLine -= nodes.get(nodeInd).lineCount;
 			nodeInd++;
 			if(nodeInd >= nodes.noe()) break;
@@ -214,10 +215,7 @@ public class PieceTable{
 		iter.indexInNode = 0; // aval e oun node
 		iter.currentLine = countOfLinesBeforeNode(iter.currentNodeIndex);
 
-		Logger.log("\niter is :\n"+iter);
-		Logger.log("============================add done===========");
-
-		//Node.deleteEmpty(nodes);
+		//Logger.log("\niter is :\n"+iter);
 
 	}
 
@@ -281,6 +279,7 @@ public class PieceTable{
 	}
 
 	private void updateSearchTree(String newText,int startIndex){
+		if(searchTree == null) return;
 		if(newText.length() > 1000){
 			searchTree = null;
 			return; // avoid stack over flow

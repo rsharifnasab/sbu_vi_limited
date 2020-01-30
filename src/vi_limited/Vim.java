@@ -261,9 +261,9 @@ public class Vim{
 		TUtil.clearAndPrintScreen(screen,cursor);
 
 		tempText = "";
-		Logger.log("context:"+context);
-		Logger.log("- - - - - - all text : - - - - ");
-		Logger.log(context.getAllText());
+		//Logger.log("context:"+context);
+		//Logger.log("- - - - - - all text : - - - - ");
+		//Logger.log(context.getAllText());
 
 	}
 
