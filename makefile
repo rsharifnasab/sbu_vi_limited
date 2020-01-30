@@ -13,10 +13,7 @@ justRun:
 	@java -cp "out/" vi_limited.Vim
 
 runArg1:
-	@java -cp "out/" vi_limited.Vim ~/Vim.java
-
-runArg2:
-	@java -cp "out/" vi_limited.Vim ~/a.txt
+	@java -cp "out/" vi_limited.Vim src/vi_limited/Vim.java
 
 
 okTerminal:
@@ -30,7 +27,7 @@ compile: clean
 	@echo "------------------------------------"
 	@echo "compiling project.."
 	@mkdir out && echo "created output folder" || echo "out folder exists"
-	@javac src/vi_limited/Vim.java -cp "./src/" -g -d out/ -Werror -Xlint -Xmaxerrs 3
+	@javac src/vi_limited/Vim.java -cp "./src/" -g -d out -Werror -Xlint -Xmaxerrs 3
 	@echo "compile done!"
 	@echo "-------------------------------------"
 
@@ -56,17 +53,13 @@ clean:
 	@find . -name 'out' -delete
 	@echo "deleted out folder"
 
-clean_log:
-	@find . -name 'log*.txt' -delete
-	@echo "deleted log file"
-	@echo "log file :" > log1.txt
 
 clean_doc:
 	@rm -r ./doc/* || echo "doc directory is clean"
 	@find . -name 'doc' -delete
 	@echo "deleted doc folder"
 
-clean_all: clean clean_doc clean_log
+clean_all: clean clean_doc
 
 doc:
 	javadoc src/vi_limited/*.java  -Xdoclint:none  -d ./doc

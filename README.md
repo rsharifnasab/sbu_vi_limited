@@ -1,12 +1,12 @@
-my DS project for DS class with DR.Ebrahim moghaddam in fall 98
+*my DS project for DS class with DR.Ebrahim moghaddam in fall 98*
 project is : VIM editor(!) explicity written in java or CPP
 
 the rules are :
- no using any library (import or include)
- just with cpp or java
- more info in TODO.pdf
+1. no using any library (import or include)
+2. just with cpp or java
+3. more info in TODO.pdf
  
-## TODO
+### TODO
 + update iterator as you go (for insert with iterator)
 + delete
 
@@ -18,11 +18,13 @@ the rules are :
 + b : kalame ghabli 
 
 
-## bugs
+### bugs
 + press enter in last line in command mode 
 + long lines problem 
 + no file to save -> dialog box
 
-## how to run: 
+# how to run: 
 + you can simply run : `make` 
-+ if you have ant, you can type 'ant' and then `java -jar Vim.jar`
+	be careful, this command will open the Vim.java fro msrc folder to edit! 
++ if you have ant, you can run `ant` and then `java -jar Vim.jar`
+	or `java -jar Vim.jar filename.txt'`
