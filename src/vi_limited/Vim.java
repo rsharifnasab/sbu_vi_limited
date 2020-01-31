@@ -260,12 +260,21 @@ public class Vim{
 		screen.updateScreenContent();
 		TUtil.clearAndPrintScreen(screen,cursor);
 
+
+		char lastChar = tempText.charAt(tempText.length()-1);
+		if (lastChar=='\n'){
+			cursor.down();
+			cursor.gotoFirstOfLine();
+		}
+
 		tempText = "";
 		//Logger.log("context:"+context);
 		//Logger.log("- - - - - - all text : - - - - ");
 		//Logger.log(context.getAllText());
 
 	}
+
+	//TODO : sync cursor and iterator
 
 	/**
 		TODO
