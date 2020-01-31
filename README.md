@@ -16,7 +16,7 @@ the rules are :
 
 ### bugs
 + press enter in last line in command mode 
-+ long lines problem 
++ add 12 lines : eveything crash!
 + no file to save -> dialog box
 
 # how to run: 
