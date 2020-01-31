@@ -159,15 +159,35 @@ public class Vim{
 
 
 	private void forwardWord(int n){
+		/*
 		Logger.log("forward");
-		//TODO
-		TUtil.PError("forward not implemented");
+		char prev = iter.get();
+		iter.right();
+		char alan = iter.get();
+		for(int i =0; i < n; i++){
+				while(! (alan!=' ' && prev==' ') ){
+					iter.right();
+					prev = alan;
+					alan = iter.get();
+				}
+		}
+		*/
 	}
 
 	private void backWord(int n){
+		/*
 		Logger.log("back word");
-		//TODO
-		TUtil.PError("backward not implemented");
+		char prev = iter.get();
+		iter.left();
+		char alan = iter.get();
+		for(int i =0; i < n; i++){
+				while(! (alan==' ' && prev!=' ') ){
+					iter.left();
+					prev = alan;
+					alan = iter.get();
+				}
+		}
+		*/
 	}
 
 

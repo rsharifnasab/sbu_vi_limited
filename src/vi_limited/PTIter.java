@@ -6,6 +6,7 @@ public class PTIter{
 	int currentNodeIndex;
 	int indexInNode;
 	int currentLine;
+	int indexInLine;
 
 	@Override
 	public String toString(){
@@ -19,9 +20,9 @@ public class PTIter{
 		this.reset();
 	}
 
+
 	public void add(String toAdd){
 		context.add(toAdd,this);
-		//TUtil.PError("add text not implemented yet");
 	}
 
 	public void reset(){
@@ -85,12 +86,13 @@ public class PTIter{
 	}
 
 	public void right(){
-		while(
-			indexInNode>=currentNode.length ){
+		//Logger.log("iter before right: " + this);
+		while( indexInNode>=currentNode.length ){
 			goToNextNode();
 		}
 		indexInNode++;
 		indexInNode = currentNode.length > indexInNode ? indexInNode : currentNode.length-1;
+		//Logger.log("iter after right: " + this);
 	}
 
 
@@ -102,6 +104,7 @@ public class PTIter{
 	}
 
 	private void goToPreNode(){
+		if(currentNodeIndex == 0) return;
 		currentNodeIndex--;
 		currentNode = context.nodes.get(currentNodeIndex);
 		indexInNode = currentNode.length-1;
