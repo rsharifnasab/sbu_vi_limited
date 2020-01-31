@@ -32,6 +32,7 @@ public class PTIter{
 		currentNode = context.nodes.get(currentNodeIndex);
 	}
 
+	/*
 	public void gotoFirstOfLine(){
 		up();
 		right();
@@ -95,7 +96,7 @@ public class PTIter{
 		//Logger.log("iter after right: " + this);
 	}
 
-
+	*/
 
 	private void goToNextNode(){
 		currentNodeIndex++;
