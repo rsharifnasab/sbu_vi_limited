@@ -111,6 +111,7 @@ public class Screen{
 		boolean tamum = false;
 		outer:
 		for (int i=1; i<=height; i++ ) {
+
 			for(int j=1; j<=width; j++){
 				if(ind == len)
 					tamum = true;
@@ -124,6 +125,11 @@ public class Screen{
 				}
 
 			} // end inner for
+
+			for(;ind< len; ind++){ // solve long line bug!
+				if(text[ind-1]=='\n') break;
+			}
+
 		} // end outer for
 	} // end funtion
 
