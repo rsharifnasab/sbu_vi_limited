@@ -66,7 +66,7 @@ doc:
 
 q_combine: clean
 	@./q_combiner.py
-	@javac ./quera/Vim.java
+	@javac ./build/quera/Vim.java
 	
 create_jar: compile
 	cd out && jar cfe ../Vim.jar vi_limited.Vim   vi_limited/*.class && cd ..
