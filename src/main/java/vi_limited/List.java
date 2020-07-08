@@ -5,6 +5,7 @@ package vi_limited;
 	why? because we need it and we cant use the java's list
 	its array list BTW
 **/
+@Deprecated
 public class List<T>{
 	/**
 		out private inner array to keep elemts
