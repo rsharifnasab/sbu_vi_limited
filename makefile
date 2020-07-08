@@ -13,7 +13,7 @@ justRun:
 	@java -cp "out/" vi_limited.Vim
 
 runArg1:
-	@java -cp "out/" vi_limited.Vim src/vi_limited/Vim.java
+	@java -cp "out/" vi_limited.Vim src/main/java/vi_limited/Vim.java
 
 
 okTerminal:
@@ -27,7 +27,7 @@ compile: clean
 	@echo "------------------------------------"
 	@echo "compiling project.."
 	@mkdir out && echo "created output folder" || echo "out folder exists"
-	@javac src/vi_limited/Vim.java -cp "./src/" -g -d out -Werror -Xlint -Xmaxerrs 3
+	@javac src/main/java/vi_limited/Vim.java -cp "./src/main/java" -g -d out -Werror -Xlint -Xmaxerrs 3
 	@echo "compile done!"
 	@echo "-------------------------------------"
 
@@ -62,7 +62,7 @@ clean_doc:
 clean_all: clean clean_doc
 
 doc:
-	javadoc src/vi_limited/*.java  -Xdoclint:none  -d ./doc
+	javadoc src/main/java/vi_limited/*.java  -Xdoclint:none  -d ./doc
 
 q_combine: clean
 	@./q_combiner.py
