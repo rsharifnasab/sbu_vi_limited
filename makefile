@@ -50,6 +50,8 @@ clean:
 	@find . -wholename './out/vi_limited' -delete
 	@echo "deleted vi_limited folder"
 
+	@rm -r out/* || echo "out folder empty"
+
 	@find . -name 'out' -delete
 	@echo "deleted out folder"
 
@@ -65,8 +67,9 @@ doc:
 	javadoc src/main/java/vi_limited/*.java  -Xdoclint:none  -d ./doc
 
 q_combine: clean
+	@mkdir -p ./out/quera
 	@./q_combiner.py
-	@javac ./build/quera/Vim.java
+	@javac ./out/quera/Vim.java
 	
 create_jar: compile
 	cd out && jar cfe ../Vim.jar vi_limited.Vim   vi_limited/*.class && cd ..
