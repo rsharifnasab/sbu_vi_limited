@@ -21,6 +21,9 @@ the rules are :
 
 # how to run: 
 + you can simply run : `make` 
-	be careful, this command will open the Vim.java fro msrc folder to edit! 
-+ if you have ant, you can run `ant` and then `java -jar Vim.jar`
-	or `java -jar Vim.jar filename.txt`
+	be careful, this command will open the Vim.java from src folder to edit! 
++ if you want to use jar file:
+        ```bash
+            make create_jar
+            java -jar Vim.jar path/to/filename.txt
+        ```
