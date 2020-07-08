@@ -6,7 +6,7 @@ the rules are :
 1. no using any library (import or include)
 2. just with cpp or java
 3. more info in TODO.pdf
- 
+
 ### TODO
 + update iterator as you go (for insert with iterator)
 + delete
@@ -20,10 +20,17 @@ the rules are :
 + no file to save -> dialog box
 
 # how to run: 
-+ you can simply run : `make` 
-	be careful, this command will open the Vim.java from src folder to edit! 
++ to test you can simply run : 
+	
+	```bash
+	make
+	```
+	be careful, this command will open the `Vim.java` from `src` folder to edit! 
+	
+	
+	
 + if you want to use jar file:
-        ```bash
-            make create_jar
-            java -jar Vim.jar path/to/filename.txt
-        ```
+```bash
+    make create_jar
+    java -jar Vim.jar path/to/filename.txt
+```
