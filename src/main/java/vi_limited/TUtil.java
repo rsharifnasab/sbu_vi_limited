@@ -27,7 +27,7 @@ public class TUtil{
 		in case of pritning this, current line of terminal will be cleaned!
 	**/
 	public static final String ENTER_CLEARER = "\033[H\033[2J";
-        public static final String CLEARER = "\033[H\033[2\033[3J";
+        public static final String CLEARER = "\033[H\033[2J\033[3J";
 	/**
 		in case of pritning this, current line of terminal will be cleaned!
 	**/
@@ -69,7 +69,7 @@ public class TUtil{
 		clear consule with prinitng the clean cunsole escape character
 	**/
 	public static void clearConsule() {
-		System.out.print(ENTER_CLEARER);
+		System.out.print(CLEARER);
 		System.out.flush();
 	}
 
