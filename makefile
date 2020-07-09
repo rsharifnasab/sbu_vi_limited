@@ -1,9 +1,9 @@
-quick: reset compile run
+quick: reset compile run reset
 
 all: reset compile q_combine create_jar run
 
 reset:
-	@reset
+	@clear
 
 run: runArg1
 

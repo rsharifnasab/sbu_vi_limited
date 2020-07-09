@@ -69,7 +69,7 @@ public class TUtil{
 		clear consule with prinitng the clean cunsole escape character
 	**/
 	public static void clearConsule() {
-		System.out.print(CLEARER);
+		System.out.print(ENTER_CLEARER);
 		System.out.flush();
 	}
 
