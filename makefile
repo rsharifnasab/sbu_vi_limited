@@ -27,7 +27,7 @@ compile: clean
 	@echo "------------------------------------"
 	@echo "compiling project.."
 	@mkdir out && echo "created output folder" || echo "out folder exists"
-	@javac src/main/java/vi_limited/Vim.java -cp "./src/main/java" -g -d out -Xlint -Xmaxerrs 3 #-Werror
+	@javac src/main/java/vi_limited/Vim.java -cp "./src/main/java" -g -d out -Xlint -Xmaxerrs 6 #-Werror
 	@echo "compile done!"
 	@echo "-------------------------------------"
 

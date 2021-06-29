@@ -1,10 +1,12 @@
 package vi_limited;
 
+import java.util.*;
 /**
     out tree class to handle search with good performance
 **/
 class TrieTree {
 
+    public static final boolean NO_TRIE = true; 
     /**
         tedad e horouf e alephba ro negah midaraim
         baraye array ha niaz darim
@@ -24,7 +26,7 @@ class TrieTree {
          Create list for indexes of
          suffixes starting from this node
         */
-        indexes = new List<Integer>();
+        indexes = new ArrayList<Integer>();
 
         /**
             hame bache ha ro null bezarim
@@ -33,16 +35,26 @@ class TrieTree {
             children[i] = null;
     }
 
+
+    public void update(String newText, int startIndex){
+        for (int i = 0; i < newText.length(); i++) {
+            this.insert(newText.substring(i), i + startIndex);
+        }
+    }
+
+
     /**
         insert function,
         get a string and a index and add it
     **/
     void insert(String toAdd, int index) {
-
+        if(NO_TRIE)
+            return;
         // Store index in linked list
         indexes.add(index);
 
-        if(toAdd.length() == 0) return; // shart e paye as masalan
+        if(toAdd.length() == 0) 
+            return; // shart e paye as masalan
 
 
         char cIndex = toAdd.charAt(0);

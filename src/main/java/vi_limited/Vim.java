@@ -575,7 +575,7 @@ public class Vim{
         TUtil.print("initializing vim!", Color.YELLOW);
         TUtil.print("input file is : " + ourFile, Color.BLUE);
         TUtil.print("the app is starting ", Color.GREEN);
-        ETCUtil.delay(0.8);
+        ETCUtil.delay(4.8);
         TUtil.clearConsule();
     }
 
