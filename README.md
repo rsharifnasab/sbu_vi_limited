@@ -1,36 +1,35 @@
-**my DS project for DS class with DR.Ebrahim moghaddam in fall 98**
+## My DS project for DS class with DR.Ebrahim moghaddam in fall 98
 
-#### project is : VIM editor(!) explicity written in java or CPP
+### VIM editor written in java
 
-the rules are :
-1. no using any library (import or include)
-2. just with cpp or java
-3. more info in TODO.pdf
+### Rules
+1. Not using any library (import or include)
+2. Just with cpp or java
+3. More info in TODO.pdf
 
 ### TODO
-+ update iterator as you go (for insert with iterator)
++ Update the iterator as you go (for insert with iterator)
 + delete
-+ w : kalame badi
-+ b : kalame ghabli 
++ w : next word
++ b : prev word
 
 
 ### bugs
-+ press enter in last line in command mode 
-+ add 12 lines : eveything crash!
++ Press enter in the last line in command mode 
 + no file to save -> dialog box
 
-# how to run: 
-+ to test you can simply run : 
+### how to run: 
++ To test you can run: 
 	
-	```bash
-	make
-	```
-	be careful, this command will open the `Vim.java` from `src` folder to edit! 
-	
-	
-	
-+ if you want to use jar file:
 ```bash
-    make create_jar
-    java -jar Vim.jar path/to/filename.txt
+make
+```
+Be careful, this command will open the `Vim.java` from `src` folder to edit! 
+	
+	
+	
++ If you want to create the jar file:
+```bash
+make create_jar
+java -jar Vim.jar path/to/filename.txt
 ```
